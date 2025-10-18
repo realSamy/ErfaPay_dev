@@ -1,0 +1,171 @@
+{
+  "common": {
+    "site_title": "ارفاپی",
+    "signin_or_signup": "ورود {'|'} ثبت نام",
+    "labels": {
+      "username": "نام کاربری",
+      "password": "رمز",
+      "login": "ورود",
+      "signup": "ثبت نام",
+      "phone": "شماره همراه",
+      "services": "لیست خدمات",
+      "contact_us": "تماس با ما",
+      "more": "بیشتر"
+    },
+    "titles": {
+      "signup": "ایجاد حساب جدید",
+      "login": "ورود به سایت",
+      "redirecting": "در حال انتقال...",
+      "login_notice": "قبلا ثبت نام کردی؟",
+      "signup_notice": "اینجا حساب نداری؟"
+    },
+    "currencies": {
+      "symbol": {
+        "rial": "﷼",
+        "usd": "$",
+        "eur": "€",
+        "gbp": "£",
+        "btc": "₿",
+        "usdt": "₮"
+      },
+      "text": {
+        "rial": "ریال",
+        "toman": "تومان",
+        "usd": "دلار آمریکا",
+        "eur": "یورو",
+        "gbp": "پوند انگلیس",
+        "btc": "بیت‌کوین",
+        "usdt": "تتر (USDT)"
+      }
+    },
+    "messages": {
+      "support_24_7": "۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم."
+    }
+  },
+  "services": {
+    "labels": {
+      "internal_payment": "پرداخت داخلی",
+      "money_transfer": "انتقال وجه",
+      "charge_account": "افزایش شارژ",
+      "button_new_order": "ثبت سفارش"
+    }
+  },
+  "error": {
+    "title": "خطا",
+    "try_again_later": "لطفا بعدا تلاش کن",
+    "unexpected": "مشکلی پیش اومده",
+    "default": "خطای غیرمنتظره‌ای رخ داده است",
+    "404": "صفحه مورد نظر پیدا نشد",
+    "500": "خطای داخلی سرور",
+    "401": "شما اجازه دسترسی ندارید",
+    "invalid_login": "نام کاربری یا رمز اشتباه است."
+  },
+  "navigation": {
+    "home": "برگشت به خانه"
+  },
+  "pages": {
+    "login": {
+    },
+    "signup": {
+    },
+    "home": {
+      "select_currency": "انتخاب ارز",
+      "deposit_amount": "مبلغ واریزی",
+      "rial_equivalent": "معادل به تومان",
+      "hero_section_title": "انتقال وجه کارت‌به‌کارت به ایران",
+      "hero_section_description": "ارفاپی یک پلتفرم سریع و امن برای انتقال وجه به کارت‌های بانکی داخل کشور ایران.",
+      "hero_section_cta": "ثبت درخواست",
+      "learn_more": "بیشتر بدانید",
+      "current_prices": "قیمت لحظه‌ای ارزها",
+      "charge_wallet": "شارژ حساب",
+      "why_erfapay_title": "چرا ارفاپی انتخاب مناسبی است؟",
+      "why_erfapay_description": "ارفاپی یک پلتفرم سریع و امن برای انجام پرداخت‌های مالی به ایرانیان خارج کشور است. این سرویس به گونه‌ای طراحی شده تا نیازهای مهاجران و افراد مقیم خارج از کشور را پوشش دهد.",
+      "benefits": {
+        "pay_expenses_title": "پرداخت هزینه ها",
+        "pay_expenses_desc": "پرداخت تمامی قبوض، اقساط، اجاره و سایر هزینه‌ها به سادگی و با امنیت بالا.",
+        "money_transfer_title": "انتقال وجه",
+        "money_transfer_desc": "ارسال و دریافت پول به صورت آنی با فرآیند انتقال امن و آسان.",
+        "buy_charge_title": "خرید شارژ",
+        "buy_charge_desc": "خرید شارژ تلفن همراه و بسته‌های اینترنت در هر زمان و مکان.",
+        "transparent_reports_title": "گزارشات شفاف",
+        "transparent_reports_desc": "پیگیری تمام تراکنش‌ها با گزارش‌های مالی شفاف و دقیق.",
+        "support_24h_title": "پشتیبانی ۲۴ ساعته",
+        "support_24h_desc": "دریافت کمک و پشتیبانی در هر زمان با تیم پشتیبانی ۲۴ ساعته."
+      },
+      "cta_section_title": "در کمتر از یک دقیقه ثبت نام کنید و اولین تراکنش خود را انجام دهید.",
+      "register_now": "ثبت نام",
+      "support_phone": "تلفن پشتیبانی:",
+      "social_media_title": "ما را در شبکه‌های اجتماعی دنبال کنید."
+    }
+  },
+  "footer": {
+    "contact_info_title": "اطلاعات تماس",
+    "address": "دفتر مرکزی: ونیز، بالا بازار، سرای سیدی، صندوق پستی ۰۹۸۹۹۹۹۹۹",
+    "email": "Hi{'@'}ErfaPay.com",
+    "erfapay_links_title": "ارفاپی",
+    "rules_regulations": "شرایط و قوانین استفاده",
+    "faqs": "ثبت شکایات",
+    "about_us": "پرسش و پاسخ",
+    "privacy_policy": "مجوزهای ارفاپی"
+  },
+  "modals": {
+    "profile_setup": {
+      "title_profile_setup": "تکمیل اطلاعات پروفایل",
+      "label_phone": "شماره همراه",
+      "label_email": "آدرس ایمیل",
+      "label_fullname": "نام و نام خانوادگی",
+      "label_password": "رمز عبور",
+      "label_password_retype": "تکرار رمز عبور",
+      "label_create_account": "ایجاد حساب کاربری",
+      "label_tos": "قوانین و مقررات",
+      "text_tos_agreement": "با {0} ارفاپی موافقم.",
+      "placeholder_fullname": "نام خود را وارد کنید",
+      "placeholder_email": "youremail{'@'}example.com",
+      "placeholder_password": "********"
+    },
+    "2fa": {
+      "title_verify_phone": "تایید شماره تلفن",
+      "title_verify_email": "تایید ایمیل",
+      "title_login": "ورود به حساب کاربری",
+      "label_code_get": "ارسال کد تایید",
+      "label_code_check": "بررسی کد تایید",
+      "label_code_resend": "ارسال دوباره کد",
+      "label_change_phone": "تغییر شماره تلفن",
+      "label_change_email": "تغییر ایمیل",
+      "text_code_not_received": "کد تایید را دریافت نکردم.",
+      "text_code_sent_phone": "کد تایید به شماره {0} ارسال گردید.",
+      "text_code_sent_email": "کد تایید به ایمیل {0} ارسال گردید.",
+      "text_code_timer": "ارسال دوباره {0}"
+    },
+    "signin": {
+      "title_login": "ورود به حساب کاربری",
+      "label_phone": "شماره همراه",
+      "label_email": "آدرس ایمیل",
+      "label_password": "رمز عبور",
+      "label_restore_password": "بازیابی رمز عبور",
+      "label_switch_signup": "ایجاد حساب کاربری جدید",
+      "text_forget_password": "رمز عبور خود را فراموش کرده اید؟",
+      "text_has_no_account_yet": "حساب کاربری در ارفاپی ندارم.",
+      "placeholder_phone": "شماره خود را وارد نمایید",
+      "placeholder_email": "ایمیل خود را وارد نمایید",
+      "placeholder_password": "رمز عبور خود را وارد نمایید"
+    },
+    "signup": {
+      "title_new_account": "ایجاد حساب کاربری جدید",
+      "label_phone": "شماره همراه",
+      "label_email": "آدرس ایمیل",
+      "label_switch_signin": "ورود به حساب کاربری",
+      "text_already_has_account": "حساب کاربری در ارفاپی دارم.",
+      "placeholder_phone": "شماره خود را وارد نمایید",
+      "placeholder_email": "ایمیل خود را وارد نمایید",
+      "placeholder_password": "رمز عبور خود را وارد نمایید"
+    }
+  },
+  "layout": {
+    "sidebar": {
+      "label_dashboard": "داشبورد",
+      "label_orders": "سفارشات",
+      "label_support": "پشتیبانی"
+    }
+  }
+}

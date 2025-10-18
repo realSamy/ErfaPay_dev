@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Estedad', ui-sans-serif, -apple-system, system-ui, Segoe UI, Helvetica, Apple Color Emoji, Arial, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
+
+  --color-blue-50: #e7f0fc;
+  --color-blue-100: #c2d9f8;
+  --color-blue-200: #9bc0f3;
+  --color-blue-300: #73a6ee;
+  --color-blue-400: #0f52ba;
+  --color-blue-500: #0f52ba;
+  --color-blue-600: #0c469d;
+  --color-blue-700: #09397f;
+  --color-blue-800: #062d61;
+  --color-blue-900: #042144;
+  --color-blue-950: #02142a;
+
+  --ui-bg-light: #F8FAFF;
+  --ui-bg-dark: #111119;
+
+  --color-ui-primary: #ffffff;
+  --color-ui-secondary: #ffffff;
+  --color-ui-tertiary: var(--color-blue-500);
+  --color-ui-darkblue: #091e42;
+  --color-ui-input: #EBEFFC;
+  --color-ui-highlight: #ffffff;
+  /*--ui-color-neutral-100: var(--color-ui-input);*/
+
+  --tw-shadow-color: var(--color-blue-500);
+
+  --animate-shake: shake 0.6s ease-in-out infinite;
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    15% {
+      transform: translateX(-8px);
+    }
+    30% {
+      transform: translateX(6px);
+    }
+    45% {
+      transform: translateX(-4px);
+    }
+    60% {
+      transform: translateX(3px);
+    }
+    75% {
+      transform: translateX(-2px);
+    }
+  }
+
+}
+.ui-shadow-center {
+  --tw-shadow: 0 0px 10px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 0px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+}
+.dark {
+  --color-ui-primary: #121212;
+  --color-ui-secondary: #282830;
+  --color-ui-tertiary: var(--color-blue-500);
+  --color-ui-darkblue: #091e42;
+  --color-ui-input: #1f1f1f;
+  --color-ui-highlight: #303648;
+}
+.direction-auto input {
+  direction: auto;
+  unicode-bidi: plaintext;
+}
