@@ -96,6 +96,21 @@
       "register_now": "ثبت نام",
       "support_phone": "تلفن پشتیبانی:",
       "social_media_title": "ما را در شبکه‌های اجتماعی دنبال کنید."
+    },
+    "admin": {
+      "title": {
+        "index": "داشبورد",
+        "financial": "مدیریت مالی و گزارشات",
+        "orders": "مدیریت سفارشات",
+        "orders_new": "سرویس جدید",
+        "orders_id": "سفارش [{order}]",
+        "users": "مدیریت کاربران",
+        "users_new": "کاربر جدید",
+        "users_id": "{name}",
+        "agents": "مدیریت تیم پشتیبانی",
+        "agents_new": "پشتیبان جدید",
+        "support": "ارتباطات"
+      }
     }
   },
   "footer": {

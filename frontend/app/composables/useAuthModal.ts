@@ -4,7 +4,6 @@ const currentModal = ref<AuthModalType>(null)
 
 export default function() {
   function open(modal: AuthModalType) {
-    console.log({modal})
     currentModal.value = modal
   }
 

@@ -3,29 +3,51 @@ import type {NavigationMenuItem} from '@nuxt/ui'
 
 const {t} = useI18n()
 const localePath = useLocaleRoute()
+const route = useRoute()
 
 const menuItems = computed<NavigationMenuItem[]>(() => [
   {
     label: 'مدیریت مالی و گزارشات',
     icon: 'material-symbols:finance-mode',
-    to: localePath('admin')
+    to: localePath('admin-financial')
   },
   {
     label: 'مدیریت سفارشات',
     icon: 'material-symbols:receipt-outline',
-    to: localePath('admin-orders')
+    to: localePath('admin-services'),
+    active: route.name.startsWith('admin-services'),
+    children: [
+      {
+        label: 'سرویس جدید',
+        to: localePath('admin-services-new')
+      }
+    ]
   },
   {
     label: 'مدیریت کاربران',
     icon: 'material-symbols:dashboard-outline',
     to: localePath('admin-users'),
+    active: route.name.startsWith('admin-users'),
+    children: [
+      {
+        label: 'کاربر جدید',
+        to: localePath('admin-users-new')
+      }
+    ]
   },
-    {
+  {
     label: 'مدیریت تیم پشتیبانی',
     icon: 'material-symbols:contact-support-outline',
     to: localePath('admin-agents'),
+    active: route.name.startsWith('admin-agents'),
+    children: [
+      {
+        label: 'پشتیبان جدید',
+        to: localePath('admin-agents-new')
+      }
+    ]
   },
-    {
+  {
     label: 'ارتباطات',
     icon: 'material-symbols:campaign-outline',
     to: localePath('admin-support'),
@@ -42,7 +64,9 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <UDashboardSidebar :ui="{ footer: 'border-t border-default', root: 'bg-white dark:bg-primary/20' }" collapsible resizable mode="slideover" :menu="{side: directionalIcon('right', 'left')}">
+  <UDashboardSidebar :menu="{side: directionalIcon('right', 'left')}"
+                     :ui="{ footer: 'border-t border-default', root: 'bg-white dark:bg-primary/20' }"
+                     collapsible mode="slideover" resizable>
     <template #header="{ collapsed }">
       <Logo v-if="!collapsed" class="h-5 w-auto shrink-0"/>
       <UIcon v-else class="size-5 text-primary mx-auto" name="i-simple-icons-nuxtdotjs"/>
@@ -58,8 +82,8 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
       <UNavigationMenu
           :collapsed="collapsed"
           :items="menuLinks"
-          orientation="vertical"
           class="mt-auto"
+          orientation="vertical"
       />
 
 

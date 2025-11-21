@@ -6,6 +6,7 @@ export default defineNuxtConfig({
 
   experimental: {
     // viewTransition: true,
+    spaLoadingTemplateLocation: 'body',
   },
 
   devtools: {enabled: true},

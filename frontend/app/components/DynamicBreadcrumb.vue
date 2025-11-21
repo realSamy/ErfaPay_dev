@@ -1,27 +1,50 @@
 <template>
-  <UBreadcrumb :items="breadcrumbItems"/>
+  <UBreadcrumb :items="breadcrumbItems" :separator-icon="directionalIcon('material-symbols:chevron-left-rounded', 'material-symbols:chevron-right-rounded')"/>
 </template>
+
 <script lang="ts" setup>
-import type {NavigationMenuItem, BreadcrumbItem} from "@nuxt/ui";
+import {useRoute, useLocalePath, useI18n} from '#imports'
+import type {BreadcrumbItem} from '@nuxt/ui'
 
 const route = useRoute()
-const localePath = useLocaleRoute()
+const router = useRouter()
+const localePath = useLocalePath()
+const {t} = useI18n()
+const breadcrumbState = useState<Record<string, unknown>>('breadcrumb-state')
+
+
+function normalizeName(name: string) {
+  return name.replace(/___[a-z]{2}$/, '') // remove locale suffix
+}
 
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
-  if (!(route.name as string).startsWith('admin')) {
-    return []
-  }
+  const name = route.name as string
+  if (!name) return []
 
-  const segments = route.path.split('/').slice(2).filter(Boolean)
+  const baseName = normalizeName(name)
+
+  const parts = baseName.split('-')
 
   const items: BreadcrumbItem[] = []
+  let current = ''
 
-  segments.forEach((segment, index) => {
-    const label = segment.charAt(0).toUpperCase() + segment.slice(1)
-    // Add 'to' only if not the current (last) segment
-    const item: BreadcrumbItem = {label}
-    item.to = localePath(route.name as string)
-    items.push(item)
+  parts.forEach((p, index) => {
+    current = index === 0 ? p : `${current}-${p}`
+
+    const staticRoute = router.getRoutes()
+      .find(r => normalizeName(r.name as string) === current)
+    if (!staticRoute) return
+
+    // ✅ dynamic match from the current active route
+    const activeMatch = route.matched
+      .find(r => normalizeName(r.name as string) === current)
+
+    const metaTitle = activeMatch?.meta?.title || staticRoute.meta?.title
+    if (!metaTitle) return
+
+    const label = t(metaTitle as string, breadcrumbState.value as Record<string, unknown>)
+    const isLast = index === parts.length - 1
+    items.push({ label, ...(isLast ? {} : {to: localePath({name: normalizeName(staticRoute?.name as string)})}) })
   })
 
   return items

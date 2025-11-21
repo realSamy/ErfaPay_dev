@@ -5,6 +5,8 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'admin',
+  title: 'pages.admin.title.support'
+
 })
 </script>
 

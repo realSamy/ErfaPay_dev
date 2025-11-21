@@ -6,7 +6,6 @@ export const useAuthApi = async (url: string, redirectToLogin: boolean = false, 
   const config = useRuntimeConfig()
   const router = useRouter()
 
-  // Set default headers
   options.headers = {
     ...(options.headers || {}),
     Authorization: `Bearer ${accessToken.value}`,
@@ -17,7 +16,6 @@ export const useAuthApi = async (url: string, redirectToLogin: boolean = false, 
     ...options,
   })
 
-  // If access token expired
   if (response.error.value?.statusCode === 401) {
     if (refreshToken.value) {
       const refreshResponse = await $fetch('/api/token/refresh/', {

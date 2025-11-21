@@ -3,7 +3,6 @@
       :class="{'shadow-lg shadow-primary/50 bg-[var(--ui-bg-light)] dark:bg-[var(--ui-bg-dark)]': showOverlay}"
       class="z-2 h-18 rounded flex gap-2 items-center justify-between">
     <div class="header-start">
-      <UDashboardSidebarCollapse />
       <UDrawer direction="right" class="md:hidden" title="Menu" description="Mobile Menu">
         <UButton color="neutral" icon="mdi:menu" variant="ghost"/>
 

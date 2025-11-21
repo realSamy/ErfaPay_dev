@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {h, resolveComponent} from 'vue'
 import type {TableColumn} from '@nuxt/ui'
+import type {Order} from "~/types/data";
 
 const {n} = useI18n()
 const UBadge = resolveComponent('UBadge')

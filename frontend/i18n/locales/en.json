@@ -95,6 +95,16 @@
       "register_now": "Register Now",
       "support_phone": "Support Phone:",
       "social_media_title": "Follow us on social networks."
+    },
+    "admin": {
+      "title": {
+        "index": "Dashboard",
+        "financial": "Financial managements and reports",
+        "orders": "Orders management",
+        "users": "Users management",
+        "agents": "Agents management",
+        "support": "Communications"
+      }
     }
   },
   "footer": {

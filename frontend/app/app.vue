@@ -64,6 +64,11 @@ onBeforeUnmount(async () => {
 
 <!--suppress CssUnusedSymbol -->
 <style>
+@reference "@/assets/css/main.css";
+
+.loading-overlay {
+  display: none!important;
+}
 .page-enter-active,
 .page-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -83,5 +88,9 @@ html, body {
 }
 html[dir="rtl"] body {
   padding-right: 0 !important;
+}
+
+.page-section {
+  @apply space-y-8 ring ring-accented rounded-lg p-2;
 }
 </style>

@@ -1,12 +1,19 @@
 <template>
-<div>{{ $route.name }}</div>
+<div class="space-y-8">
+  <section>
+    <UButton label="پشتیبان جدید" :to="$localePath('admin-agents-new')" size="lg" trailing-icon="material-symbols:add"/>
+  </section>
+
+  <section class="page-section">
+    <TableAdminAgents />
+  </section>
+</div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
   layout: 'admin',
+  title: 'pages.admin.title.agents'
+
 })
 </script>
-
-<style scoped>
-</style>
