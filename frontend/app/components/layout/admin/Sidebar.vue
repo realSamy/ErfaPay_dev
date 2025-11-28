@@ -67,9 +67,12 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
   <UDashboardSidebar :menu="{side: directionalIcon('right', 'left')}"
                      :ui="{ footer: 'border-t border-default', root: 'bg-white dark:bg-primary/20' }"
                      collapsible mode="slideover" resizable>
-    <template #header="{ collapsed }">
-      <Logo v-if="!collapsed" class="h-5 w-auto shrink-0"/>
-      <UIcon v-else class="size-5 text-primary mx-auto" name="i-simple-icons-nuxtdotjs"/>
+    <template #header="{ collapsed, collapse }">
+      <div v-if="!collapsed" class="w-full flex justify-between">
+        <AdminLogo class="h-5 w-auto shrink-0"/>
+        <UDashboardSidebarCollapse />
+      </div>
+      <AdminLogo :collapsed="collapsed" @click="collapse(false)" v-else/>
     </template>
 
     <template #default="{ collapsed }">
@@ -90,16 +93,19 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
     </template>
 
     <template #footer="{ collapsed }">
-      <UButton
-          :avatar="{
+      <div class="w-full flex justify-between">
+        <UButton
+            :avatar="{
           src: 'https://github.com/realSamy.png'
         }"
-          :block="collapsed"
-          :label="collapsed ? undefined : 'Benjamin'"
-          class="w-full"
-          color="neutral"
-          variant="ghost"
-      />
+            :block="collapsed"
+            :label="collapsed ? undefined : 'سامان هودجی'"
+            class="w-full"
+            color="neutral"
+            variant="ghost"
+        />
+        <UButton v-if="!collapsed" color="neutral" icon="material-symbols:logout" variant="link"/>
+      </div>
     </template>
   </UDashboardSidebar>
 </template>

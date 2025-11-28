@@ -1,61 +1,61 @@
+# apps/tickets/serializers.py
 from rest_framework import serializers
-from .models import Ticket, TicketCategory, TicketMessage, TicketAttachment
 from django.contrib.auth import get_user_model
+from .models import Ticket, TicketMessage
 
 User = get_user_model()
 
-
-class TicketCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TicketCategory
-        fields = ['id', 'name']
-
-
-class TicketAttachmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TicketAttachment
-        fields = ['id', 'file']
-
-
 class TicketMessageSerializer(serializers.ModelSerializer):
-    sender = serializers.StringRelatedField(read_only=True)
-    attachments = TicketAttachmentSerializer(many=True, read_only=True)
-    uploaded_files = serializers.ListField(
-        child=serializers.FileField(max_length=100000, allow_empty_file=False, use_url=True),
-        write_only=True,
-        required=False
-    )
+    sender_name = serializers.CharField(source='sender.get_full_name', read_only=True)
+    sender_avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = TicketMessage
-        fields = ['id', 'ticket', 'sender', 'message', 'is_staff', 'created_at', 'attachments', 'uploaded_files']
+        fields = ['id', 'message', 'attachment', 'sender_name', 'sender_avatar', 'is_from_admin', 'created_at']
+        read_only_fields = fields
 
-    def create(self, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
-        message = TicketMessage.objects.create(**validated_data)
-
-        for file in uploaded_files:
-            TicketAttachment.objects.create(message=message, file=file)
-
-        return message
+    def get_sender_avatar(self, obj):
+        if obj.sender and obj.sender.avatar:
+            return obj.sender.avatar.url
+        return None
 
 
-class TicketSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
-    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(is_staff=True), required=False)
-    messages = TicketMessageSerializer(many=True, read_only=True)
-    category = TicketCategorySerializer(read_only=True)
-    category_id = serializers.PrimaryKeyRelatedField(
-        queryset=TicketCategory.objects.filter(is_active=True), source='category', write_only=True
-    )
+class TicketListSerializer(serializers.ModelSerializer):
+    unread_user = serializers.BooleanField(source='is_read_by_user', read_only=True)
+    last_message = serializers.SerializerMethodField()
 
     class Meta:
         model = Ticket
-        fields = [
-            'id', 'subject', 'category', 'category_id', 'status', 'priority',
-            'user', 'assigned_to', 'created_at', 'updated_at', 'messages'
-        ]
+        fields = ['id', 'ticket_id', 'subject', 'category', 'priority', 'status', 'unread_user', 'last_message', 'created_at', 'updated_at']
+
+    def get_last_message(self, obj):
+        msg = obj.messages.last()
+        return msg.message[:60] + "..." if msg and len(msg.message) > 60 else (msg.message if msg else "")
+
+
+class TicketDetailSerializer(serializers.ModelSerializer):
+    messages = TicketMessageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Ticket
+        fields = ['id', 'ticket_id', 'subject', 'category', 'priority', 'status', 'messages', 'created_at', 'updated_at']
+        read_only_fields = ['ticket_id', 'status', 'created_at', 'updated_at']
+
+
+class TicketCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ['subject', 'category', 'priority']
 
     def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        ticket = Ticket.objects.create(
+            user=self.context['request'].user,
+            **validated_data
+        )
+        return ticket
+
+
+class TicketReplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketMessage
+        fields = ['message', 'attachment']

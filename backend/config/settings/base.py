@@ -9,12 +9,20 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
+
+PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com'  # Switch to live
+PAYPAL_CLIENT_ID = 'your_client_id'
+PAYPAL_SECRET = 'your_secret'
+PAYPAL_RETURN_URL = 'https://yourdomain.com/paypal/success'
+PAYPAL_CANCEL_URL = 'https://yourdomain.com/paypal/cancel'
+
+AUTH_USER_MODEL = 'users.UserProfile'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -30,7 +38,6 @@ ALLOWED_HOSTS = []
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +52,8 @@ INSTALLED_APPS = [
     'apps.services',
     'apps.currencies',
 
+    'django_sendfile',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
@@ -58,11 +67,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'apps.users.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }

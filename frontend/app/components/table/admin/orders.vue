@@ -34,9 +34,9 @@
 
 <script lang="ts" setup>
 import {h, resolveComponent} from 'vue'
-import type {TableColumn} from '@nuxt/ui'
-import type {Order, User} from "~/types/admin/data";
-import {getPaginationRowModel, filterFns, sortingFns} from '@tanstack/vue-table'
+import type {TableColumn, TableRow} from '@nuxt/ui'
+import type {Order, OrderType, User} from "~/types/admin/data";
+import {getPaginationRowModel} from '@tanstack/vue-table'
 
 const props = defineProps<{
   user?: string | Number
@@ -59,27 +59,27 @@ const UButton = resolveComponent('UButton')
 const UCheckbox = resolveComponent('UCheckbox')
 
 
-filterFns.typeIncludes = (row, columnId, filterValues: string[]) => {
-  const type: OrderType = row.getValue(columnId)
+const typeIncludesFFN = (row: TableRow<Order>, columnId: string, filterValues: string[]) => {
+  const type: OrderType = row.getValue<Order['type']>(columnId)
   if (!type || !filterValues.length) return true
 
-  return filterValues.includes(type.title[locale.value.toLowerCase()])
+  return filterValues.includes(type.title[locale.value.toLowerCase()  as 'fa' | 'en'])
 }
 
-sortingFns.typeSort = (rowA, rowB, columnId) => {
-  const typeA: OrderType = rowA.getValue(columnId)
-  const typeB: OrderType = rowB.getValue(columnId)
+const typeSortSFN = (rowA: TableRow<Order>, rowB: TableRow<Order>, columnId: string) => {
+  const typeA = rowA.getValue<Order['type']>(columnId)
+  const typeB = rowB.getValue<Order['type']>(columnId)
 
   if (!typeA || !typeB) return 0
 
-  const textA = typeA.title[locale.value.toLowerCase()] || ''
-  const textB = typeB.title[locale.value.toLowerCase()] || ''
+  const textA = typeA.title[locale.value.toLowerCase() as 'fa' | 'en'] || ''
+  const textB = typeB.title[locale.value.toLowerCase() as 'fa' | 'en'] || ''
 
   return textA.localeCompare(textB, locale.value, {sensitivity: 'base'})
 }
 
 const typeItems = computed(() => {
-  if (items.length) return [...new Set<string>(items.map((order: Order) => order.type.title[locale.value.toLowerCase()]))]
+  if (items.length) return [...new Set<string>(items.map((order: Order) => order.type.title[locale.value.toLowerCase() as 'fa' | 'en']))]
   else return []
 })
 
@@ -124,7 +124,7 @@ const columns = computed<TableColumn<Order>[]>(() => {
     {
       accessorKey: 'id',
       header: tableSortableLabel('ردیف'),
-      cell: ({row}) => n(Number(row.getValue('id')))
+      cell: ({row}) => n(Number(row.getValue<Order['id']>('id')))
     },
 
 
@@ -132,24 +132,24 @@ const columns = computed<TableColumn<Order>[]>(() => {
       accessorKey: 'orderNumber',
       header: tableSortableLabel('شماره سفارش'),
       cell: ({row}) => {
-        const label = new Intl.NumberFormat('fa-IR', {useGrouping: false}).format(Number(row.getValue('orderNumber')))
-        const user = userStore.value.find(u => u.id == Number(row.getValue('user')))
-        return h(UButton, {variant: 'link', label, to: localePath({name: 'admin-users-id-order', params: {order: row.getValue('orderNumber'), id: user?.id}})})
+        const label = new Intl.NumberFormat('fa-IR', {useGrouping: false}).format(Number(row.getValue<Order['orderNumber']>('orderNumber')))
+        const user = userStore.value.find(u => u.id == Number(row.getValue<Order['user']>('user')))
+        return h(UButton, {variant: 'link', label, to: localePath({name: 'admin-users-id-orders-order', params: {order: row.getValue<Order['orderNumber']>('orderNumber'), id: user?.id}})})
       }
     },
     {
       accessorKey: 'type',
       header: tableFilterableLabel('نوع درخواست', typeItems, typeFilter),
       enableColumnFilter: true,
-      filterFn: 'typeIncludes',
-      sortingFn: 'typeSort',
-      cell: ({row}) => row.getValue('type').title[locale.value.toLowerCase()]
+      filterFn: typeIncludesFFN,
+      sortingFn: typeSortSFN,
+      cell: ({row}) => row.getValue<OrderType>('type').title[locale.value.toLowerCase() as 'fa' | 'en']
     },
     {
       accessorKey: 'amount_irr',
       header: tableSortableLabel('مبلغ سفارش'),
       cell: ({row}) => {
-        const amount = Number.parseFloat(row.getValue('amount_irr'))
+        const amount = Number(row.getValue<Order['amount_irr']>('amount_irr'))
 
         const formatted = new Intl.NumberFormat('fa-IR').format(amount)
         return `${formatted} تومان`;
@@ -159,7 +159,7 @@ const columns = computed<TableColumn<Order>[]>(() => {
       accessorKey: 'created_at',
       header: tableSortableLabel('تاریخ'),
       cell: ({row}) => {
-        return new Date(row.getValue('created_at')).toLocaleString('fa-IR', {
+        return new Date(row.getValue<Order['created_at']>('created_at')).toLocaleString('fa-IR', {
           day: 'numeric',
           month: 'short',
           hour: '2-digit',
@@ -179,7 +179,7 @@ const columns = computed<TableColumn<Order>[]>(() => {
           rejected: {color: 'error', label: 'رد شده'},
           pending: {color: 'neutral', label: 'در انتظار'},
           processing: {color: 'info', label: 'در حال انجام'},
-        }[row.getValue('status') as 'done' | 'rejected' | 'pending' | 'processing']
+        }[row.getValue<Order['status']>('status') as 'done' | 'rejected' | 'pending' | 'processing']
 
         return h(UBadge, {class: 'capitalize w-full justify-center', variant: 'subtle', color}, () => label)
       }
@@ -191,7 +191,7 @@ const columns = computed<TableColumn<Order>[]>(() => {
       accessorKey: 'user',
       header: tableSortableLabel('کاربر'),
       cell: ({row}) => {
-        const user = userStore.value.find(u => u.id == Number(row.getValue('user')))
+        const user = userStore.value.find(u => u.id == Number(row.getValue<Order['user']>('user')))
         return user ? h(UButton, {label: `${user.first_name} ${user.last_name}`, variant: 'link', to: localePath({name: 'admin-users-id', params: {id: user?.id}})}) : "User not found!"
       }
     },)

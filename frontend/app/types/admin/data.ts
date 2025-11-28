@@ -77,25 +77,37 @@ export interface Order {
   processed_by?: number | User
 }
 
-// Ticket
-export interface Ticket {
+export interface TicketCategory {
   id: number
-  user: number | User
-  subject: string
-  message: string
-  status: 'open' | 'in_progress' | 'closed'
-  assigned_to?: number | User
-  created_at: string
-  updated_at: string
+  name: string
+}
+
+export interface TicketAttachment {
+  id: number
+  file: string  // URL to the uploaded file
 }
 
 export interface TicketMessage {
   id: number
-  ticket: number | Ticket
-  sender: number | User
+  ticket: number
+  sender: string  // String representation of user (e.g., "email" or "first_name last_name")
   message: string
-  is_admin: boolean
+  is_staff: boolean
+  created_at: string  // ISO datetime string
+  attachments: TicketAttachment[]
+}
+
+export interface TicketItem {
+  id: number
+  subject: string
+  category: TicketCategory | null
+  status: 'open' | 'in_progress' | 'closed'
+  priority: 'low' | 'medium' | 'high'
+  user: string  // String representation of the user who created the ticket
+  assigned_to: number | null  // User ID if assigned, null if not
   created_at: string
+  updated_at: string
+  messages: TicketMessage[]
 }
 
 // SiteSettings (Global, singleton-like)

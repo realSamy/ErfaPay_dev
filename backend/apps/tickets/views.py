@@ -1,45 +1,122 @@
-from rest_framework import viewsets, permissions
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Ticket, TicketCategory, TicketMessage
+# apps/tickets/views.py
+
+from django.utils import timezone
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from django.db import transaction
+from apps.notifications.utils import send_notification
+from .models import Ticket, TicketMessage
+from .pdf import generate_ticket_pdf
 from .serializers import (
-    TicketSerializer, TicketCategorySerializer,
-    TicketMessageSerializer
+    TicketListSerializer, TicketDetailSerializer,
+    TicketCreateSerializer, TicketReplySerializer
 )
 
-class IsOwnerOrStaff(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.user == request.user
+class TicketListCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        tickets = request.user.tickets.all()
+        serializer = TicketListSerializer(tickets, many=True)
+        return Response({'ok': True, 'data': serializer.data})
+
+    def post(self, request):
+        serializer = TicketCreateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            ticket = serializer.save()
+            # Auto first message
+            TicketMessage.objects.create(
+                ticket=ticket,
+                sender=request.user,
+                message=request.data.get('message', 'درخواست پشتیبانی جدید'),
+                is_from_admin=False
+            )
+            # Notify admins
+            send_notification(
+                user=None,  # Will be sent to staff later via signal
+                title_fa=f"تیکت جدید: {ticket.ticket_id}",
+                message_fa=f"کاربر {request.user.username} تیکت جدیدی ایجاد کرد: {ticket.subject}",
+                notification_type='ticket'
+            )
+            return Response({
+                'ok': True,
+                'message': 'تیکت با موفقیت ایجاد شد',
+                'ticket_id': ticket.ticket_id
+            }, status=status.HTTP_201_CREATED)
+        return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
-class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrStaff]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['status', 'priority', 'category']
-    search_fields = ['subject']
-    ordering_fields = ['created_at', 'updated_at']
+class TicketDetailView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_staff:
-            return Ticket.objects.all()
-        return Ticket.objects.filter(user=user)
+    def get(self, request, ticket_id):
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id, user=request.user)
+        serializer = TicketDetailSerializer(ticket)
+        # Mark as read for user
+        if not ticket.is_read_by_user:
+            ticket.is_read_by_user = True
+            ticket.save(update_fields=['is_read_by_user'])
+        return Response({'ok': True, 'data': serializer.data})
 
 
-class TicketMessageViewSet(viewsets.ModelViewSet):
-    serializer_class = TicketMessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class TicketReplyView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_staff:
-            return TicketMessage.objects.all()
-        return TicketMessage.objects.filter(sender=user)
+    def post(self, request, ticket_id):
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id, user=request.user)
+        if ticket.status == 'closed':
+            return Response({'ok': False, 'error': 'تیکت بسته شده است'}, status=400)
+
+        serializer = TicketReplySerializer(data=request.data)
+        if serializer.is_valid():
+            with transaction.atomic():
+                message = serializer.save(
+                    ticket=ticket,
+                    sender=request.user,
+                    is_from_admin=False
+                )
+                ticket.status = 'waiting_user'
+                ticket.is_read_by_admin = False
+                ticket.save()
+
+                # Notify admins
+                send_notification(
+                    user=None,
+                    title_fa=f"پاسخ جدید در تیکت {ticket.ticket_id}",
+                    message_fa=f"کاربر {request.user.username} پاسخ داد.",
+                    notification_type='ticket'
+                )
+            return Response({'ok': True, 'message': 'پاسخ شما ثبت شد'})
+        return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
-class TicketCategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = TicketCategory.objects.filter(is_active=True)
-    serializer_class = TicketCategorySerializer
-    permission_classes = [permissions.AllowAny]
+class TicketCloseView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, ticket_id):
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id, user=request.user)
+        if ticket.status == 'closed':
+            return Response({'ok': False, 'error': 'تیکت قبلاً بسته شده'}, status=400)
+
+        ticket.status = 'closed'
+        ticket.closed_at = timezone.now()
+        ticket.save()
+
+        send_notification(
+            user=request.user,
+            title_fa="تیکت شما بسته شد",
+            message_fa=f"تیکت {ticket.ticket_id} با موفقیت بسته شد.",
+            notification_type='success'
+        )
+        return Response({'ok': True, 'message': 'تیکت بسته شد'})
+
+class TicketPDFView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, ticket_id):
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id, user=request.user)
+        return generate_ticket_pdf(ticket)

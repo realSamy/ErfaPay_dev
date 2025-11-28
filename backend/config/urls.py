@@ -20,12 +20,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from config.api_router import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/', include('apps.users.urls')),
+    path('api/services/', include('apps.services.urls')),
+    path('api/tickets/', include('apps.tickets.urls')),
+    path('api/payments/', include('apps.payments.urls')),
+    path('api/notifications/', include('apps.notifications.urls')),
+    path('api/orders/', include('apps.orders.urls')),
+    path('api/auth/', include('apps.users.urls')),
     path('api/currencies/', include('apps.currencies.urls')),
 ]
 

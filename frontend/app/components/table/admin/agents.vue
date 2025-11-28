@@ -112,7 +112,7 @@ const columns: TableColumn<User>[] = [
         main_admin: {label: "مدیر سایت", class: "bg-yellow-500", ui: {base: "w-40 justify-center"}},
         senior_support: {label: "ارشد", class: "bg-blue-700", ui: {base: "w-40 justify-center"}},
         simple_support: {label: "ساده", class: "bg-neutral-400", ui: {base: "w-40 justify-center"}},
-      } as Record<UserRole, Partial<BadgeProps>>)[row.getValue('role')] as const
+      } as Record<UserRole, Partial<BadgeProps>>)[row.getValue<User['role']>('role')]
 
       return h(UBadge, props)
     }

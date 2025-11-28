@@ -1,50 +1,73 @@
 import {FetchError} from "ofetch";
+import {ref} from 'vue';
+import {useStorage} from '@vueuse/core';
 
-export const useAuthApi = async (url: string, redirectToLogin: boolean = false, options: any = {}): Promise<{data: Ref<any>, error: Ref<any>}> => {
-  const accessToken = useCookie('access_token')
-  const refreshToken = useCookie('refresh_token')
-  const config = useRuntimeConfig()
-  const router = useRouter()
+export const useAuthApi = async <T>(
+    url: string,
+    redirectToLogin: boolean = false,
+    options: any = {}
+): Promise<{ data: Ref<T | null>, error: Ref<any | null> }> => {
+  const data = ref<T | null>(null);
+  const error = ref<any | null>(null);
+  const accessToken = useStorage('auth.access_token', '');
+  const refreshToken = useStorage('auth.refresh_token', '');
 
-  options.headers = {
+  const config = useRuntimeConfig();
+  const {open: openModal} = useAuthModal();
+
+  const headers = {
     ...(options.headers || {}),
     Authorization: `Bearer ${accessToken.value}`,
-  }
+  };
 
-  let response = await $fetch<any>(url, {
-    baseURL: config.public.apiBase,
-    ...options,
-  })
+  try {
+    data.value = await $fetch<T>(url, {
+      ...options,
+      headers,
+    });
+  } catch (err) {
+    const fetchError = err as FetchError;
 
-  if (response.error.value?.statusCode === 401) {
-    if (refreshToken.value) {
-      const refreshResponse = await $fetch('/api/token/refresh/', {
-        method: 'POST',
-        baseURL: config.public.apiBase,
-        body: {refresh: refreshToken.value},
-      }).catch(() => null) as { access: string }
+    if (fetchError.status === 401) {
+      if (refreshToken.value) {
+        try {
+          const refreshResponse = await $fetch<{ access: string }>('/api/auth/refresh/', {
+            method: 'POST',
+            body: {refresh: refreshToken.value},
+          });
 
-      if (refreshResponse?.access) {
-        accessToken.value = refreshResponse.access
+          if (refreshResponse?.access) {
+            accessToken.value = refreshResponse.access;
 
-        // retry the original request with new token
-        options.headers.Authorization = `Bearer ${accessToken.value}`
-        response = await useFetch(url, {
-          baseURL: config.public.apiBase,
-          ...options,
-        })
-      } else {
-        // Refresh failed, log out user
-        accessToken.value = null
-        refreshToken.value = null
+            // Retry the original request with new token
+            const retryHeaders = {
+              ...headers,
+              Authorization: `Bearer ${accessToken.value}`,
+            };
+
+            data.value = await $fetch<T>(url, {
+              ...options,
+              headers: retryHeaders,
+            });
+            return {data, error} as {data: Ref<T>, error: any};
+          }
+        } catch (refreshErr) {
+          // Refresh failed, log out user
+          accessToken.value = '';
+          refreshToken.value = '';
+        }
+      }
+
+      // No valid refresh or refresh failed
+      error.value = fetchError;
+      if (redirectToLogin) {
+        openModal('signin');
       }
     } else {
-      if (redirectToLogin) {
-        router.push('/login')
-        return {data: ref(null), error: ref(null)}
-      }
+      // Other errors
+      error.value = fetchError;
     }
   }
 
-  return response
-}
+  return {data, error} as {data: Ref<T>, error: any};
+};

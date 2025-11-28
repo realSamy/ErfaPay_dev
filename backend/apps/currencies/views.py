@@ -1,17 +1,18 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import MarketPrice
+from .models import CurrencyRate
 
-class LatestPricesAPIView(APIView):
+class CurrencyRatesView(APIView):
     def get(self, request):
-        prices = MarketPrice.objects.all()
-        return Response([
+        rates = CurrencyRate.objects.all()
+        data = [
             {
-                'code': p.code,
-                'name': p.name,
-                'icon': p.icon,
-                'rate': float(p.rate),
-                'updated_at': p.updated_at.isoformat()
+                "code": r.code,
+                "name": r.name,
+                "icon": r.icon,
+                "rate": float(r.rate_to_irt),
+                "updated_at": r.updated_at.isoformat()
             }
-            for p in prices
-        ])
+            for r in rates
+        ]
+        return Response({'ok': True, 'data': data})

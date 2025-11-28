@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ModalProps } from '@nuxt/ui'
-
 interface Props {
   title?: string
   message?: string

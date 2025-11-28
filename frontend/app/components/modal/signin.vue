@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model:open="isOpen">
+  <UModal v-model:open="isOpen" :close="currentModalProps?.keepOpen !== true" :dismissible="currentModalProps?.keepOpen !== true">
     <template #title>
       <span class="font-extrabold text-xl">{{ $t('common.site_title') }}</span>
     </template>
@@ -7,25 +7,35 @@
     <template #body>
       <div class="flex flex-col">
         <h2 class="font-bold text-xl">{{ $t('modals.signin.title_login') }}</h2>
-        <form class="p-6 space-y-4" @submit.prevent="switchTo2fa">
-          <UFormField :label="$t('modals.signin.label_email')">
-            <UInput class="w-full" :placeholder="$t('modals.signin.placeholder_email')" required type="email" />
+        <form class="p-6 space-y-4" @submit.prevent="submit">
+          <UFormField size="xl" :label="$t('modals.signin.label_email')">
+            <UInput v-model="loginInfo.email" :placeholder="$t('modals.signin.placeholder_email')" class="w-full"
+                    dir="auto"
+                    required type="email"/>
           </UFormField>
 
-          <UFormField :label="$t('modals.signin.label_password')">
-            <UInput class="w-full" :placeholder="$t('modals.signin.placeholder_password')" required type="password" />
+          <UFormField size="xl" :label="$t('modals.signin.label_password')">
+            <UInput v-model="loginInfo.password" :placeholder="$t('modals.signin.placeholder_password')" class="w-full"
+                    dir="auto"
+                    required type="password"/>
             <template #help>
-              <UButton class="px-0" variant="link" :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}">{{ $t('modals.signin.label_restore_password') }}</UButton>
+              <UButton :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}" class="px-0"
+                       variant="link">
+                {{ $t('modals.signin.label_restore_password') }}
+              </UButton>
             </template>
           </UFormField>
 
           <div class="w-full text-center">
-            <UButton type="submit" :label="$t('modals.2fa.label_code_get')" size="xl" :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')" />
+            <UButton :label="$t('modals.2fa.label_code_get')" :loading="loading"
+                     :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')" size="xl"
+                     type="submit"/>
           </div>
 
           <div class="text-sm text-muted">
             <span>{{ $t('modals.signin.text_has_no_account_yet') }}</span>
-            <UButton variant="link" @click="switchToSignup" :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}">
+            <UButton :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}" variant="link"
+                     @click="switchToSignup">
               {{ $t('modals.signin.label_switch_signup') }}
             </UButton>
           </div>
@@ -35,8 +45,16 @@
   </UModal>
 </template>
 
-<script setup lang="ts">
-const { currentModal, open, close } = useAuthModal()
+<script lang="ts" setup>
+import type {LoginInfo, LoginResponse, AuthState} from "~/types/auth";
+
+const {currentModal, open, close, currentModalProps} = useAuthModal()
+
+const loginInfo: Ref<LoginInfo> = ref({
+  email: '',
+  password: '',
+})
+const loading = ref<boolean>(false)
 
 const isOpen = computed({
   get: () => currentModal.value === 'signin',
@@ -49,5 +67,28 @@ function switchToSignup() {
 
 function switchTo2fa() {
   open('2fa')
+}
+
+async function submit() {
+  loading.value = true
+  try {
+    const response = await $fetch<LoginResponse>('/api/auth/signin/', {
+      method: 'POST',
+      body: loginInfo.value,
+    })
+
+    if (response.ok) {
+      useState<AuthState>('login-state', () => ({
+        state: 'otp',
+        loginInfo: loginInfo.value,
+      }))
+
+      switchTo2fa()
+    }
+
+  } catch (error) {
+  } finally {
+    loading.value = false
+  }
 }
 </script>

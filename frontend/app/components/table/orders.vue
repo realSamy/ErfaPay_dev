@@ -3,7 +3,7 @@ import {h, resolveComponent} from 'vue'
 import type {TableColumn} from '@nuxt/ui'
 import type {Order} from "~/types/data";
 
-const {n} = useI18n()
+const {n, d} = useI18n()
 const UBadge = resolveComponent('UBadge')
 
 
@@ -55,12 +55,12 @@ const columns: TableColumn<Order>[] = [
   {
     accessorKey: 'id',
     header: 'ردیف',
-    cell: ({row}) => n(Number(row.getValue('id')))
+    cell: ({row}) => n(Number(row.getValue<Order['id']>('id')))
   },
   {
     accessorKey: 'orderNumber',
     header: 'شماره سفارش',
-    cell: ({row}) => new Intl.NumberFormat('fa-IR', {useGrouping: false}).format(Number(row.getValue('orderNumber')))
+    cell: ({row}) => new Intl.NumberFormat('fa-IR', {useGrouping: false}).format(Number(row.getValue<Order['orderNumber']>('orderNumber')))
   },
   {
     accessorKey: 'type',
@@ -69,13 +69,13 @@ const columns: TableColumn<Order>[] = [
       recharge: 'شارژ حساب' as const,
       exchange: 'انتقال پول' as const,
       bills: 'پرداخت قبض' as const,
-    }[row.getValue('type') as string])
+    }[row.getValue<Order['type']>('type') as string])
   },
   {
     accessorKey: 'amount',
     header: () => h('div', {class: 'text-right'}, 'مبلغ سفارش'),
     cell: ({row}) => {
-      const amount = Number.parseFloat(row.getValue('amount'))
+      const amount = Number.parseFloat(row.getValue<Order['amount']>('amount'))
 
       const formatted = new Intl.NumberFormat('fa-IR').format(amount)
       return `${formatted} تومان`;
@@ -85,7 +85,7 @@ const columns: TableColumn<Order>[] = [
     accessorKey: 'date',
     header: 'تاریخ',
     cell: ({row}) => {
-      return new Date(row.getValue('date')).toLocaleString('fa-IR', {
+      return d(row.getValue<Order['date']>('date'), {
         day: 'numeric',
         month: 'short',
         hour: '2-digit',
@@ -104,7 +104,7 @@ const columns: TableColumn<Order>[] = [
         rejected: { color: 'error', label: 'رد شده' },
         pending: { color: 'neutral', label: 'در انتظار' },
         processing: { color: 'info', label: 'در حال انجام' },
-      }[row.getValue('status') as 'done' | 'rejected' | 'pending' | 'processing']
+      }[row.getValue<Order['status']>('status') as 'done' | 'rejected' | 'pending' | 'processing']
 
       return h(UBadge, {class: 'capitalize w-full justify-center', variant: 'subtle', color}, label)
     }

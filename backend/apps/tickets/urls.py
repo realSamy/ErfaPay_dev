@@ -1,9 +1,16 @@
-from rest_framework.routers import DefaultRouter
-from .views import TicketViewSet, TicketMessageViewSet, TicketCategoryViewSet
+from django.urls import path
+from . import views, admin_views
 
-router = DefaultRouter()
-router.register(r'tickets', TicketViewSet, basename='tickets')
-router.register(r'ticket-messages', TicketMessageViewSet, basename='ticket-messages')
-router.register(r'ticket-categories', TicketCategoryViewSet, basename='ticket-categories')
+urlpatterns = [
+    # User endpoints
+    path('', views.TicketListCreateView.as_view(), name='list-create'),
+    path('<str:ticket_id>/', views.TicketDetailView.as_view(), name='detail'),
+    path('<str:ticket_id>/reply/', views.TicketReplyView.as_view(), name='reply'),
+    path('<str:ticket_id>/close/', views.TicketCloseView.as_view(), name='close'),
+    path('<str:ticket_id>/pdf/', views.TicketPDFView.as_view(), name='pdf'),
 
-urlpatterns = router.urls
+    # Admin endpoints
+    path('admin/', admin_views.AdminTicketListView.as_view(), name='admin-list'),
+    path('admin/<str:ticket_id>/reply/', admin_views.AdminTicketReplyView.as_view(), name='admin-reply'),
+    path('admin/<str:ticket_id>/update/', admin_views.AdminTicketUpdateView.as_view(), name='admin-update'),
+]

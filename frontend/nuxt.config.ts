@@ -11,10 +11,12 @@ export default defineNuxtConfig({
 
   devtools: {enabled: true},
   modules: [// '@nuxt/eslint',
-    '@nuxt/ui', // '@nuxt/content',
-    '@nuxt/fonts', '@nuxt/icon', '@nuxtjs/i18n', 'nuxt-echarts'],
+    // '@nuxt/content',
+    '@nuxt/ui', '@nuxt/fonts', '@nuxt/icon', '@nuxtjs/i18n', 'nuxt-echarts', 'nuxt-tiptap-editor'],
 
-  css: ['~/assets/css/main.css'],
+  css: [
+    '~/assets/css/main.css',
+  ],
   i18n: {
     locales: [
       {
@@ -31,9 +33,6 @@ export default defineNuxtConfig({
 
   future: {
     compatibilityVersion: 4
-  },
-  ui: {
-    colorMode: true,
   },
 
   runtimeConfig: {
@@ -52,6 +51,16 @@ export default defineNuxtConfig({
       'DatasetComponent',
       'TitleComponent',
     ],
+  },
+
+  nitro: {
+    devProxy: {
+      '/api/_nuxt_icon': {
+        ignorePath: true
+      },
+      '/api': 'http://localhost:8000/api',
+      '/static': 'http://localhost:8000/static',
+    }
   },
 
   compatibilityDate: '2024-11-27'

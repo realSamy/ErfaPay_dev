@@ -1,10 +1,14 @@
 type AuthModalType = 'signin' | 'signup' | '2fa' | 'profileSetup' | null
+type ModalProps = Record<string, any>
 
 const currentModal = ref<AuthModalType>(null)
 
-export default function() {
-  function open(modal: AuthModalType) {
+export default function () {
+  const currentModalProps = useState<ModalProps>('auth-props')
+
+  function open(modal: AuthModalType, props: ModalProps = {}) {
     currentModal.value = modal
+    if (Object.keys(props).length) currentModalProps.value = props
   }
 
   function close() {
@@ -13,6 +17,7 @@ export default function() {
 
   return {
     currentModal,
+    currentModalProps,
     open,
     close
   }

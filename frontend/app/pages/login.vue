@@ -73,7 +73,6 @@ const handleLogin = async () => {
       username: username.value,
       password: password.value,
     },
-    baseURL: useRuntimeConfig().public.apiBase,
   })
 
   loading.value = false

@@ -1,6 +1,6 @@
 <template>
   <UContainer
-      :class="{'shadow-lg shadow-primary/50 bg-[var(--ui-bg-light)] dark:bg-[var(--ui-bg-dark)]': showOverlay}"
+      :class="{'shadow-lg shadow-primary/50 bg-(--ui-bg-light) dark:bg-(--ui-bg-dark)': showOverlay}"
       class="z-2 h-18 rounded flex gap-2 items-center justify-between">
     <div class="header-start">
       <UDrawer direction="right" class="md:hidden" title="Menu" description="Mobile Menu">
@@ -29,7 +29,10 @@
           variant="ghost"/>
     </div>
     <div class="header-end" transition="test">
-      <UButton :label="$t('common.signin_or_signup')" @click="open('signin')" v-if="isIndexRoute" />
+      <div v-if="isIndexRoute">
+        <UButton v-if="userStore" :label="$t('common.labels.dashboard')" :to="localePath({name: 'dashboard'})"  />
+        <UButton v-else :label="$t('common.signin_or_signup')" @click="open('signin')"  />
+      </div>
       <SelectLanguage v-model="showOverlay"/>
 
       <ButtonTheme toggle/>
@@ -39,10 +42,13 @@
 
 <script lang="ts" setup>
 import Logo from "~/components/Logo.vue";
+import type {User} from "~/types/auth";
 
+const localePath = useLocalePath()
 const route = useRoute()
 const isIndexRoute = computed(() => route.name?.toString().includes('index'))
 const showOverlay = ref(false)
+const userStore = useState<User>('user')
 const emit = defineEmits<{
   (event: 'update:modelValue', value: boolean): void
 }>()

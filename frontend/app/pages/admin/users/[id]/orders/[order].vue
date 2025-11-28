@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="space-y-12">
     <section class="flex flex-col xl:flex-row justify-between gap-12">
       <!-- User Information Column -->
       <div class="column">
@@ -7,7 +7,7 @@
           <h2 class="title">کاربر سفارش دهنده:</h2>
           <div class="tr-value">
             <span class="font-bold">{{ user.first_name }} {{ user.last_name }}</span>
-            <UIcon :name="`cif:${user.country_code.toLowerCase()}`" size="20" class="rounded-md" />
+            <UIcon :name="`cif:${user.country_code.toLowerCase()}`" class="rounded-md" size="20"/>
           </div>
         </div>
 
@@ -49,7 +49,7 @@
           <div class="tr has-hr">
             <span class="tr-title">نوع درخواست:</span>
             <span class="tr-value">
-              {{ order.type.title[locale] }}
+              {{ order.type.title[locale.toLowerCase()] }}
             </span>
           </div>
           <div class="tr has-hr">
@@ -80,7 +80,9 @@
           <div class="tr has-hr">
             <span class="tr-title">اپراتور:</span>
             <span class="tr-value">
-              {{ order.processed_by ? `${(order.processed_by as User).first_name} ${(order.processed_by as User).last_name}` : '—' }}
+              {{
+                order.processed_by ? `${(order.processed_by as User).first_name} ${(order.processed_by as User).last_name}` : '—'
+              }}
             </span>
           </div>
           <div class="tr has-hr">
@@ -89,17 +91,23 @@
               <UBadge :color="statusBadge.color" class="capitalize">
                 {{ statusBadge.label }}
               </UBadge>
-              <UButton
-                icon="material-symbols:edit-square-outline"
-                variant="link"
-                size="xs"
-                class="mr-2"
-                @click="openStatusModal = true"
-              />
+              <UModal v-model="openStatusModal">
+                <UButton
+                    class="mr-2"
+                    icon="material-symbols:edit-square-outline"
+                    size="xs"
+                    variant="link"
+                    @click="openStatusModal = true"
+                />
+                <template #body>
+                  <div class="p-6">تغییر وضعیت سفارش (در آینده پیاده‌سازی می‌شود)</div>
+                </template>
+              </UModal>
+
             </div>
           </div>
           <div class="tr has-hr">
-            <span class="tr-title">تاریخ انجام:</span>
+            <span class="tr-title">تاریخ بروزرسانی:</span>
             <span class="tr-value">
               {{ order.updated_at ? formatJalaliDate(order.updated_at) : '—' }}
             </span>
@@ -108,12 +116,17 @@
       </div>
     </section>
 
-    <!-- Status Change Modal (optional enhancement) -->
-    <UModal v-model="openStatusModal">
-      <template #body>
-        <div class="p-6">تغییر وضعیت سفارش (در آینده پیاده‌سازی می‌شود)</div>
-      </template>
-    </UModal>
+    <section class="space-y-2">
+      <h2 class="title">توضیحات:</h2>
+      <div class="w-full h-30 bg-ui-highlight p-4">
+        <p class="text-sm">توضیحات کاربر</p>
+      </div>
+      <div class="inline-flex gap-2">
+        <UButton icon="material-symbols:attachment" variant="soft" label="فایل ضمیمه 1" />
+        <UButton icon="material-symbols:attachment" variant="soft" label="فایل ضمیمه 2" />
+      </div>
+    </section>
+
   </div>
 </template>
 
@@ -124,7 +137,7 @@ definePageMeta({
 })
 
 // Demo data — in real app this comes from API
-const locale = useLocale()
+const {locale} = useI18n()
 
 const user = ref<User>({
   id: 42,
@@ -145,8 +158,8 @@ const order = ref<Order>({
   tax_amount: 256500,
   status: 'done',
   type: {
-    title: { fa: 'پرداخت قبض برق', en: 'Electricity Bill Payment' },
-    description: { fa: 'پرداخت قبوض خدماتی', en: 'Utility bill payment' },
+    title: {fa: 'پرداخت قبض', en: 'Electricity Bill Payment'},
+    description: {fa: 'پرداخت قبوض خدماتی', en: 'Utility bill payment'},
   },
   created_at: '2025-02-11T14:30:00Z',
   updated_at: '2025-02-12T09:15:00Z',
@@ -175,10 +188,10 @@ const formatJalaliDate = (isoDate: string) => {
 
 const statusBadge = computed(() => {
   const map = {
-    pending: { label: 'در انتظار', color: 'neutral' as const },
-    processing: { label: 'در حال انجام', color: 'info' as const },
-    done: { label: 'انجام شده', color: 'success' as const },
-    rejected: { label: 'رد شده', color: 'error' as const },
+    pending: {label: 'در انتظار', color: 'neutral' as const},
+    processing: {label: 'در حال انجام', color: 'info' as const},
+    done: {label: 'انجام شده', color: 'success' as const},
+    rejected: {label: 'رد شده', color: 'error' as const},
   }
   return map[order.value.status]
 })

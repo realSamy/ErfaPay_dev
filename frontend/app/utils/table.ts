@@ -2,8 +2,11 @@ import type {HeaderContext} from "@tanstack/vue-table";
 import {h} from "vue";
 import type {DropdownMenuItem} from "#ui/components/DropdownMenu.vue";
 import {UButton, UDropdownMenu} from '#components'
-import {filterFns, sortingFns} from '@tanstack/vue-table'
 
+interface Props {
+  value: any
+  label: any
+}
 
 export function sortableLabel<TData = unknown>(label: string) {
   return ({column}: HeaderContext<TData, unknown>) => {
@@ -24,10 +27,7 @@ export function sortableLabel<TData = unknown>(label: string) {
   }
 }
 
-export function filterableLabel<TData = unknown>(label: string, items: Ref<string[] | {
-  value: string,
-  label: string
-}[]>, vModel: Ref<string[]>, sortable = true) {
+export function filterableLabel<TData = unknown>(label: string, items: Ref<string[] | Props[]> | ComputedRef<string[] | Props[]>, vModel: Ref<string[]>, sortable = true) {
   const toggleItem = (item: string, checked: boolean) => {
     if (checked) {
       if (!vModel.value.includes(item)) {
@@ -82,7 +82,7 @@ export function filterableLabel<TData = unknown>(label: string, items: Ref<strin
       }
     ])
 
-    const dropdown = h(UDropdownMenu, {
+    const dropdown = h(UDropdownMenu as any, {
           items: dropdownItems.value,
           content: {align: 'start'},
           ui: {content: 'w-48'}

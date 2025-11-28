@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>تیکت {{ ticket.ticket_id }}</title>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; direction: rtl; padding: 40px; background: #f8f9fa; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 40px; }
+        .logo { height: 80px; margin-bottom: 20px; }
+        .info { background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .message { margin: 20px 0; padding: 15px; border-left: 4px solid #1e40af; background: #f8f9fa; }
+        .admin { border-left-color: #16a34a; background: #f0fdf4; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="/static/images/logo.png" class="logo" alt="ErfaPay">
+        <h1>تیکت پشتیبانی - {{ ticket.ticket_id }}</h1>
+        <p>تاریخ صدور: {{ now|date:"Y/m/d H:i" }}</p>
+    </div>
+
+    <div class="info">
+        <p><strong>کاربر:</strong> {{ ticket.user.get_full_name|default:ticket.user.username }}</p>
+        <p><strong>موضوع:</strong> {{ ticket.subject }}</p>
+        <p><strong>دسته‌بندی:</strong> {{ ticket.get_category_display }}</p>
+        <p><strong>اولویت:</strong> <span style="color:#d97706">{{ ticket.get_priority_display }}</span></p>
+        <p><strong>وضعیت:</strong> {{ ticket.get_status_display }}</p>
+    </div>
+
+    <h2>مکالمات</h2>
+    {% for msg in messages %}
+    <div class="message {% if msg.is_from_admin %}admin{% endif %}">
+        <strong>{% if msg.is_from_admin %}پشتیبانی ارفاپی{% else %}{{ ticket.user.username }}{% endif %}</strong>
+        <small style="float:left"> - {{ msg.created_at|date:"Y/m/d H:i" }}</small>
+        <p>{{ msg.message|linebreaks }}</p>
+        {% if msg.attachment %}
+            <p><strong>پیوست:</strong> {{ msg.attachment.name }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>

@@ -18,7 +18,7 @@
     "@nuxt/content": "3.7.1",
     "@nuxt/fonts": "0.11.4",
     "@nuxt/icon": "2.1.0",
-    "@nuxt/ui": "4.1.0",
+    "@nuxt/ui": "4.2.1",
     "better-sqlite3": "^12.2.0",
     "country-codes-list": "^2.0.0",
     "echarts": "^6.0.0",
@@ -38,6 +38,7 @@
     "@tailwindcss/language-server": "^0.14.29",
     "@vue/language-server": "^3.1.3",
     "eslint": "^9.30.1",
+    "nuxt-tiptap-editor": "^3.0.0",
     "typescript": "^5.8.3"
   }
 }

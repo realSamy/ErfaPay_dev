@@ -1,27 +1,31 @@
 from rest_framework import serializers
-from .models import ServiceCategory, Service, ServiceField
+from .models import Category, Service
 
 
-class ServiceCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = ServiceCategory
-        fields = ['id', 'name']
+        model = Category
+        fields = ['id', 'name_fa', 'name_en', 'slug', 'icon']
 
 
-class ServiceFieldSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceField
-        fields = ['id', 'name', 'label', 'field_type', 'required', 'choices']
-
-
-class ServiceSerializer(serializers.ModelSerializer):
-    category = ServiceCategorySerializer(read_only=True)
-    category_id = serializers.PrimaryKeyRelatedField(queryset=ServiceCategory.objects.all(), source='category', write_only=True)
-    fields = ServiceFieldSerializer(many=True, read_only=True)
+class ServiceListSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    final_price = serializers.SerializerMethodField()
+    price_display = serializers.CharField(source='get_price_display', read_only=True)
 
     class Meta:
         model = Service
-        fields = ['id', 'title', 'description', 'icon', 'base_price', 'pricing_type', 'is_active',
-                  'category', 'category_id', 'fields', 'created_at']
+        fields = [
+            'id', 'title_fa', 'title_en', 'description_fa', 'description_en',
+            'icon', 'delivery_time_fa', 'delivery_time_en',
+            'base_price_irt', 'tax_rate', 'final_price', 'price_display',
+            'requires_manual_review', 'category'
+        ]
+
+    def get_final_price(self, obj):
+        return int(obj.get_final_price())
 
 
+class ServiceDetailSerializer(ServiceListSerializer):
+    # Same as list but can include more later
+    pass

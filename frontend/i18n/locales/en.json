@@ -1,162 +1,176 @@
 {
   "common": {
-    "site_title": "ErfaPay",
-    "signin_or_signup": "Sign in {'|'} Sign up",
-    "labels": {
-      "username": "Username",
-      "password": "Password",
-      "login": "Login",
-      "signup": "Sign Up",
-      "phone": "Phone Number",
-      "services": "Services",
-      "contact_us": "Contact Us",
-      "more": "More"
-    },
-    "titles": {
-      "login": "Login",
-      "signup": "Sign Up",
-      "redirecting": "Redirecting...",
-      "login_notice": "Already have account?",
-      "signup_notice": "Are you new here?"
-    },
     "currencies": {
       "symbol": {
+        "btc": "₿",
+        "eur": "€",
+        "gbp": "£",
         "rial": "﷼",
         "toman": "Toman",
         "usd": "$",
-        "eur": "€",
-        "gbp": "£",
-        "btc": "₿",
         "usdt": "₮"
       },
       "text": {
-        "rial": "Rial",
-        "usd": "US Dollar",
+        "btc": "Bitcoin",
         "eur": "Euro",
         "gbp": "British Pound",
-        "btc": "Bitcoin",
+        "rial": "Rial",
+        "usd": "US Dollar",
         "usdt": "Tether (USDT)"
       }
     },
+    "labels": {
+      "contact_us": "Contact Us",
+      "dashboard": "Dashboard",
+      "login": "Login",
+      "more": "More",
+      "password": "Password",
+      "phone": "Phone Number",
+      "services": "Services",
+      "signup": "Sign Up",
+      "username": "Username"
+    },
     "messages": {
       "support_24_7": "We are available 24/7."
-    }
-  },
-  "services": {
-    "labels": {
-      "internal_payment": "Internal Payment",
-      "money_transfer": "Money Transfer",
-      "charge_account": "Charge Account"
+    },
+    "signin_or_signup": "Sign in {'|'} Sign up",
+    "site_title": "ErfaPay",
+    "titles": {
+      "login": "Login",
+      "login_notice": "Already have account?",
+      "redirecting": "Redirecting...",
+      "signup": "Sign Up",
+      "signup_notice": "Are you new here?"
     }
   },
   "error": {
-    "title": "Error",
-    "try_again_later": "Please try again later",
-    "unexpected": "Something went wrong",
-    "default": "An unexpected error occurred",
+    "401": "Unauthorized access",
     "404": "Page not found",
     "500": "Internal server error",
-    "401": "Unauthorized access",
-    "invalid_login": "Invalid username or password."
+    "default": "An unexpected error occurred",
+    "invalid_login": "Invalid username or password.",
+    "title": "Error",
+    "try_again_later": "Please try again later",
+    "unexpected": "Something went wrong"
   },
+  "footer": {
+    "about_us": "Questions and Answers",
+    "address": "Central Office: Venice, Upper Bazaar, Seyyedi Building, PO Box 098999999",
+    "contact_info_title": "Contact Information",
+    "email": "Hi{'@'}ErfaPay.com",
+    "erfapay_links_title": "ErfaPay",
+    "faqs": "Submit Complaints",
+    "privacy_policy": "ErfaPay Licenses",
+    "rules_regulations": "Terms and Conditions of Use"
+  },
+  "modals": {
+    "profileSetup": {
+      "labelEmail2": ""
+    },
+    "profile_setup": {
+      "label_create_account": "Create Account",
+      "label_email": "Email Address",
+      "label_email2": "",
+      "label_firstname": "First Name",
+      "label_lastname": "Last Name",
+      "label_password": "Password",
+      "label_tos": "Terms of use",
+      "placeholder_email": "your_email{'@'}example.com",
+      "placeholder_lastname": "Enter your last name",
+      "placeholder_password": "********"
+    },
+    "signin": {
+      "label_change_email": "Change email",
+      "label_change_phone": "Change phone number",
+      "label_code_check": "Verify code",
+      "label_code_get": "Send verification code",
+      "label_code_resend": "Resend code",
+      "label_email": "Email address",
+      "label_phone": "Mobile number",
+      "label_restore_password": "Recover password",
+      "label_switch_signup": "Create new account",
+      "placeholder_email": "Enter your email address",
+      "placeholder_password": "Enter your password",
+      "placeholder_phone": "Enter your phone number",
+      "text_code_not_received": "I didn’t receive the verification code.",
+      "text_code_sent": "Verification code has been sent to {0}.",
+      "text_forget_password": "Forgot your password?",
+      "text_has_no_account_yet": "I don't have ErfaPay account.",
+      "title_login": "Sign in to your account"
+    },
+    "signup": {
+      "label_change_email": "Change email",
+      "label_change_phone": "Change phone number",
+      "label_code_check": "Verify code",
+      "label_code_get": "Send verification code",
+      "label_code_resend": "Resend code",
+      "label_create_account": "Create account",
+      "label_email": "Email address",
+      "label_fullname": "Full name",
+      "label_password": "Password",
+      "label_password_retype": "Repeat password",
+      "label_phone": "Mobile number",
+      "label_switch_signin": "Sign in to your account",
+      "label_tos": "Terms and Conditions",
+      "text_already_has_account": "I already have an ErfaPay account.",
+      "text_code_not_received": "I didn’t receive the verification code.",
+      "text_tos_agreement": "I agree with the {0} of ErfaPay.",
+      "title_new_account": "Create a new account",
+      "title_verify_email": "Verify email address",
+      "title_verify_phone": "Verify phone number"
+    }
+  },
+  "modals.profileSetup.labelEmail2": "modals.profile_setup.label_email2",
+  "modals.profile_setup.label_email2": "",
   "navigation": {
     "home": "Back to Home"
   },
   "pages": {
-    "login": {
-    },
-    "signup": {
-    },
-    "home": {
-      "select_currency": "Select Currency",
-      "deposit_amount": "Deposit Amount",
-      "rial_equivalent": "Rial Equivalent",
-      "hero_section_title": "Card-to-Card Transfer to Iran",
-      "hero_section_description": "ErfaPay is a fast and secure platform for transferring money to Iranian bank cards within the country.",
-      "hero_section_cta": "Submit Request",
-      "learn_more": "Learn More",
-      "current_prices": "Current Currency Prices",
-      "charge_wallet": "Charge Wallet",
-      "why_erfapay_title": "Why is ErfaPay the Right Choice?",
-      "why_erfapay_description": "ErfaPay is a fast and secure platform for financial transactions for Iranians abroad. This service is designed to meet the needs of immigrants and residents outside of Iran.",
-      "benefits": {
-        "pay_expenses_title": "Pay Expenses",
-        "pay_expenses_desc": "Easily pay all your bills, installments, rent, and other expenses quickly and securely.",
-        "money_transfer_title": "Money Transfer",
-        "money_transfer_desc": "Send and receive money instantly with a secure and easy transfer process.",
-        "buy_charge_title": "Buy Mobile Credit",
-        "buy_charge_desc": "Purchase mobile credit and internet packages anytime, anywhere.",
-        "transparent_reports_title": "Transparent Reports",
-        "transparent_reports_desc": "Track all your transactions with clear and detailed financial reports.",
-        "support_24h_title": "24/7 Support",
-        "support_24h_desc": "Get assistance anytime with our dedicated 24/7 customer support."
-      },
-      "cta_section_title": "Register in less than a minute and make your first transaction.",
-      "register_now": "Register Now",
-      "support_phone": "Support Phone:",
-      "social_media_title": "Follow us on social networks."
-    },
     "admin": {
       "title": {
-        "index": "Dashboard",
-        "financial": "Financial managements and reports",
-        "orders": "Orders management",
-        "users": "Users management",
         "agents": "Agents management",
-        "support": "Communications"
+        "financial": "Financial managements and reports",
+        "index": "Dashboard",
+        "orders": "Orders management",
+        "support": "Communications",
+        "users": "Users management"
       }
+    },
+    "home": {
+      "benefits": {
+        "buy_charge_desc": "Purchase mobile credit and internet packages anytime, anywhere.",
+        "buy_charge_title": "Buy Mobile Credit",
+        "money_transfer_desc": "Send and receive money instantly with a secure and easy transfer process.",
+        "money_transfer_title": "Money Transfer",
+        "pay_expenses_desc": "Easily pay all your bills, installments, rent, and other expenses quickly and securely.",
+        "pay_expenses_title": "Pay Expenses",
+        "support_24h_desc": "Get assistance anytime with our dedicated 24/7 customer support.",
+        "support_24h_title": "24/7 Support",
+        "transparent_reports_desc": "Track all your transactions with clear and detailed financial reports.",
+        "transparent_reports_title": "Transparent Reports"
+      },
+      "charge_wallet": "Charge Wallet",
+      "cta_section_title": "Register in less than a minute and make your first transaction.",
+      "current_prices": "Current Currency Prices",
+      "deposit_amount": "Deposit Amount",
+      "hero_section_cta": "Submit Request",
+      "hero_section_description": "ErfaPay is a fast and secure platform for transferring money to Iranian bank cards within the country.",
+      "hero_section_title": "Card-to-Card Transfer to Iran",
+      "learn_more": "Learn More",
+      "register_now": "Register Now",
+      "rial_equivalent": "Rial Equivalent",
+      "select_currency": "Select Currency",
+      "social_media_title": "Follow us on social networks.",
+      "support_phone": "Support Phone:",
+      "why_erfapay_description": "ErfaPay is a fast and secure platform for financial transactions for Iranians abroad. This service is designed to meet the needs of immigrants and residents outside of Iran.",
+      "why_erfapay_title": "Why is ErfaPay the Right Choice?"
     }
   },
-  "footer": {
-    "contact_info_title": "Contact Information",
-    "address": "Central Office: Venice, Upper Bazaar, Seyyedi Building, PO Box 098999999",
-    "email": "Hi{'@'}ErfaPay.com",
-    "erfapay_links_title": "ErfaPay",
-    "rules_regulations": "Terms and Conditions of Use",
-    "faqs": "Submit Complaints",
-    "about_us": "Questions and Answers",
-    "privacy_policy": "ErfaPay Licenses"
-  },
-  "modals": {
-    "signin": {
-      "title_login": "Sign in to your account",
-      "label_phone": "Mobile number",
-      "label_email": "Email address",
-      "placeholder_phone": "Enter your phone number",
-      "placeholder_email": "Enter your email address",
-      "placeholder_password": "Enter your password",
-      "text_forget_password": "Forgot your password?",
-      "text_code_not_received": "I didn’t receive the verification code.",
-      "label_restore_password": "Recover password",
-      "label_code_get": "Send verification code",
-      "label_code_check": "Verify code",
-      "label_code_resend": "Resend code",
-      "label_change_phone": "Change phone number",
-      "label_change_email": "Change email",
-      "label_switch_signup": "Create new account",
-      "text_code_sent": "Verification code has been sent to {0}.",
-      "text_has_no_account_yet": "I don't have ErfaPay account."
-    },
-    "signup": {
-      "title_new_account": "Create a new account",
-      "title_verify_phone": "Verify phone number",
-      "title_verify_email": "Verify email address",
-      "label_phone": "Mobile number",
-      "label_email": "Email address",
-      "label_code_get": "Send verification code",
-      "label_code_check": "Verify code",
-      "label_code_resend": "Resend code",
-      "label_change_phone": "Change phone number",
-      "label_change_email": "Change email",
-      "label_switch_signin": "Sign in to your account",
-      "label_fullname": "Full name",
-      "label_password": "Password",
-      "label_password_retype": "Repeat password",
-      "label_create_account": "Create account",
-      "label_tos": "Terms and Conditions",
-      "text_tos_agreement": "I agree with the {0} of ErfaPay.",
-      "text_code_not_received": "I didn’t receive the verification code.",
-      "text_already_has_account": "I already have an ErfaPay account."
+  "services": {
+    "labels": {
+      "charge_account": "Charge Account",
+      "internal_payment": "Internal Payment",
+      "money_transfer": "Money Transfer"
     }
   }
 }

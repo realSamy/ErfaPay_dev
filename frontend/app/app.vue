@@ -54,7 +54,7 @@ onMounted(async () => {
   await loadBenefits()
   await loadFooterLogos()
   currencyCheckInterval.value = setInterval(async() => await loadCurrencies(), 1000 * 60 * 2)
-  await loadAuth()
+  await loadAuth(true)
   await loadServices()
 })
 onBeforeUnmount(async () => {

@@ -1,9 +1,8 @@
 <template>
   <div
-      :class="{'shadow-lg shadow-primary/50 bg-[var(--ui-bg-light)] dark:bg-[var(--ui-bg-dark)]': showOverlay}"
+      :class="{'shadow-lg shadow-primary/50 bg-(--ui-bg-light) dark:bg-(--ui-bg-dark)': showOverlay}"
       class="z-2 h-18 rounded flex gap-2 items-center justify-between px-4 ms-0">
     <div class="header-start">
-      <UDashboardSidebarCollapse />
       <logo class="lg:hidden" />
     </div>
     <div class="header-end" transition="test">

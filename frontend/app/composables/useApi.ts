@@ -16,7 +16,6 @@ export const useApi = async <T = any>(
 
   try {
     data.value = await $fetch<T>(url, {
-      baseURL: config.public.apiBase,
       headers: {
         ...(options.headers || {})
       },

@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from apps.services.models import Service
+from apps.services.serializers import ServiceDetailSerializer
 from .models import Order
 
-
 class OrderSerializer(serializers.ModelSerializer):
-    service = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all())
-    user = serializers.StringRelatedField(read_only=True)
+    service = ServiceDetailSerializer(read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'service', 'data', 'price', 'status', 'created_at']
-        read_only_fields = ['user', 'price', 'status']
+        fields = '__all__'
+        read_only_fields = ['user', 'status', 'total_irt', 'tax_amount', 'usd_irt_rate', 'wallet_transaction', 'admin_approved']
 
-    def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
-        # In real use, pricing logic should be dynamic and validated properly
-        validated_data['price'] = validated_data['service'].base_price
-        return super().create(validated_data)
+class OrderCreateSerializer(serializers.ModelSerializer):
+    custom_data = serializers.JSONField()
+
+    class Meta:
+        model = Order
+        fields = ['service', 'amount_irt', 'custom_data']

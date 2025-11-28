@@ -44,7 +44,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
 
     const label = t(metaTitle as string, breadcrumbState.value as Record<string, unknown>)
     const isLast = index === parts.length - 1
-    items.push({ label, ...(isLast ? {} : {to: localePath({name: normalizeName(staticRoute?.name as string)})}) })
+    items.push({ label, ...(isLast ? {} : {to: localePath(normalizeName(staticRoute?.name as string))}) })
   })
 
   return items
