@@ -1,4 +1,5 @@
 import type {CurrencyItem} from "~/types/data";
+import type {HTTPCurrencyResponse} from "~/types/http";
 
 export default async function () {
   const currencies = useState<CurrencyItem[]>('currencies', () => []);
@@ -8,8 +9,8 @@ export default async function () {
   isLoading.value = true;
   error.value = null;
   const genCurr = async ():Promise<CurrencyItem[]> => {
-    const response = await useApi<CurrencyItem[]>('/api/currencies/latest/')
-    return response.data.value ?? [];
+    const response = await useApi<HTTPCurrencyResponse>('/api/currencies/latest/')
+    return response.data.value?.data ?? [];
   }
   try {
     if (!currencies.value?.length) {

@@ -1,78 +1,108 @@
+# apps/services/models.py
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator
-from apps.currencies.models import CurrencyRate  # For future dynamic pricing
-from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Category(models.Model):
-    name_fa = models.CharField(max_length=100, verbose_name=_("Category Name (FA)"))
+    name_fa = models.CharField(max_length=100, verbose_name=_("نام دسته‌بندی (فارسی)"))
     name_en = models.CharField(max_length=100, verbose_name=_("Category Name (EN)"))
     slug = models.SlugField(unique=True, max_length=120)
     icon = models.ImageField(upload_to='categories/', blank=True, null=True)
-    order = models.PositiveIntegerField(default=0, db_index=True)
+    order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name = _("Category")
-        verbose_name_plural = _("Categories")
-        ordering = ['order', 'name_fa']
+        verbose_name = "دسته‌بندی خدمات"
+        verbose_name_plural = "دسته‌بندی‌ها"
+        ordering = ['order']
 
     def __str__(self):
         return self.name_fa
 
 
 class Service(models.Model):
+    COMMISSION_TYPE_CHOICES = [
+        ('percent', 'درصدی'),
+        ('fixed', 'مقداری ثابت'),
+    ]
+
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='services')
 
-    # Bilingual fields
-    title_fa = models.CharField(max_length=200, verbose_name=_("Title (FA)"))
-    title_en = models.CharField(max_length=200, verbose_name=_("Title (EN)"))
-    description_fa = models.TextField(verbose_name=_("Description (FA)"))
-    description_en = models.TextField(verbose_name=_("Description (EN)"), blank=True)
+    # Bilingual
+    title_fa = models.CharField(max_length=200, verbose_name="عنوان سرویس (فارسی)")
+    title_en = models.CharField(max_length=200, verbose_name="Title (EN)", blank=True)
+    description_fa = models.TextField(verbose_name="توضیحات (فارسی)")
+    description_en = models.TextField(verbose_name="Description (EN)", blank=True)
 
     # Visual
-    icon = models.ImageField(upload_to='services/icons/', help_text=_("Uploaded by ErfaPay management"))
+    icon = models.ImageField(upload_to='services/icons/', verbose_name="آیکون")
     banner = models.ImageField(upload_to='services/banners/', blank=True, null=True)
 
-    # Pricing (in IRT - Iranian Toman)
-    base_price_irt = models.DecimalField(
-        max_digits=20, decimal_places=0,
-        validators=[MinValueValidator(1)],
-        verbose_name=_("Base Price (IRT)")
+    # Pricing Model – درصد کارمزد از مبلغ وارد شده توسط کاربر
+    commission_type = models.CharField(max_length=10, choices=COMMISSION_TYPE_CHOICES, default='percent')
+    commission_percent = models.DecimalField(
+        max_digits=5, decimal_places=2,
+        default=12.00,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        verbose_name="کارمزد (%)"
     )
-    tax_rate = models.DecimalField(
-        max_digits=5, decimal_places=2, default=9.00,
-        help_text=_("Tax rate in percent (e.g., 9.00 for 9%)")
+    commission_fixed = models.DecimalField(
+        max_digits=12, decimal_places=0,
+        default=0,
+        verbose_name="کارمزد ثابت (تومان)",
+        help_text="اگر نوع کارمزد 'مقداری ثابت' باشد"
     )
 
-    # Features & Config
-    delivery_time_fa = models.CharField(max_length=100, blank=True, verbose_name=_("Delivery Time (FA)"))
-    delivery_time_en = models.CharField(max_length=100, blank=True, verbose_name=_("Delivery Time (EN)"))
-    is_active = models.BooleanField(default=True)
-    requires_manual_review = models.BooleanField(
-        default=False,
-        help_text=_("If true, order goes to 'pending admin approval' after payment")
+    min_amount = models.DecimalField(
+        max_digits=12, decimal_places=0,
+        default=10000,
+        validators=[MinValueValidator(1000)],
+        verbose_name="حداقل مبلغ قابل پرداخت (تومان)"
     )
-    max_quantity_per_order = models.PositiveIntegerField(default=10)
+    max_amount = models.DecimalField(
+        max_digits=15, decimal_places=0,
+        default=100000000,
+        verbose_name="حداکثر مبلغ قابل پرداخت (تومان)"
+    )
+
+    tax_rate = models.DecimalField(max_digits=5, decimal_places=2, default=9.00, verbose_name="مالیات (%)")
+
+    # Config
+    delivery_time_fa = models.CharField(max_length=100, blank=True, verbose_name="زمان تحویل (فارسی)")
+    delivery_time_en = models.CharField(max_length=100, blank=True)
+    requires_manual_review = models.BooleanField(default=True, verbose_name="نیاز به بررسی دستی؟")
+    is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
 
-    # Relations
-    orders = GenericRelation('orders.Order', related_query_name='service_order')
-
     class Meta:
-        verbose_name = _("Service")
-        verbose_name_plural = _("Services")
+        verbose_name = "سرویس"
+        verbose_name_plural = "سرویس‌ها"
         ordering = ['category__order', 'order', 'title_fa']
-        unique_together = ['category', 'title_fa']
 
     def __str__(self):
-        return f"{self.title_fa} ({self.category.name_fa})"
+        return f"{self.title_fa} ({self.commission_percent}% کارمزد)"
 
-    def get_final_price(self):
-        """Returns total price including tax"""
-        tax_amount = self.base_price_irt * (self.tax_rate / 100)
-        return self.base_price_irt + tax_amount
+    def calculate_total_cost(self, user_amount_irt):
+        """محاسبه مبلغ نهایی که کاربر باید پرداخت کند"""
+        if user_amount_irt < self.min_amount:
+            raise ValueError(f"حداقل مبلغ {self.min_amount:,} تومان است")
 
-    def get_price_display(self):
-        return f"{int(self.base_price_irt):,} IRT"
+        if user_amount_irt > self.max_amount:
+            raise ValueError(f"حداکثر مبلغ {self.max_amount:,} تومان است")
+
+        commission = (
+            user_amount_irt * (self.commission_percent / 100)
+            if self.commission_type == 'percent'
+            else self.commission_fixed
+        )
+        subtotal = user_amount_irt + commission
+        tax = subtotal * (self.tax_rate / 100)
+        total = subtotal + tax
+
+        return {
+            'user_amount': int(user_amount_irt),
+            'commission': int(commission),
+            'tax': int(tax),
+            'total_payable': int(total),
+        }

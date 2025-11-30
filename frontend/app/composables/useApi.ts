@@ -8,7 +8,6 @@ export const useApi = async <T = any>(
   data: Ref<T | null>,
   error: Ref<FetchError | null>
 }> => {
-  const config = useRuntimeConfig()
   const router = useRouter()
 
   const data = ref<T | null>(null)

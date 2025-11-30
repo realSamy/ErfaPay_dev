@@ -32,39 +32,3 @@ export interface AuthState {
   state: 'signin' | 'otp' | 'signup' | 'complete'
   loginInfo: Partial<LoginInfo>
 }
-
-
-export interface UserResponse {
-  ok: true
-  data: User
-}
-
-interface GeneralSuccessResponse {
-  ok: true
-}
-
-interface GeneralFailureResponse {
-  ok: false
-  errors: Record<string, any>
-}
-
-interface GeneralSuccessAuthResponse extends GeneralSuccessResponse {
-  data: {
-    access: string
-    refresh: string
-    user: User
-  }
-}
-
-export type LoginResponse = GeneralSuccessResponse | GeneralFailureResponse
-
-
-interface OTPLoginSuccessResponse extends GeneralSuccessAuthResponse {}
-
-export type OTPLoginResponse = OTPLoginSuccessResponse | GeneralFailureResponse
-
-export type OTPSignupResponse = GeneralSuccessResponse | GeneralFailureResponse
-
-export type SignupResponse = GeneralSuccessResponse | GeneralFailureResponse
-
-export interface CompleteSignupResponse extends GeneralSuccessAuthResponse {}

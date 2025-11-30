@@ -86,7 +86,9 @@ class Charge(models.Model):
     def complete(self):
         if self.status != 'pending':
             return
-        rate = CurrencyRate.get_current_rate('USD', 'IRT')  # Assume method in currencies
+
+        from apps.currencies.models import CurrencyRate
+        rate = CurrencyRate.get_current_rate('USD')
         self.exchange_rate = rate
         self.irt_amount = int(self.foreign_amount * rate)
         self.status = 'success'
@@ -96,12 +98,17 @@ class Charge(models.Model):
             amount=self.irt_amount,
             transaction_type='charge',
             reference_id=str(self.id),
-            description=f"Charge via {self.gateway}",
-            admin_approved=True
+            description=f"Charge via {self.get_gateway_display()}",
+            admin_approved=self.admin_approved
         )
         self.wallet_transaction = wt
+
+        # Correct balance update
         self.user.wallet.balance = F('balance') + self.irt_amount
         self.user.wallet.save(update_fields=['balance'])
+        self.user.wallet.refresh_from_db()
+
         wt.balance_after = self.user.wallet.balance
-        wt.save()
+        wt.save(update_fields=['balance_after'])
+
         self.save()

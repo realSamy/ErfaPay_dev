@@ -12,7 +12,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['title_fa', 'category', 'base_price_irt', 'tax_rate', 'is_active', 'requires_manual_review']
+    list_display = ['title_fa', 'category', 'tax_rate', 'is_active', 'requires_manual_review']
     list_filter = ['category', 'is_active', 'requires_manual_review']
     list_editable = ['is_active']
     search_fields = ['title_fa', 'title_en']
@@ -22,7 +22,7 @@ class ServiceAdmin(admin.ModelAdmin):
             'fields': ('category', 'title_fa', 'title_en', 'icon', 'banner')
         }),
         (_('Pricing'), {
-            'fields': ('base_price_irt', 'tax_rate')
+            'fields': ('tax_rate',)
         }),
         (_('Content'), {
             'fields': ('description_fa', 'description_en', 'delivery_time_fa', 'delivery_time_en')

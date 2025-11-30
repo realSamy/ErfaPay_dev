@@ -1,29 +1,97 @@
 import requests
 from django.conf import settings
-from django.db import transaction
-from rest_framework import status
+from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from apps.users.permissions import IsSeniorSupportOrAbove
 from rest_framework.views import APIView
-from .models import Charge
-from .serializers import WalletSerializer, WalletTransactionSerializer, ChargeCreateSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+from .models import Charge, WalletTransaction
+from .serializers import (
+    WalletSerializer, WalletTransactionSerializer,
+    ChargeListSerializer, ChargeCreateSerializer
+)
+from .utils import get_paypal_token
+from apps.users.models import UserProfile
 
 
+# === USER VIEWS ===
 class WalletView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request):
-        wallet = request.user.wallet
-        return Response(WalletSerializer(wallet).data)
-
+        return Response(WalletSerializer(request.user.wallet).data)
 
 class WalletTransactionsView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request):
-        transactions = request.user.wallet.transactions.all()
-        return Response(WalletTransactionSerializer(transactions, many=True).data)
+        txs = request.user.wallet.transactions.select_related('adjusted_by').all()
+        return Response(WalletTransactionSerializer(txs, many=True).data)
 
+class ChargeListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        charges = request.user.charges.all()
+        serializer = ChargeListSerializer(charges, many=True)
+        return Response({'ok': True, 'data': serializer.data})
+
+# === ADMIN VIEWS ===
+class AdminChargeListView(APIView):
+    permission_classes = [IsSeniorSupportOrAbove]
+    def get(self, request):
+        charges = Charge.objects.select_related('user').all().order_by('-created_at')
+        status = request.query_params.get('status')
+        if status:
+            charges = charges.filter(status=status)
+        serializer = ChargeListSerializer(charges, many=True)
+        return Response({'ok': True, 'data': serializer.data})
+
+class AdminChargeApproveView(APIView):
+    permission_classes = [IsSeniorSupportOrAbove]
+    def post(self, request, pk):
+        charge = get_object_or_404(Charge, pk=pk, status='pending')
+        charge.admin_approved = True
+        charge.complete()
+        return Response({'ok': True, 'message': 'Charge approved and completed'})
+
+class AdminChargeRejectView(APIView):
+    permission_classes = [IsSeniorSupportOrAbove]
+    def post(self, request, pk):
+        charge = get_object_or_404(Charge, pk=pk, status='pending')
+        charge.status = 'failed'
+        charge.admin_approved = False
+        charge.save()
+        return Response({'ok': True, 'message': 'Charge rejected'})
+
+class AdminWalletAdjustmentView(APIView):
+    permission_classes = [IsSeniorSupportOrAbove]
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        amount = request.data.get('amount')  # can be negative
+        reason = request.data.get('reason', 'Admin adjustment')
+
+        user = get_object_or_404(UserProfile, id=user_id)
+        with transaction.atomic():
+            wt = WalletTransaction.objects.create(
+                wallet=user.wallet,
+                amount=amount,
+                transaction_type='adjustment',
+                description=reason,
+                adjusted_by=request.user,
+                admin_approved=True
+            )
+            user.wallet.balance = F('balance') + amount
+            user.wallet.save()
+            user.wallet.refresh_from_db()
+            wt.balance_after = user.wallet.balance
+            wt.save()
+
+        return Response({
+            'ok': True,
+            'message': 'Adjustment applied',
+            'new_balance': user.wallet.balance
+        })
 
 class ChargeCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -40,7 +108,7 @@ class ChargeCreateView(APIView):
 
     @transaction.atomic
     def create_paypal_order(self, request, amount):
-        access_token = self.get_paypal_token()
+        access_token = get_paypal_token()
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {access_token}',
@@ -66,12 +134,6 @@ class ChargeCreateView(APIView):
             return Response({'approve_url': approve_url})
         return Response({'error': response.json()}, status=response.status_code)
 
-    def get_paypal_token(self):
-        auth = (settings.PAYPAL_CLIENT_ID, settings.PAYPAL_SECRET)
-        data = {'grant_type': 'client_credentials'}
-        response = requests.post(f"{settings.PAYPAL_API_URL}/v1/oauth2/token", auth=auth, data=data)
-        return response.json()['access_token']
-
 
 class PayPalCallbackView(APIView):
     def get(self, request):
@@ -83,7 +145,7 @@ class PayPalCallbackView(APIView):
         if not charge:
             return Response({'error': 'Charge not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-        access_token = self.get_paypal_token()  # From above
+        access_token = get_paypal_token()
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {access_token}',

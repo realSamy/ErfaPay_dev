@@ -1,8 +1,13 @@
 from django.urls import path
-from .views import CategoryListView, ServiceListView, ServiceDetailView
+from . import views, admin_views
 
 urlpatterns = [
-    path('categories/', CategoryListView.as_view(), name='category-list'),
-    path('', ServiceListView.as_view(), name='service-list'),
-    path('<int:pk>/', ServiceDetailView.as_view(), name='service-detail'),
+    # Public
+    path('categories/', views.CategoryListView.as_view()),
+    path('', views.ServiceListView.as_view()),
+    path('<int:pk>/', views.ServiceDetailView.as_view()),
+
+    # Admin Only
+    path('admin/list/', admin_views.AdminServiceListCreateView.as_view()),
+    path('admin/<int:pk>/', admin_views.AdminServiceDetailView.as_view()),
 ]

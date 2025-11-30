@@ -1,10 +1,8 @@
-# apps/tickets/admin_views.py
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
-from rest_framework import status
+from apps.users.permissions import IsSupportStaff
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from apps.notifications.utils import send_notification
@@ -14,7 +12,7 @@ from .serializers import TicketDetailSerializer, TicketReplySerializer
 User = get_user_model()
 
 class AdminTicketListView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsSupportStaff]
 
     def get(self, request):
         tickets = Ticket.objects.all().select_related('user').prefetch_related('messages')
@@ -34,7 +32,7 @@ class AdminTicketListView(APIView):
 
 
 class AdminTicketReplyView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsSupportStaff]
 
     def post(self, request, ticket_id):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
@@ -64,7 +62,7 @@ class AdminTicketReplyView(APIView):
 
 
 class AdminTicketUpdateView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsSupportStaff]
 
     def patch(self, request, ticket_id):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id)

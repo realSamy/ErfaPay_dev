@@ -58,9 +58,9 @@ const agentRoles: RoleItem[] = [
   {label: "ساده", value: "simple_support"},
 ]
 
-const newAgent = ref({
+const newAgent = ref<Record<string, UserRole>>({
   role: "simple_support"
-})
+} as Record<string, UserRole>)
 </script>
 
 <style scoped>

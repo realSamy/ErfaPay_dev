@@ -42,8 +42,11 @@
 </template>
 
 <script lang="ts" setup>
-import type {LoginResponse, AuthState, OTPInfo, OTPLoginResponse, OTPSignupResponse, User} from "~/types/auth";
+import type {AuthState, OTPInfo, User} from "~/types/auth";
+import type {HTTPOTPLoginResponse, HTTPOTPSignupResponse} from "~/types/http";
+
 import {useStorage} from "@vueuse/core";
+
 
 const {currentModal, open, close, currentModalProps} = useAuthModal()
 
@@ -135,7 +138,7 @@ function changeEmail() {
 async function submitLogin() {
   loading.value = true
   try {
-    const response = await $fetch<OTPLoginResponse>('/api/auth/signin/otp/', {
+    const response = await $fetch<HTTPOTPLoginResponse>('/api/auth/signin/otp/', {
       method: 'POST',
       body: otpInfo.value,
     })
@@ -161,7 +164,7 @@ async function submitLogin() {
 async function submitSignup() {
   loading.value = true
   try {
-    const response = await $fetch<OTPSignupResponse>('/api/auth/signup/otp/', {
+    const response = await $fetch<HTTPOTPSignupResponse>('/api/auth/signup/otp/', {
       method: 'POST',
       body: otpInfo.value,
     })
