@@ -1,5 +1,6 @@
 <template>
   <UApp :locale="resolvedLocale">
+    <PreLoading />
     <NuxtLoadingIndicator class="bg-primary dark:bg-primary-300" :color="false"/>
     <NuxtLayout>
       <NuxtPage/>
@@ -26,7 +27,6 @@ const getLocale = (_l: string): Locale<Messages> => {
   // @ts-ignore
   return locales[map[_l] || _l]
 }
-
 const resolvedLocale = computed(() => getLocale(locale.value))
 
 const lang = computed(() => resolvedLocale.value.code)
@@ -54,8 +54,7 @@ onMounted(async () => {
   await loadBenefits()
   await loadFooterLogos()
   currencyCheckInterval.value = setInterval(async() => await loadCurrencies(), 1000 * 60 * 2)
-  await loadAuth(true)
-  await loadServices()
+  await useLoadServicesStore()
 })
 onBeforeUnmount(async () => {
   clearInterval(currencyCheckInterval.value)

@@ -9,8 +9,10 @@
         </template>
 
         <template #body>
-          <DynamicBreadcrumb />
-          <slot/>
+          <ClientOnly>
+            <DynamicBreadcrumb />
+            <slot/>
+          </ClientOnly>
         </template>
         <template #footer>
           <UNavigationMenu

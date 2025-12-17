@@ -1,10 +1,35 @@
 <template>
   <div class="mt-20 flex flex-col gap-16 max-w-screen">
     <UContainer class="flex flex-col gap-16">
-      <CarouselServices :items="ServiceSlides"/>
+      <ClientOnly>
+        <CarouselServices/>
+
+        <template #fallback>
+          <div class="flex flex-col items-center md:flex-row w-full justify-between gap-10">
+            <div class="space-y-6">
+              <USkeleton class="w-40 h-6"/>
+              <USkeleton class="w-70 h-6"/>
+              <USkeleton class="w-30 h-6"/>
+            </div>
+            <div class="grow flex justify-center">
+              <USkeleton class="w-80 h-45"/>
+            </div>
+          </div>
+        </template>
+      </ClientOnly>
       <div class="flex flex-col justify-center items-center">
         <h3 class="text-xl mb-2 text-muted">{{ $t('pages.home.current_prices') }}</h3>
-        <CarouselCurrencies/>
+        <ClientOnly>
+          <CarouselCurrencies/>
+
+          <template #fallback>
+            <UContainer class="flex flex-col md:flex-row items-center justify-between gap-10">
+              <USkeleton class="w-80 h-20"/>
+              <USkeleton class="w-80 h-20"/>
+              <USkeleton class="w-80 h-20"/>
+            </UContainer>
+          </template>
+        </ClientOnly>
       </div>
     </UContainer>
 
@@ -40,19 +65,10 @@
 <script lang="ts" setup>
 import type {User} from "~/types/auth";
 import {FetchError} from "ofetch";
-import type {ServiceSlide} from "~/types/data";
 import ChargeAccount from "~/components/ChargeAccount.vue";
 
 const {locale} = useI18n();
-const slide = {
-  title: $t('pages.home.hero_section_title'),
-  message: $t('pages.home.hero_section_description'),
-  cta_label: $t('pages.home.hero_section_cta'),
-  image: '/img/carousels/header/erfapay_cards.png',
-}
-const ServiceSlides: ServiceSlide[] = [
-  slide, slide, slide,
-]
+
 const benefits = useState('benefits')
 
 const user: Ref<User> = useState('user')

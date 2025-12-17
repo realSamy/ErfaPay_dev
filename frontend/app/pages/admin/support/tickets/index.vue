@@ -1,7 +1,13 @@
 <template>
   <div class="space-y-10">
     <section>
-      <h2 class="font-bold text-2xl">لیست تیکت های پشتیبانی</h2>
+      <h2 class="font-bold text-2xl">{{ $t('common.titles.ticket_categories') }}</h2>
+      <ClientOnly>
+        <TableAdminTicketCategories />
+      </ClientOnly>
+    </section>
+    <section>
+      <h2 class="font-bold text-2xl">{{ $t('common.titles.tickets') }}</h2>
       <ClientOnly>
         <TableAdminTickets/>
       </ClientOnly>
@@ -12,7 +18,7 @@
 <script lang="ts" setup>
 definePageMeta({
   layout: 'admin',
-  title: 'pages.admin.title.support'
+  title: 'pages.admin.title.tickets'
 
 })
 </script>

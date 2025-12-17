@@ -209,7 +209,7 @@ export default async function () {
   ]
 
   try {
-    const store = useState<User[]>('admin--users')
+    const store = useState<User[]>('admin.users')
     if (!store.value.length || store.value.length != users.length) {
       store.value = users
     }

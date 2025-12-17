@@ -3,23 +3,33 @@ import type {NavigationMenuItem} from '@nuxt/ui'
 
 const {t} = useI18n()
 const localePath = useLocaleRoute()
+const {user, logout} = useAuth()
+const route = useRoute()
 
 const menuItems = computed<NavigationMenuItem[]>(() => [
   {
     label: t('layout.sidebar.label_dashboard'),
     icon: 'material-symbols:dashboard-outline',
-    to: localePath('dashboard')
+    to: localePath('dashboard'),
   },
   {
     label: t('layout.sidebar.label_orders'),
     icon: 'material-symbols:receipt-outline',
-    to: localePath('dashboard-orders')
+    to: localePath('dashboard-orders'),
+    active: route.name?.toString().startsWith('dashboard-orders'),
   },
   {
     label: t('layout.sidebar.label_support'),
     icon: 'material-symbols:contact-support-outline',
     to: localePath('dashboard-support'),
-    badge: '4'
+    active: route.name?.toString().startsWith('dashboard-support'),
+    badge: '4',
+    children: [
+      {
+        label: t('pages.tickets.titles.new_ticket'),
+        to: localePath('dashboard-support-new')
+      }
+    ],
   }
 ])
 
@@ -32,7 +42,9 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <UDashboardSidebar :ui="{ footer: 'border-t border-default', root: 'bg-white dark:bg-primary/20' }" collapsible resizable mode="slideover" :menu="{side: directionalIcon('right', 'left')}">
+  <UDashboardSidebar :menu="{side: directionalIcon('right', 'left')}"
+                     :ui="{ footer: 'border-t border-default', root: 'bg-white dark:bg-primary/20' }"
+                     collapsible mode="slideover" resizable>
     <template #header="{ collapsed }">
       <Logo v-if="!collapsed" class="h-5 w-auto shrink-0"/>
       <UIcon v-else class="size-5 text-primary mx-auto" name="i-simple-icons-nuxtdotjs"/>
@@ -48,24 +60,28 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
       <UNavigationMenu
           :collapsed="collapsed"
           :items="menuLinks"
-          orientation="vertical"
           class="mt-auto"
+          orientation="vertical"
       />
 
 
     </template>
 
     <template #footer="{ collapsed }">
-      <UButton
-          :avatar="{
-          src: 'https://github.com/realSamy.png'
-        }"
-          :block="collapsed"
-          :label="collapsed ? undefined : 'Benjamin'"
-          class="w-full"
-          color="neutral"
-          variant="ghost"
-      />
+      <ClientOnly>
+        <div class="w-full flex justify-between">
+          <UButton
+              :block="collapsed"
+              :label="collapsed ? undefined : user?.full_name"
+              class="w-full"
+              color="neutral"
+              icon="material-symbols:person"
+              variant="ghost"
+          />
+          <UButton v-if="!collapsed" :title="$t('common.labels.logout')" color="neutral" icon="material-symbols:logout"
+                   variant="link" @click="() => logout(true, $t)"/>
+        </div>
+      </ClientOnly>
     </template>
   </UDashboardSidebar>
 </template>

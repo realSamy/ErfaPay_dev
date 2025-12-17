@@ -1,15 +1,30 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from apps.users.permissions import IsSupportStaff
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from apps.notifications.utils import send_notification
-from .models import Ticket, TicketMessage
+from .models import Ticket, TicketMessage, TicketMessageAttachment
 from .serializers import TicketDetailSerializer, TicketReplySerializer
 
 User = get_user_model()
+
+
+class AdminTicketDetailView(APIView):
+    permission_classes = [IsSupportStaff]
+
+    def get(self, request, ticket_id):
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+        serializer = TicketDetailSerializer(ticket)
+        # Mark as read for admin
+        if not ticket.is_read_by_admin:
+            ticket.is_read_by_admin = True
+            ticket.save(update_fields=['is_read_by_admin'])
+        return Response({'ok': True, 'data': serializer.data})
+
 
 class AdminTicketListView(APIView):
     permission_classes = [IsSupportStaff]
@@ -34,20 +49,26 @@ class AdminTicketListView(APIView):
 class AdminTicketReplyView(APIView):
     permission_classes = [IsSupportStaff]
 
-    def post(self, request, ticket_id):
+    def post(self, request: Request, ticket_id):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
         serializer = TicketReplySerializer(data=request.data)
         if serializer.is_valid():
-            TicketMessage.objects.create(
+            message = TicketMessage.objects.create(
                 ticket=ticket,
                 sender=None,
                 message=serializer.validated_data['message'],
-                attachment=serializer.validated_data.get('attachment'),
                 is_from_admin=True
             )
+            if 'attachments' in request.FILES:
+                for file in request.FILES.getlist('attachments'):
+                    TicketMessageAttachment.objects.create(
+                        attachment=file,
+                        message=message
+                    )
             ticket.is_read_by_user = False
             ticket.is_read_by_admin = True
             ticket.status = 'waiting_user'
+            ticket.assigned_to = request.user
             ticket.save()
 
             send_notification(
@@ -57,7 +78,8 @@ class AdminTicketReplyView(APIView):
                 notification_type='ticket',
                 link=f"https://erfapay.com/tickets/{ticket.ticket_id}"
             )
-            return Response({'ok': True, 'message': 'پاسخ ادمین ثبت شد'})
+            return Response({'ok': True, 'message': 'http.response.tickets.admin_reply_sent',
+                             'data': TicketDetailSerializer(ticket).data})
         return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
@@ -68,13 +90,13 @@ class AdminTicketUpdateView(APIView):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
         status_val = request.data.get('status')
         priority = request.data.get('priority')
+        assigned_to = request.data.get('assigned_to')
 
         if status_val in dict(Ticket.STATUS_CHOICES):
             old_status = ticket.status
             ticket.status = status_val
             if status_val == 'resolved':
                 ticket.closed_at = timezone.now()
-            ticket.save()
 
             send_notification(
                 user=ticket.user,
@@ -84,6 +106,10 @@ class AdminTicketUpdateView(APIView):
             )
         if priority in dict(Ticket.PRIORITY_CHOICES):
             ticket.priority = priority
-            ticket.save()
 
-        return Response({'ok': True, 'ticket': TicketDetailSerializer(ticket).data})
+        if assigned_to == request.user.pk:
+            ticket.assigned_to = request.user
+
+        ticket.save()
+
+        return Response({'ok': True, 'data': TicketDetailSerializer(ticket).data})

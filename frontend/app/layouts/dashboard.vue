@@ -37,6 +37,7 @@ import type {NavigationMenuItem} from "@nuxt/ui";
 
 const {t} = useI18n()
 const localePath = useLocaleRoute()
+const route = useRoute()
 
 const menuItems = computed<NavigationMenuItem[]>(() => [
   {
@@ -47,11 +48,13 @@ const menuItems = computed<NavigationMenuItem[]>(() => [
   {
     label: t('layout.sidebar.label_orders'),
     icon: 'material-symbols:receipt-outline',
+    active: route.name?.toString().startsWith('dashboard-orders'),
     to: localePath('dashboard-orders')
   },
   {
     label: t('layout.sidebar.label_support'),
     icon: 'material-symbols:contact-support-outline',
+    active: route.name?.toString().startsWith('dashboard-support'),
     to: localePath('dashboard-support'),
     badge: '4'
   }

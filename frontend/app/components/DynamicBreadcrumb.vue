@@ -10,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 const localePath = useLocalePath()
 const {t} = useI18n()
-const breadcrumbState = useState<Record<string, unknown>>('breadcrumb-state')
+const breadcrumbState = useState<Record<string, unknown>>('breadcrumb.state')
 
 
 function normalizeName(name: string) {

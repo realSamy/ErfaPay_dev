@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-import type {AuthState, LoginResponse, SignupInfo} from "~/types/auth";
+import type {AuthState, SignupInfo} from "~/types/auth";
+import type {HTTPSignupResponse} from "~/types/http";
 
 const {currentModal, open, close, currentModalProps} = useAuthModal()
 
@@ -59,7 +60,7 @@ function switchTo2fa() {
 async function submit() {
   loading.value = true
   try {
-    const response = await $fetch<LoginResponse>('/api/auth/signup/', {
+    const response = await $fetch<HTTPSignupResponse>('/api/auth/signup/', {
       method: 'POST',
       body: authInfo.value,
     })

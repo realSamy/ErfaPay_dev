@@ -9,12 +9,13 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from apps.notifications.utils import send_notification
-from .models import Ticket, TicketMessage
+from .models import Ticket, TicketMessage, TicketMessageAttachment
 from .pdf import generate_ticket_pdf
 from .serializers import (
     TicketListSerializer, TicketDetailSerializer,
     TicketCreateSerializer, TicketReplySerializer
 )
+
 
 class TicketListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -29,13 +30,18 @@ class TicketListCreateView(APIView):
         if serializer.is_valid():
             ticket = serializer.save()
             # Auto first message
-            TicketMessage.objects.create(
+            message = TicketMessage.objects.create(
                 ticket=ticket,
                 sender=request.user,
                 message=request.data.get('message', 'درخواست پشتیبانی جدید'),
                 is_from_admin=False
             )
-            # Notify admins
+            if 'attachments' in request.FILES:
+                for file in request.FILES.getlist('attachments'):
+                    TicketMessageAttachment.objects.create(
+                        attachment=file,
+                        message=message
+                    )
             send_notification(
                 user=None,  # Will be sent to staff later via signal
                 title_fa=f"تیکت جدید: {ticket.ticket_id}",
@@ -79,7 +85,14 @@ class TicketReplyView(APIView):
                     sender=request.user,
                     is_from_admin=False
                 )
-                ticket.status = 'waiting_user'
+                if 'attachments' in request.FILES:
+                    for file in request.FILES.getlist('attachments'):
+                        TicketMessageAttachment.objects.create(
+                            attachment=file,
+                            message=message
+                        )
+                if ticket.status == 'waiting_user':
+                    ticket.status = 'open'
                 ticket.is_read_by_admin = False
                 ticket.save()
 
@@ -90,7 +103,8 @@ class TicketReplyView(APIView):
                     message_fa=f"کاربر {request.user.username} پاسخ داد.",
                     notification_type='ticket'
                 )
-            return Response({'ok': True, 'message': 'پاسخ شما ثبت شد'})
+            return Response({'ok': True, 'message': 'http.response.tickets.reply_sent',
+                             'data': TicketDetailSerializer(ticket).data})
         return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
@@ -112,7 +126,8 @@ class TicketCloseView(APIView):
             message_fa=f"تیکت {ticket.ticket_id} با موفقیت بسته شد.",
             notification_type='success'
         )
-        return Response({'ok': True, 'message': 'تیکت بسته شد'})
+        return Response({'ok': True, 'message': 'تیکت بسته شد', 'data': TicketDetailSerializer(ticket).data})
+
 
 class TicketPDFView(APIView):
     permission_classes = [IsAuthenticated]

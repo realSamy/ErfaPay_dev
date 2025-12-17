@@ -1,14 +1,15 @@
-import type {User} from "~/types/auth";
+import type {User} from "~/types/users";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
+  return
   if (!to.name?.toString().startsWith('dashboard')) return
   await loadAuth()
+  const {user} = useAuth()
   const {open, currentModalProps} = useAuthModal()
-  const self = useState<User>('user')
-  console.log({self: self.value})
-  if (!self.value?.email) {
+  if (!user.value) {
     return open('signin', {keepOpen: true})
   } else {
+    if (currentModalProps.value?.keepOpen)
     currentModalProps.value.keepOpen = false
   }
 })

@@ -37,7 +37,7 @@
                     type="password"/>
           </UFormField>
 
-          <UCheckbox v-model="authInfo.tos" required>
+          <UCheckbox v-model="authInfo.tos_agreed" required>
             <template #label>
               <I18nT keypath="modals.profile_setup.text_tos_agreement">
                 <ULink to="/">{{ $t('modals.profile_setup.label_tos') }}</ULink>
@@ -68,14 +68,14 @@ const isOpen = computed({
 const loading = ref(false);
 const authState = useState<AuthState>('login-state')
 
-const authInfo = computed(() => ({
+const authInfo = ref<CompleteSignupInfo>({
   first_name: '',
   last_name: '',
   email: authState.value?.loginInfo?.email || '',
   password: '',
   confirm_password: '',
-  tos: false,
-} satisfies CompleteSignupInfo))
+  tos_agreed: false,
+} satisfies CompleteSignupInfo)
 
 async function submit() {
   loading.value = true

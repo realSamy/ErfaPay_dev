@@ -1,15 +1,9 @@
-<script setup lang="ts">
-interface Props {
-  title?: string
-  message?: string
-  cancelLabel?: string
-  cancelColor?: "error" | "neutral" | "primary" | "success" | "secondary" | "info" | "warning" | undefined
-  confirmLabel?: string
-  confirmColor?: "error" | "neutral" | "primary" | "success" | "secondary" | "info" | "warning" | undefined
-}
+<script lang="ts" setup>
 
-withDefaults(defineProps<Props>(), {
-  title: 'تایید',
+import type {ModalConfirmProps} from "~/types/props";
+
+const props = withDefaults(defineProps<ModalConfirmProps>(), {
+  title: 'تایید عملیات',
   message: 'آیا مطمئن هستید؟',
   cancelLabel: 'انصراف',
   cancelColor: 'neutral',
@@ -17,36 +11,34 @@ withDefaults(defineProps<Props>(), {
   confirmColor: 'primary',
 })
 
-const emit = defineEmits<{ close: [boolean] }>()
-
-const handleCancel = () => emit('close', false)
-const handleConfirm = () => emit('close', true)
 </script>
 
 <template>
-  <UModal
-    :close="{ onClick: handleCancel }"
-    :title="title"
-    :ui="{ footer: 'justify-end space-x-2' }"
-  >
-    <template #body>
-      <div class="p-4 leading-relaxed">
+  <UModal :close="{ onClick: props.onCancel }" description=" ">
+    <template #title>
+      <h3 class="text-lg font-bold">{{ title }}</h3>
+    </template>
+
+    <template #description>
+      <div class="text-center leading-relaxed">
         {{ message }}
       </div>
     </template>
 
     <template #footer>
-      <div class="flex gap-2">
+      <div class="flex justify-center gap-4">
         <UButton
-          :color="cancelColor"
-          variant="outline"
-          :label="cancelLabel"
-          @click="handleCancel"
+            :color="cancelColor"
+            :label="cancelLabel"
+            :trailing-icon="props.cancelIcon"
+            variant="outline"
+            @click="props.onCancel?.()"
         />
         <UButton
-          :color="confirmColor"
-          :label="confirmLabel"
-          @click="handleConfirm"
+            :color="confirmColor"
+            :label="confirmLabel"
+            :trailing-icon="props.confirmIcon"
+            @click="props.onConfirm?.()"
         />
       </div>
     </template>

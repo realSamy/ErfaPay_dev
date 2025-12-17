@@ -1,8 +1,10 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.views import TokenRefreshView
+
+from .admin_views import AdminUserListView, AdminUserDetailView
 from .views import (LoginView, OTPVerifyView, MeView, SignupEmailView, SignupOTPVerifyView, SignupCompleteView,
-                    ResendOTPView)
+                    ResendOTPView, UserProfileView)
 
 urlpatterns = [
     # OTP Resend
@@ -21,4 +23,12 @@ urlpatterns = [
 
     # Profile
     path('users/me/', MeView.as_view()),
+
+    # Own Profile (User)
+    path('profile/', UserProfileView.as_view(), name='user-profile'),
+
+    # Admin
+    path('admin/users/', AdminUserListView.as_view(), name='admin-user-list'),
+    path('admin/users/<int:pk>/', AdminUserDetailView.as_view(), name='admin-user-detail'),
+    path('admin/users/create/', AdminUserDetailView.as_view(), name='admin-user-detail'),
 ]

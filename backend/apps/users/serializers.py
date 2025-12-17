@@ -14,10 +14,14 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'username']
+        fields = ['id', 'email', 'first_name', 'last_name', 'username', 'role', 'country_code', 'full_name']
         read_only_fields = ['id', 'email']
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
 
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -159,4 +163,40 @@ class ResendOTPSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         # Optional: Check if email is valid for flow (exists for login or not for signup)
+        return value
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'role', 'country_code', 'is_verified', 'is_blocked', 'last_login', 'date_joined']
+        read_only_fields = fields
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'role', 'phone_prefix', 'country_code', 'is_verified', 'is_blocked', 'last_login', 'date_joined']
+        read_only_fields = fields
+
+class UserOwnUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone_prefix', 'country_code']
+        read_only_fields = ['username', 'email', 'role', 'is_verified', 'is_blocked']
+
+class UserAdminUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'role', 'phone_prefix', 'country_code', 'is_verified', 'is_blocked']
+        read_only_fields = ['username', 'email', 'id', 'date_joined', 'last_login']
+
+    def validate_role(self, value):
+        # Optional: Prevent downgrading self
+        if self.instance and self.context['request'].user == self.instance and value != self.instance.role:
+            raise serializers.ValidationError("Cannot change your own role")
         return value

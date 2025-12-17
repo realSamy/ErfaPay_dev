@@ -88,7 +88,7 @@ export function filterableLabel<TData = unknown>(label: string, items: Ref<strin
           ui: {content: 'w-48'}
         }, () => h(UButton, {
           variant: 'ghost',
-          color: 'neutral',
+          color: vModel.value.length > 0 ? 'success' : 'neutral',
           size: 'sm',
           icon: 'material-symbols:filter-alt-outline',
         })

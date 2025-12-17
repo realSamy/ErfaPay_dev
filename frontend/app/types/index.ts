@@ -1,27 +1,8 @@
-export type UserRole =
-  | 'regular'
-  | 'simple_support'
-  | 'senior_support'
-  | 'main_admin'
+import type { User } from '~/types/users'
 
 export type ChargeMethod = 'paypal' | 'crypto' | 'voucher'
 export type OrderStatus = 'pending' | 'processing' | 'done' | 'rejected'
-export type TicketStatus = 'open' | 'in_progress' | 'closed'
-export type TicketPriority = 'low' | 'medium' | 'high'
 
-// Base User
-export interface User {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-  role: UserRole
-  country_code: string
-  phone?: string
-  is_verified: boolean
-  blocked: boolean
-  date_joined: string
-}
 
 // Wallet
 export interface Wallet {
@@ -77,28 +58,6 @@ export interface Order {
   updated_at: string
 }
 
-// Ticket
-export interface Ticket {
-  id: number
-  user: User
-  subject: string
-  category: { id: number; name: string; name_fa: string }
-  status: TicketStatus
-  priority: TicketPriority
-  assigned_to?: User
-  created_at: string
-  updated_at: string
-}
-
-export interface TicketMessage {
-  id: number
-  ticket: number
-  sender: User
-  message: string
-  is_staff: boolean
-  created_at: string
-  attachments: { id: number; file: string; name: string }[]
-}
 
 // Site Settings (singleton)
 export interface SiteSettings {

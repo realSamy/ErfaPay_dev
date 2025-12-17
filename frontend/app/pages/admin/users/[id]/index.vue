@@ -1,21 +1,21 @@
 <template>
   <div v-if="user" class="space-y-6">
     <section class="space-y-8">
-      <h2 class="text-2xl font-medium">مشخصات کاربر</h2>
+      <h2 class="text-2xl font-medium">{{$t('common.titles.user_info')}}</h2>
       <div class="profile-section">
         <div class="flex align-middle gap-2">
-          <UIcon :name="`cif:${user.country_code.toLowerCase()}`" class="rounded-md" size="25"/>
-          <span class="text-xl font-bold">{{ user.first_name }} {{ user.last_name }}</span>
+          <UIcon :name="`cif:${user.country_code?.toLowerCase()}`" class="rounded-md" size="25"/>
+          <span class="text-xl font-bold">{{ user.full_name }}</span>
         </div>
       </div>
       <div class="profile-section">
-        <h3 class="profile-title">ایمیل</h3>
+        <h3 class="profile-title">{{$t('common.titles.email')}}</h3>
         <span>{{ user.email }}</span>
       </div>
     </section>
 
     <section class="page-section">
-      <h2 class="text-2xl font-medium">سفارشات کاربر</h2>
+      <h2 class="text-2xl font-medium">{{ $t('common.titles.user_orders') }}</h2>
       <ClientOnly>
         <TableAdminOrders :user="user.id" />
       </ClientOnly>
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import type {User} from "~/types/admin/data";
+import type {User} from "~/types/users";
 
 definePageMeta({
   layout: 'admin',
@@ -34,14 +34,21 @@ definePageMeta({
 
 const route = useRoute()
 const userId = Number(route.params.id)
-const users = useState<User[]>('admin--users')
+const users = useState<User[]>('admin.users')
 const user = computed(() => users.value.find((u) => u.id === userId))
+const {t} = useI18n()
 
 if (!user.value) {
+  useToast().add({
+    title: t('error.title'),
+    description: t('error.user_not_found'),
+    color: 'error',
+  })
+  useRouter().back()
   throw createError({
     statusCode: 404,
     statusMessage: 'User not found',
-    message: 'errors.userNotFound',
+    message: t('error.user_not_found'),
   })
 }
 </script>

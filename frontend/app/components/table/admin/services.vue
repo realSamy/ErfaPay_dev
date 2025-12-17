@@ -5,51 +5,64 @@
 <script lang="ts" setup>
 import {h, resolveComponent} from 'vue'
 import type {TableColumn} from '@nuxt/ui'
-import type {service} from "~/types/admin/table";
+import type {Service} from "~/types/services";
 import type {TableRow} from "@nuxt/ui";
 import {LazyModalConfirm} from "#components";
 
-const {n} = useI18n()
+const {n, t, locale} = useI18n()
 const UButton = resolveComponent('UButton')
 
 const toast = useToast()
 const overlay = useOverlay()
 const modal = overlay.create(LazyModalConfirm)
 
+const services = reactive<Service[]>([])
 
-const services = ref<service[]>([
-  {id: 1, state: true, fee: 7, title: 'پرداخت قبض'},
-  {id: 2, state: true, fee: 5, title: 'پرداخت اجاره'},
-  {id: 3, state: false, fee: 10, title: 'کارت به کارت'},
-  {id: 4, state: false, fee: 10, title: 'کارت به کارت'},
-  {id: 5, state: false, fee: 10, title: 'کارت به کارت'},
-  {id: 6, state: false, fee: 2, title: 'افزایش شارژ'},
-]);
-
-const columns: TableColumn<service>[] = [
+const columns = ref<TableColumn<Service>[]>([
   {
     accessorKey: 'id',
-    header: 'ردیف',
+    header: '#',
     cell: ({row}) => n(Number(row.getValue('id')))
   },
   {
-    accessorKey: 'title',
-    header: 'عنوان',
-  },
-  {
-    accessorKey: 'fee',
-    header: 'کارمزد',
-    maxSize: 10,
-    cell: ({row}) => new Intl.NumberFormat('fa-IR', {useGrouping: false}).format(Number(row.getValue('fee'))) + '%'
-  },
-  {
-    accessorKey: 'state',
-    header: 'وضعیت سرویس',
+    accessorKey: 'title_en',
+    header: t('common.tables.title'),
     cell: ({row}) => {
-      const {label, color} = {
-        enabled: {color: 'success', label: 'فعال'},
-        disabled: {color: 'neutral', label: 'غیرفعال'},
-      }[row.getValue('state') ? 'enabled' : 'disabled'];
+      const titleFa = row.original.title_fa;
+      const titleEn = row.original.title_en;
+      return locale.value === 'en' ? titleEn : titleFa;
+    }
+  },
+  {
+    accessorKey: 'commission_type',
+    header: t('common.tables.commission'),
+    maxSize: 10,
+    cell: ({row}) => {
+      if (row.original.commission_type === 'percent') {
+        return n(Number(row.original.commission_percent), {
+          style: 'percent'
+        })
+      } else {
+        return n(Number(row.original.commission_fixed)) + ' ' + t('common.currencies.symbol.toman')
+      }
+    }
+  },
+  {
+    accessorKey: 'tax_rate',
+    header: t('common.tables.tax'),
+    maxSize: 10,
+    cell: ({row}) => n(Number(row.original.tax_rate), {
+      style: 'percent'
+    })
+  },
+  {
+    accessorKey: 'is_active',
+    header: t('common.tables.state'),
+    cell: ({row}) => {
+      const {label, color}: Record<string, string> = {
+        enabled: {color: 'success', label: t('common.states.enabled')},
+        disabled: {color: 'neutral', label: t('common.states.disabled')},
+      }[row.getValue('is_active') ? 'enabled' : 'disabled'];
 
       return h(UButton,
           {
@@ -64,7 +77,7 @@ const columns: TableColumn<service>[] = [
   },
   {
     accessorKey: 'id',
-    header: 'عملیات',
+    header: t('common.tables.operations'),
     cell: ({row}) => {
       const divClassNames = 'flex space-x-2 justify-center';
 
@@ -92,12 +105,22 @@ const columns: TableColumn<service>[] = [
       return h('div', {class: divClassNames}, [editButton, deleteButton]);
     },
   }]
+)
 
-async function handleDeleteService(row: TableRow<service>) {
+async function loadServices() {
+  const {data: response} = await useAdminServices()
+  if (response.value?.ok) {
+    services.splice(0, services.length, ...response.value.data)
+  }
+}
+
+async function handleDeleteService(row: TableRow<Service>) {
   const id = row.getValue('id') as number
-  const title = row.getValue('title') as string
+  const titleFa = row.original.title_fa;
+  const titleEn = row.original.title_en;
+  const title = locale.value === 'en' ? titleEn : titleFa;
 
-  const instance = modal.open({
+  const confirmed = await useConfirm({
     title: 'حذف سرویس',
     message: `آیا مطمئن هستید که می‌خواهید سرویس "${title}" را حذف کنید؟ این عمل قابل بازگشت نیست.`,
     cancelLabel: 'خیر',
@@ -105,44 +128,58 @@ async function handleDeleteService(row: TableRow<service>) {
     confirmColor: 'error',
   })
 
-  const confirmed = await instance.result
-
   if (confirmed) {
-    const index = services.value.findIndex(o => o.id === id)
-    if (index !== -1) {
-      services.value.splice(index, 1)  // Remove from array
+    const {data: response} = await useAdminDeleteService(id).remove()
+    if (response.value?.ok) {
+      await loadServices()
+
+      toast.add({
+        title: 'سرویس حذف شد',
+        color: 'success',
+        icon: 'i-hero-trash'
+      })
+    } else {
+      toast.add({
+        title: 'خطا در حذف سرویس',
+        description: response.value?.errors?.[0] || 'خطای ناشناخته',
+        color: 'error',
+        icon: 'i-hero-x-circle'
+      })
     }
 
-    toast.add({
-      title: 'سرویس حذف شد',
-      color: 'success',
-      icon: 'i-hero-trash'
-    })
   }
 }
 
-function handleEditService(row: TableRow<service>) {
+function handleEditService(row: TableRow<Service>) {
 
 }
 
-async function handleToggleService(row: TableRow<service>) {
+async function handleToggleService(row: TableRow<Service>) {
   const id = row.getValue('id') as number;
-  const service = services.value.find(service => service.id === id);
-
+  const service = services.find(service => service.id === id);
+  const titleFa = row.original.title_fa;
+  const titleEn = row.original.title_en;
+  const title = locale.value === 'en' ? titleEn : titleFa;
 
   if (service) {
-    const phrase = service.state ? 'غیرفعال' : 'فعال';
-    const instance = modal.open({
+    const phrase = service.is_active ? 'غیرفعال' : 'فعال';
+
+    const confirmed = await useConfirm({
       title: `${phrase} سازی سرویس`,
-      message: `سرویس "${service.title}" ${phrase} شود؟`,
+      message: `سرویس "${title}" ${phrase} شود؟`,
       cancelLabel: 'خیر',
       confirmLabel: `${phrase} کن`,
-      confirmColor: service.state ? 'error' : 'success',
+      confirmColor: service.is_active ? 'error' : 'success',
     })
 
-    const confirmed = await instance.result
-
-    if (confirmed) service.state = !service.state;
+    if (confirmed) {
+      await useAdminUpdateService(id).update({is_active: !service.is_active})
+      await loadServices()
+    }
   }
 }
+
+onMounted(async () => {
+  await loadServices()
+})
 </script>

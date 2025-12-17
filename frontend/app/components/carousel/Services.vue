@@ -1,11 +1,12 @@
 <template>
   <UCarousel
       v-slot="{item}"
-      :items="items"
+      :items="items ?? serviceSlides"
       :ui="{
   dot: 'data-[state=active]:bg-primary',
   next: 'ring-transparent scale-150',
   prev: 'ring-transparent scale-150',
+  container: 'items-center',
 }"
       arrows :autoplay="{
         stopOnFocusIn: false,
@@ -31,14 +32,36 @@
 
 <script lang="ts" setup>
 import type {ServiceSlide} from "~/types/data";
+import type {Service} from "~/types/services";
+
+defineProps<{
+  items?: ServiceSlide[]
+}>()
 
 const { locale } = useI18n()
 const isRTL = computed(() => ['fa', 'ar'].includes(locale.value))
 const dir = computed(() => isRTL.value ? "rtl" : "ltr");
 const ctaIcon = directionalIcon('mdi:chevron-left', 'mdi:chevron-right')
-defineProps<{
-  items: ServiceSlide[]
-}>()
+
+const services = ref<Service[]>([])
+
+const serviceSlides = computed<ServiceSlide[]>(() => services.value.map(service => {
+  return {
+    title: locale.value === 'en' ? service.title_en : service.title_fa,
+    message: locale.value === 'en' ? service.description_en : service.description_fa,
+    cta_label: $t('pages.home.hero_section_cta'),
+    image: service.banner,
+  } as ServiceSlide
+}))
+
+onMounted(() => {
+  useLoadServicesStore().then(result => {
+    services.value = result.services.value
+  })
+})
+
+
+
 </script>
 
 <style scoped>

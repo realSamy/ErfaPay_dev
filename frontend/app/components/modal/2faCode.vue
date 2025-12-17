@@ -46,6 +46,7 @@ import type {AuthState, OTPInfo, User} from "~/types/auth";
 import type {HTTPOTPLoginResponse, HTTPOTPSignupResponse} from "~/types/http";
 
 import {useStorage} from "@vueuse/core";
+import {watch} from "vue";
 
 
 const {currentModal, open, close, currentModalProps} = useAuthModal()
@@ -103,12 +104,24 @@ const timer = ref({
     }
 )
 
+watch(isOpen, () => {
+  if (currentModal.value === '2fa') {
+    timer.value.start()
+  }
+})
 
 onBeforeUnmount(() => {
   timer.value.stop()
 })
 
-function codeResend() {
+async function codeResend() {
+  const response = await $fetch('/api/auth/otp-resend/', {
+    method: 'POST',
+    body: {
+      ...loginState.value?.loginInfo
+    }
+  })
+  console.log({response})
   timer.value.start();
 }
 
@@ -146,7 +159,7 @@ async function submitLogin() {
     if (response.ok) {
       const accessToken = useStorage('auth.access_token', '');
       const refreshToken = useStorage('auth.refresh_token', '');
-      const user: Ref<User> | Ref<null> = useState('user', () => null as any)
+      const user = useState<User | null>('auth.user', () => null)
 
       accessToken.value = response.data.access
       refreshToken.value = response.data.refresh

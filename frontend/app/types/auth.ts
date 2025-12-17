@@ -1,11 +1,3 @@
-export interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-}
-
 export interface SignupInfo {
   email: string;
 }
@@ -25,7 +17,7 @@ export interface CompleteSignupInfo {
   email: string
   password: string
   confirm_password: string
-  tos: boolean
+  tos_agreed: boolean
 }
 
 export interface AuthState {

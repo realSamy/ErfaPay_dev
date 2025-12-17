@@ -29,7 +29,10 @@
       </ClientOnly>
     </section>
     <section class="page-section">
-      <h2 class="font-bold text-2xl">لیست خدمات</h2>
+      <div class="flex justify-between pe-6 py-2">
+        <h2 class="font-bold text-2xl">لیست خدمات</h2>
+        <UButton size="xl" trailing-icon="material-symbols:add" :to="useLocalePath()({name: 'admin-services-new'})" :label="$t('pages.admin.labels.services.button_new_service')" />
+      </div>
       <ClientOnly>
         <TableAdminServices />
       </ClientOnly>
@@ -46,6 +49,7 @@
 
 <script lang="ts" setup>
 import type {TimeString, WeekDay} from "~/types/data";
+import type {Order} from "~/types";
 
 definePageMeta({
   layout: 'admin',

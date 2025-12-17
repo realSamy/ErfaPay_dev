@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 definePageMeta({
   layout: 'admin',
-  title: 'pages.admin.title.index'
+  title: 'pages.admin.title.index',
+  middleware: ['auth', 'admin']
 })
+
 const localePath = useLocalePath()
-navigateTo(localePath('admin-financial'))
 </script>
 
 <template><div></div></template>

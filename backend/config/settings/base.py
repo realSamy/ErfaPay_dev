@@ -24,6 +24,11 @@ PAYPAL_CANCEL_URL = 'https://yourdomain.com/paypal/cancel'
 
 AUTH_USER_MODEL = 'users.UserProfile'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+}
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -42,6 +47,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 INSTALLED_APPS = [
 
+    'apps.core',
     'apps.users',
     'apps.orders',
     'apps.payments',

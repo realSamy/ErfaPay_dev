@@ -10,9 +10,6 @@
       v-model:row-selection="rowSelection"
       :columns="columns"
       :data="users"
-      :pagination-options="{
-        getPaginationRowModel: getPaginationRowModel()
-      }"
 
       class="w-full h-100"
       sticky
@@ -39,9 +36,8 @@
 
 <script lang="ts" setup>
 import type {TableColumn} from '@nuxt/ui'
-import type {User, UserRole} from '~/types/admin/data'
+import type {User, UserRole} from '~/types/users'
 import {h, resolveComponent} from 'vue'
-import {getPaginationRowModel} from '@tanstack/vue-table'
 import type {BadgeProps} from "#ui/components/Badge.vue";
 
 const UButton = resolveComponent('UButton')
@@ -50,7 +46,7 @@ const UCheckbox = resolveComponent('UCheckbox')
 const UBadge = resolveComponent('UBadge')
 
 const localePath = useLocalePath()
-const users = useState<User[]>('admin--agents')
+const users = await useLoadAdminAgentsStore()
 const table = useTemplateRef('table')
 const rowSelection = ref({})
 const globalFilter = ref('')
@@ -60,24 +56,24 @@ const pagination = ref({
 })
 
 const columns: TableColumn<User>[] = [
-  {
-    id: 'select',
-    header: ({table}) =>
-        h(UCheckbox, {
-          modelValue: table.getIsSomeRowsSelected()
-              ? 'indeterminate'
-              : table.getIsAllRowsSelected(),
-          'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
-              table.toggleAllRowsSelected(!!value),
-          'aria-label': 'Select all'
-        }),
-    cell: ({row}) =>
-        h(UCheckbox, {
-          modelValue: row.getIsSelected(),
-          'onUpdate:modelValue': (value: boolean | 'indeterminate') => row.toggleSelected(!!value),
-          'aria-label': 'Select row'
-        })
-  },
+  // {
+  //   id: 'select',
+  //   header: ({table}) =>
+  //       h(UCheckbox, {
+  //         modelValue: table.getIsSomeRowsSelected()
+  //             ? 'indeterminate'
+  //             : table.getIsAllRowsSelected(),
+  //         'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
+  //             table.toggleAllRowsSelected(!!value),
+  //         'aria-label': 'Select all'
+  //       }),
+  //   cell: ({row}) =>
+  //       h(UCheckbox, {
+  //         modelValue: row.getIsSelected(),
+  //         'onUpdate:modelValue': (value: boolean | 'indeterminate') => row.toggleSelected(!!value),
+  //         'aria-label': 'Select row'
+  //       })
+  // },
   {
     accessorKey: 'id',
     header: tableSortableLabel('#'),
@@ -85,14 +81,13 @@ const columns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'full_name',
-    header: 'نام پشتیبان',
+    header: $t('common.tables.agent_name'),
     cell: ({row}) => {
-      const code = row.original.country_code.toLowerCase()
+      const code = row.original.country_code?.toLowerCase()
       const id = row.original.id
-      const fullName = `${row.original.first_name} ${row.original.last_name}`;
       return h(UButton, {
-        icon: `cif:${code}`,
-        label: fullName,
+        icon: code ? `cif:${code}` : 'material-symbols:globe',
+        label: row.original.full_name,
         variant: 'link',
         to: localePath({name: 'admin-users-id', params: {id}}),
       })
@@ -101,17 +96,17 @@ const columns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'email',
-    header: tableSortableLabel('ایمیل'),
+    header: tableSortableLabel($t('common.tables.email')),
     size: 32,
   },
   {
     accessorKey: 'role',
-    header: tableSortableLabel('سطح دسترسی'),
+    header: tableSortableLabel($t('common.tables.role')),
     cell: ({row}) => {
       const props: Partial<BadgeProps> = ({
-        main_admin: {label: "مدیر سایت", class: "bg-yellow-500", ui: {base: "w-40 justify-center"}},
-        senior_support: {label: "ارشد", class: "bg-blue-700", ui: {base: "w-40 justify-center"}},
-        simple_support: {label: "ساده", class: "bg-neutral-400", ui: {base: "w-40 justify-center"}},
+        main_admin: {label: $t('common.roles.main_admin'), class: "bg-yellow-500", ui: {base: "w-40 justify-center"}},
+        senior_support: {label: $t('common.roles.senior_support'), class: "bg-blue-700", ui: {base: "w-40 justify-center"}},
+        simple_support: {label: $t('common.roles.simple_support'), class: "bg-neutral-400", ui: {base: "w-40 justify-center"}},
       } as Record<UserRole, Partial<BadgeProps>>)[row.getValue<User['role']>('role')]
 
       return h(UBadge, props)
@@ -119,7 +114,7 @@ const columns: TableColumn<User>[] = [
   },
   {
     id: 'operations',
-    header: 'عملیات',
+    header: $t('common.tables.operations'),
     enableSorting: false,
     size: 20,
     cell: ({row}) => {
@@ -149,8 +144,8 @@ const handleEdit = (id: number) => {
   }
 }
 
-const handleDelete = (id: number) => {
-  if (confirm('آیا مطمئن هستید؟')) {
+const handleDelete = async (id: number) => {
+  if (await useConfirm('آیا مطمئن هستید؟')) {
   }
 }
 </script>

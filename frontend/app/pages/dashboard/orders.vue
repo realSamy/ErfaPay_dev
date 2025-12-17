@@ -14,7 +14,9 @@
 
     <section class="space-y-8">
       <h2 class="font-bold text-2xl">سفارشات پیشین:</h2>
-      <TableOrders />
+      <ClientOnly>
+        <TableOrders />
+      </ClientOnly>
     </section>
   </div>
 </template>
@@ -23,7 +25,8 @@
 import type {ServiceItem} from "~/types/data";
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: ['auth'],
 })
 
 const services = useState<ServiceItem[]>('services')

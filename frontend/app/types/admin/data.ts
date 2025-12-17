@@ -1,16 +1,4 @@
-export type UserRole = 'regular' | 'simple_support' | 'senior_support' | 'main_admin'
-
-// Base User (from Django auth)
-export interface User {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-  role: UserRole
-  is_verified: boolean
-  blocked: boolean
-  country_code: string
-}
+import type {User, UserRole} from "~/types/users";
 
 // Wallet
 export interface Wallet {

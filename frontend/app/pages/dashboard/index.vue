@@ -23,7 +23,8 @@
 import type {ServiceItem} from "~/types/data";
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: ['auth'],
 })
 
 const services = useState<ServiceItem[]>('services')

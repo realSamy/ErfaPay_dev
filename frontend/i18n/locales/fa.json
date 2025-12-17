@@ -6,6 +6,7 @@
         "eur": "€",
         "gbp": "£",
         "rial": "﷼",
+        "toman": "تومان",
         "usd": "$",
         "usdt": "₮"
       },
@@ -20,27 +21,119 @@
       }
     },
     "labels": {
+      "add": "اضافه کردن",
+      "admin_panel": "پنل مدیریت",
+      "cancel": "لغو",
       "contact_us": "تماس با ما",
+      "create": "ایجاد",
       "dashboard": "داشبورد",
+      "delete": "حذف",
+      "edit": "ویرایش",
       "login": "ورود",
+      "logout": "خروج از حساب",
       "more": "بیشتر",
+      "new_ticket": "ثبت تیکت جدید",
       "password": "رمز",
       "phone": "شماره همراه",
+      "send": "ارسال",
       "services": "لیست خدمات",
       "signup": "ثبت نام",
+      "title_en": "عنوان (انگلیسی)",
+      "title_fa": "عنوان (فارسی)",
       "username": "نام کاربری"
     },
+    "layouts": {
+      "sidebars": {
+        "admin": {
+          "labels": {
+            "agents": "تیم پشتیبانی",
+            "agents_new": "پشتیبان جدید",
+            "finance": "مدیریت مالی و گزارشات",
+            "services": "خدمات و سفارش ها",
+            "services_new": "سرویس جدید",
+            "support": "پشتیبانی و ارتباطات",
+            "users": "مدیریت کاربران",
+            "users_new": "کاربر جدید"
+          }
+        }
+      }
+    },
     "messages": {
-      "support_24_7": "۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم."
+      "confirm_logout": "میخوای از حسابت خارج بشی؟",
+      "support_24_7": "۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم.",
+      "warn_add_users_to_show": "کاربران را اضافه کنید تا اینجا نمایش داده شوند",
+      "warn_no_user": "هیچ کاربری یافت نشد"
+    },
+    "priorities": {
+      "high": "زیاد",
+      "low": "کم",
+      "medium": "متوسط"
+    },
+    "roles": {
+      "main_admin": "مدیر سایت",
+      "regular": "کاربر عادی",
+      "senior_support": "پشتیبان ارشد",
+      "simple_support": "پشتیبان ساده"
     },
     "signin_or_signup": "ورود {'|'} ثبت نام",
     "site_title": "ارفاپی",
+    "states": {
+      "disable": "غیرفعال‌سازی",
+      "disabled": "غیرفعال",
+      "enable": "فعال‌سازی",
+      "enabled": "فعال",
+      "orders": {
+        "done": "انجام شده",
+        "pending": "در انتظار",
+        "processing": "در حال انجام",
+        "rejected": "رد شده"
+      }
+    },
+    "tables": {
+      "agent_name": "نام پشتیبان",
+      "assigned_to": "متصل به",
+      "category": "دسته بندی",
+      "commission": "کارمزد",
+      "created_at": "تاریخ ایجاد",
+      "date": "تاریخ",
+      "download": "دانلود",
+      "email": "ایمیل",
+      "last_login": "آخرین ورود",
+      "operations": "عملیات",
+      "priority": "اولویت",
+      "role": "سمت کاربر",
+      "search": "جستجو...",
+      "state": "وضعیت",
+      "tax": "مالیات",
+      "ticket_number": "شماره تیکت",
+      "title": "عنوان",
+      "topic": "موضوع",
+      "user": "کاربر",
+      "user_name": "نام کاربر"
+    },
+    "ticket_status": {
+      "closed": "بسته شده",
+      "in_progress": "در حال انجام",
+      "open": "باز",
+      "resolved": "حل شده",
+      "waiting_user": "منتظر پاسخ کاربر"
+    },
     "titles": {
+      "email": "ایمیل",
+      "error": "خطا",
       "login": "ورود به سایت",
       "login_notice": "قبلا ثبت نام کردی؟",
+      "order_number": "شماره سفارش",
+      "payment_amount": "مبلغ سفارش",
       "redirecting": "در حال انتقال...",
+      "request_type": "نوع درخواست",
       "signup": "ایجاد حساب جدید",
-      "signup_notice": "اینجا حساب نداری؟"
+      "signup_notice": "اینجا حساب نداری؟",
+      "ticket_categories": "دسته بندی های تیکت",
+      "tickets": "تیکت های پشتیبانی",
+      "tickets_desc": "تاریخچه و وضعیت درخواست های پشتیبانی",
+      "user_info": "مشخصات کاربر",
+      "user_orders": "سفارشات کاربر"
     }
   },
   "error": {
@@ -51,7 +144,13 @@
     "invalid_login": "نام کاربری یا رمز اشتباه است.",
     "title": "خطا",
     "try_again_later": "لطفا بعدا تلاش کن",
-    "unexpected": "مشکلی پیش اومده"
+    "unexpected": "مشکلی پیش اومده",
+    "user_not_found": "کاربر یافت نشد"
+  },
+  "errors": {
+    "otp": {
+      "too_many_requests": "به تازگی کد برات ساخته شده، برای ساخت کد جدید لطفا ۷۵ ثانیه صبر کن."
+    }
   },
   "footer": {
     "about_us": "پرسش و پاسخ",
@@ -63,11 +162,20 @@
     "privacy_policy": "مجوزهای ارفاپی",
     "rules_regulations": "شرایط و قوانین استفاده"
   },
+  "http": {
+    "response": {
+      "tickets": {
+        "admin_reply_sent": "پاسخ شما ثبت شد",
+        "reply_sent": "پاسخ ارسال شد"
+      }
+    }
+  },
   "layout": {
     "sidebar": {
       "label_dashboard": "داشبورد",
       "label_orders": "سفارشات",
-      "label_support": "پشتیبانی"
+      "label_support": "پشتیبانی",
+      "label_tickets": "تیکت ها"
     }
   },
   "modals": {
@@ -85,6 +193,12 @@
       "title_verify_email": "تایید ایمیل",
       "title_verify_phone": "تایید شماره تلفن"
     },
+    "confirms": {
+      "delete_ticket_category": {
+        "description": "دسته بندی برای همیشه حذف خواهد شد.",
+        "title": "حذف دسته بندی تیکت"
+      }
+    },
     "profile_setup": {
       "label_create_account": "ایجاد حساب کاربری",
       "label_email": "آدرس ایمیل",
@@ -94,7 +208,9 @@
       "label_password": "رمز عبور",
       "label_password_retype": "تکرار رمز عبور",
       "label_phone": "شماره همراه",
+      "label_role": "سطح دسترسی",
       "label_tos": "قوانین و مقررات",
+      "label_username": "نام کاربری",
       "placeholder_email": "your_email{'@'}example.com",
       "placeholder_firstname": "نام خود را وارد کنید",
       "placeholder_fullname": "نام خود را وارد کنید",
@@ -103,7 +219,22 @@
       "text_tos_agreement": "با {0} ارفاپی موافقم.",
       "title_profile_setup": "تکمیل اطلاعات پروفایل"
     },
+    "prompts": {
+      "add_ticket_category": {
+        "title": "دسته بندی تیکت جدید"
+      },
+      "defaults": {
+        "cancel": "لغو",
+        "confirm": "تایید",
+        "title": "ورود اطلاعات"
+      },
+      "edit_ticket_category": {
+        "title": "ویرایش دسته بندی تیکت"
+      }
+    },
     "signin": {
+      "label_change_email": "تغییر ایمیل",
+      "label_change_phone": "تغییر شماره همراه",
       "label_email": "آدرس ایمیل",
       "label_password": "رمز عبور",
       "label_phone": "شماره همراه",
@@ -128,10 +259,16 @@
     }
   },
   "navigation": {
+    "back_tickets": "بازگشت به تیکت ها",
     "home": "برگشت به خانه"
   },
   "pages": {
     "admin": {
+      "labels": {
+        "services": {
+          "button_new_service": "سرویس جدید"
+        }
+      },
       "title": {
         "agents": "مدیریت تیم پشتیبانی",
         "agents_new": "پشتیبان جدید",
@@ -141,6 +278,9 @@
         "orders_id": "سفارش [{order}]",
         "orders_new": "سرویس جدید",
         "support": "ارتباطات",
+        "ticket_id": "تیکت [{ticket}]",
+        "tickets": "تیکت ها",
+        "tickets_new": "تیکت جدید",
         "users": "مدیریت کاربران",
         "users_id": "{name}",
         "users_new": "کاربر جدید"
@@ -174,6 +314,43 @@
       "support_phone": "تلفن پشتیبانی:",
       "why_erfapay_description": "ارفاپی یک پلتفرم سریع و امن برای انجام پرداخت‌های مالی به ایرانیان خارج کشور است. این سرویس به گونه‌ای طراحی شده تا نیازهای مهاجران و افراد مقیم خارج از کشور را پوشش دهد.",
       "why_erfapay_title": "چرا ارفاپی انتخاب مناسبی است؟"
+    },
+    "tickets": {
+      "labels": {
+        "assign_to_self": "پاسخ به تیکت",
+        "change_state": "تغییر وضعیت",
+        "choose_category": "دسته بندی",
+        "choose_priority": "اولویت",
+        "faq": "سوالات متداول",
+        "mark_as_closed": "بستن تیکت",
+        "mark_as_progress": "تغییر وضعیت به \"در حال انجام\"",
+        "new_ticket_description": "توضیحات (متن پیام ارسالی)",
+        "new_ticket_topic": "موضوع پیام ارسالی"
+      },
+      "messages": {
+        "created": "تیکت \"{0}\" با موفقیت ایجاد شد",
+        "is_assigned_to_other": "پشتیبان دیگری به این تیکت رسیدگی میکند",
+        "is_closed": "تیکت بسته شده است",
+        "is_waiting_assign": "در حال انتظار برای تیم پشتیبانی",
+        "mark_as_closed": "تیکت \"{0}\" بسته شود؟",
+        "mark_as_progress": "وضعیت تیکت \"{0}\" به \"در حال انجام\" تغییر کند؟",
+        "notice_faq": "کاربر گرامی ارفاپی چنانچه سوالی دارید می‌توانید با جستجو در قسمت سوالات متداول پاسخ اکثر سوالات خود را بیابید ، در صورتیکه به پاسخ مورد نظر خود دست نیافتید می‌توانید از طریق ارسال تیکت به دپارتمان مربوطه با کارشناسان ارفاپی در ارتباط باشید."
+      },
+      "placeholders": {
+        "choose_category": "لطفا یک دسته بندی رو انتخاب کن"
+      },
+      "titles": {
+        "created": "تیکت ایجاد شد",
+        "current_state": "وضعیت کنونی",
+        "new_ticket": "افزودن تیکت جدید",
+        "subject": "عنوان تیکت",
+        "waiting_open": "در صف انتظار"
+      }
+    },
+    "users": {
+      "messages": {
+        "created": "کاربر جدید با موفقیت ایجاد شد"
+      }
     }
   },
   "services": {

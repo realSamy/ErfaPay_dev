@@ -81,7 +81,7 @@
             <span class="tr-title">اپراتور:</span>
             <span class="tr-value">
               {{
-                order.processed_by ? `${(order.processed_by as User).first_name} ${(order.processed_by as User).last_name}` : '—'
+                order.processed_by ? (order.processed_by as User).full_name : '—'
               }}
             </span>
           </div>
@@ -131,6 +131,9 @@
 </template>
 
 <script lang="ts" setup>
+import type {User} from "~/types/users";
+import type {Order} from "~/types";
+
 definePageMeta({
   layout: 'admin',
   title: 'pages.admin.title.orders_id',
@@ -139,23 +142,14 @@ definePageMeta({
 // Demo data — in real app this comes from API
 const {locale} = useI18n()
 
-const user = ref<User>({
-  id: 42,
-  email: 'niyako@example.com',
-  first_name: 'نیاکو',
-  last_name: 'منوچهری',
-  role: 'regular',
-  is_verified: true,
-  blocked: false,
-  country_code: 'DE',
-})
+const user = ref<User>({} as User)
 
 const order = ref<Order>({
   id: 187,
   user: user.value,
   orderNumber: 1000333,
-  amount_irr: 2850000,
-  tax_amount: 256500,
+  amount_irr: '2850000',
+  tax_amount: '256500',
   status: 'done',
   type: {
     title: {fa: 'پرداخت قبض', en: 'Electricity Bill Payment'},

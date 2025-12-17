@@ -7,7 +7,7 @@
 
       <form class="space-y-4" method="post" @submit.prevent="handleSignUp">
         <UFormField :label="t('common.labels.phone')">
-          <UButtonGroup dir="ltr" class="w-full">
+          <UFieldGroup dir="ltr" class="w-full">
             <SelectCountryCode v-model="selectedCountry" />
             <UInput
                 v-model="phone"
@@ -17,7 +17,7 @@
                 required
                 type="phone"
             />
-          </UButtonGroup>
+          </UFieldGroup>
         </UFormField>
 
         <UButton v-if="success" block color="success" loading>

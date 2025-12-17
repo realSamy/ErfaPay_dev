@@ -15,32 +15,125 @@
         "eur": "Euro",
         "gbp": "British Pound",
         "rial": "Rial",
+        "toman": "Toman",
         "usd": "US Dollar",
         "usdt": "Tether (USDT)"
       }
     },
     "labels": {
+      "add": "Add",
+      "admin_panel": "Admin Panel",
+      "cancel": "Cancel",
       "contact_us": "Contact Us",
+      "create": "Create",
       "dashboard": "Dashboard",
+      "delete": "Delete",
+      "edit": "Edit",
       "login": "Login",
+      "logout": "Logout",
       "more": "More",
+      "new_ticket": "New Ticket",
       "password": "Password",
       "phone": "Phone Number",
+      "send": "Send",
       "services": "Services",
       "signup": "Sign Up",
+      "title_en": "Title (English)",
+      "title_fa": "Title (Farsi)",
       "username": "Username"
     },
+    "layouts": {
+      "sidebars": {
+        "admin": {
+          "labels": {
+            "agents": "Agents",
+            "agents_new": "New Agent",
+            "finance": "Financial and Reports",
+            "services": "Services and Orders",
+            "services_new": "New Service",
+            "support": "Support and Communications",
+            "users": "Users Management",
+            "users_new": "New User"
+          }
+        }
+      }
+    },
     "messages": {
-      "support_24_7": "We are available 24/7."
+      "confirm_logout": "Are you sure you want to logout?",
+      "support_24_7": "We are available 24/7.",
+      "warn_add_users_to_show": "Add users to show here",
+      "warn_no_user": "No user found"
+    },
+    "priorities": {
+      "high": "High",
+      "low": "Low",
+      "medium": "Medium"
+    },
+    "roles": {
+      "main_admin": "Main Admin",
+      "regular": "Regular",
+      "senior_support": "Senior Support",
+      "simple_support": "Simple Support"
     },
     "signin_or_signup": "Sign in {'|'} Sign up",
     "site_title": "ErfaPay",
+    "states": {
+      "disable": "Disable",
+      "disabled": "Deactive",
+      "enable": "Enable",
+      "enabled": "Active",
+      "orders": {
+        "done": "Done",
+        "pending": "Pending",
+        "processing": "Processing",
+        "rejected": "Rejected"
+      }
+    },
+    "tables": {
+      "agent_name": "Agent Name",
+      "assigned_to": "Assigned To",
+      "category": "Category",
+      "commission": "Commision",
+      "created_at": "Created At",
+      "date": "Date",
+      "download": "Download",
+      "email": "Email",
+      "last_login": "Last Login",
+      "operations": "Operations",
+      "priority": "Priority",
+      "role": "Role",
+      "search": "Search...",
+      "state": "State",
+      "tax": "Tax",
+      "ticket_number": "Ticket Number",
+      "title": "Title",
+      "topic": "Topic",
+      "user": "User",
+      "user_name": "Name"
+    },
+    "ticket_status": {
+      "closed": "Closed",
+      "in_progress": "In Progress",
+      "open": "Open",
+      "resolved": "Resolved",
+      "waiting_user": "Waiting for user"
+    },
     "titles": {
+      "email": "Email",
+      "error": "Error",
       "login": "Login",
       "login_notice": "Already have account?",
+      "order_number": "Order Number",
+      "payment_amount": "Payment Amount",
       "redirecting": "Redirecting...",
+      "request_type": "Request Type",
       "signup": "Sign Up",
-      "signup_notice": "Are you new here?"
+      "signup_notice": "Are you new here?",
+      "ticket_categories": "Ticket Categories",
+      "tickets": "Support Tickets",
+      "tickets_desc": "Tickets and support history",
+      "user_info": "User Info",
+      "user_orders": "User Orders"
     }
   },
   "error": {
@@ -51,7 +144,13 @@
     "invalid_login": "Invalid username or password.",
     "title": "Error",
     "try_again_later": "Please try again later",
-    "unexpected": "Something went wrong"
+    "unexpected": "Something went wrong",
+    "user_not_found": "User not found"
+  },
+  "errors": {
+    "otp": {
+      "too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code."
+    }
   },
   "footer": {
     "about_us": "Questions and Answers",
@@ -63,21 +162,64 @@
     "privacy_policy": "ErfaPay Licenses",
     "rules_regulations": "Terms and Conditions of Use"
   },
+  "http": {
+    "response": {
+      "tickets": {
+        "admin_reply_sent": "Your reply is sent",
+        "reply_sent": "Reply is sent"
+      }
+    }
+  },
+  "layout": {
+    "sidebar": {
+      "label_dashboard": "Dashboard",
+      "label_orders": "Orders",
+      "label_support": "Support",
+      "label_tickets": "Tickets"
+    }
+  },
   "modals": {
+    "confirms": {
+      "delete_ticket_category": {
+        "description": "This action cannot be undone.",
+        "title": "Delete ticket category"
+      }
+    },
     "profileSetup": {
       "labelEmail2": ""
     },
     "profile_setup": {
       "label_create_account": "Create Account",
       "label_email": "Email Address",
-      "label_email2": "",
       "label_firstname": "First Name",
+      "label_fullname": "Full name",
       "label_lastname": "Last Name",
       "label_password": "Password",
+      "label_password_retype": "Confirm Password",
+      "label_phone": "Phone number",
+      "label_role": "Role",
       "label_tos": "Terms of use",
+      "label_username": "Username",
       "placeholder_email": "your_email{'@'}example.com",
+      "placeholder_firstname": "Enter your first name",
+      "placeholder_fullname": "Enter your full name",
       "placeholder_lastname": "Enter your last name",
-      "placeholder_password": "********"
+      "placeholder_password": "********",
+      "text_tos_agreement": "I agree with {0} ErfaPay",
+      "title_profile_setup": "Complete Setup"
+    },
+    "prompts": {
+      "add_ticket_category": {
+        "title": "New ticket category"
+      },
+      "defaults": {
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "title": "Prompt"
+      },
+      "edit_ticket_category": {
+        "title": "Edit ticket category"
+      }
     },
     "signin": {
       "label_change_email": "Change email",
@@ -112,6 +254,9 @@
       "label_phone": "Mobile number",
       "label_switch_signin": "Sign in to your account",
       "label_tos": "Terms and Conditions",
+      "placeholder_email": "Enter your email address",
+      "placeholder_password": "Enter your password",
+      "placeholder_phone": "Enter your phone number",
       "text_already_has_account": "I already have an ErfaPay account.",
       "text_code_not_received": "I didn’t receive the verification code.",
       "text_tos_agreement": "I agree with the {0} of ErfaPay.",
@@ -120,20 +265,32 @@
       "title_verify_phone": "Verify phone number"
     }
   },
-  "modals.profileSetup.labelEmail2": "modals.profile_setup.label_email2",
-  "modals.profile_setup.label_email2": "",
   "navigation": {
+    "back_tickets": "Back to tickets",
     "home": "Back to Home"
   },
   "pages": {
     "admin": {
+      "labels": {
+        "services": {
+          "button_new_service": "New Service"
+        }
+      },
       "title": {
         "agents": "Agents management",
+        "agents_new": "New Agent",
         "financial": "Financial managements and reports",
         "index": "Dashboard",
         "orders": "Orders management",
+        "orders_id": "Order [{order}]",
+        "orders_new": "New Order",
         "support": "Communications",
-        "users": "Users management"
+        "ticket_id": "Ticket [{ticket}]",
+        "tickets": "Tickets",
+        "tickets_new": "New Ticket",
+        "users": "Users management",
+        "users_id": "{name}",
+        "users_new": "New User"
       }
     },
     "home": {
@@ -164,10 +321,48 @@
       "support_phone": "Support Phone:",
       "why_erfapay_description": "ErfaPay is a fast and secure platform for financial transactions for Iranians abroad. This service is designed to meet the needs of immigrants and residents outside of Iran.",
       "why_erfapay_title": "Why is ErfaPay the Right Choice?"
+    },
+    "tickets": {
+      "labels": {
+        "assign_to_self": "Accept Ticket",
+        "change_state": "Change State",
+        "choose_category": "Category",
+        "choose_priority": "Priority",
+        "faq": "FAQ",
+        "mark_as_closed": "Close Ticket",
+        "mark_as_progress": "Mark as \"In Progress\"",
+        "new_ticket_description": "Descriptions (Ticket content)",
+        "new_ticket_topic": "New ticket topic"
+      },
+      "messages": {
+        "created": "Ticket \"{0}\" created successfully",
+        "is_assigned_to_other": "This ticket is getting managed by another agent",
+        "is_closed": "The ticket is closed",
+        "is_waiting_assign": "Waiting for support team",
+        "mark_as_closed": "Mark ticket \"{0}\" as closed?",
+        "mark_as_progress": "Mark ticket \"{0}\" as \"In Progress\"?",
+        "notice_faq": "Dear Erfapay user, if you have any questions, you can find the answers to most of your questions by searching the Frequently Asked Questions section. If you do not find the answer you are looking for, you can contact Orfap experts by sending a ticket to the relevant department."
+      },
+      "placeholders": {
+        "choose_category": "Please choose a category"
+      },
+      "titles": {
+        "created": "Ticket created",
+        "current_state": "Current State",
+        "new_ticket": "Add new ticket",
+        "subject": "Subject",
+        "waiting_open": "In Queue"
+      }
+    },
+    "users": {
+      "messages": {
+        "created": "User created successfully"
+      }
     }
   },
   "services": {
     "labels": {
+      "button_new_order": "New Service",
       "charge_account": "Charge Account",
       "internal_payment": "Internal Payment",
       "money_transfer": "Money Transfer"

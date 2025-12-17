@@ -1,5 +1,6 @@
 // composables/useServices.ts
 import type { Category, Service } from '~/types/services'
+import type {HTTPServicesResponse} from "~/types/http";
 
 // Public: Get all active categories with services
 export const useCategories = () => {
@@ -8,7 +9,7 @@ export const useCategories = () => {
 
 // Public: Get all active services
 export const useServices = () => {
-  return useApi<{ data: Service[] }>('/api/services/')
+  return useApi<HTTPServicesResponse>('/api/services/')
 }
 
 // Public: Get single service detail

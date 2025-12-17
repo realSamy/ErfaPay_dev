@@ -6,7 +6,7 @@
       <UDashboardSidebarCollapse />
       <logo class="lg:hidden" />
     </div>
-    <div class="header-end" transition="test">
+    <div class="header-end">
       <UButton :label="$t('common.signin_or_signup')" @click="open('signin')" v-if="isIndexRoute" />
       <SelectLanguage v-model="showOverlay"/>
 

@@ -4,53 +4,60 @@ import type {NavigationMenuItem} from '@nuxt/ui'
 const {t} = useI18n()
 const localePath = useLocaleRoute()
 const route = useRoute()
+const {user, logout} = useAuth()
 
 const menuItems = computed<NavigationMenuItem[]>(() => [
   {
-    label: 'مدیریت مالی و گزارشات',
+    label: t('common.layouts.sidebars.admin.labels.finance'),
     icon: 'material-symbols:finance-mode',
     to: localePath('admin-financial')
   },
   {
-    label: 'مدیریت سفارشات',
+    label: t('common.layouts.sidebars.admin.labels.services'),
     icon: 'material-symbols:receipt-outline',
     to: localePath('admin-services'),
-    active: route.name.startsWith('admin-services'),
+    active: route.name?.toString().startsWith('admin-services'),
     children: [
       {
-        label: 'سرویس جدید',
+        label: t('common.layouts.sidebars.admin.labels.services_new'),
         to: localePath('admin-services-new')
       }
     ]
   },
   {
-    label: 'مدیریت کاربران',
+    label: t('common.layouts.sidebars.admin.labels.users'),
     icon: 'material-symbols:dashboard-outline',
     to: localePath('admin-users'),
-    active: route.name.startsWith('admin-users'),
+    active: route.name?.toString().startsWith('admin-users'),
     children: [
       {
-        label: 'کاربر جدید',
+        label: t('common.layouts.sidebars.admin.labels.users_new'),
         to: localePath('admin-users-new')
       }
     ]
   },
   {
-    label: 'مدیریت تیم پشتیبانی',
+    label: t('common.layouts.sidebars.admin.labels.agents'),
     icon: 'material-symbols:contact-support-outline',
     to: localePath('admin-agents'),
-    active: route.name.startsWith('admin-agents'),
+    active: route.name?.toString().startsWith('admin-agents'),
     children: [
       {
-        label: 'پشتیبان جدید',
+        label: t('common.layouts.sidebars.admin.labels.agents_new'),
         to: localePath('admin-agents-new')
       }
     ]
   },
   {
-    label: 'ارتباطات',
+    label: t('common.layouts.sidebars.admin.labels.support'),
     icon: 'material-symbols:campaign-outline',
     to: localePath('admin-support'),
+    children: [
+      {
+        label: t('layout.sidebar.label_tickets'),
+        to: localePath('admin-support-tickets')
+      }
+    ]
   },
 
 ])
@@ -70,9 +77,9 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
     <template #header="{ collapsed, collapse }">
       <div v-if="!collapsed" class="w-full flex justify-between">
         <AdminLogo class="h-5 w-auto shrink-0"/>
-        <UDashboardSidebarCollapse />
+        <UDashboardSidebarCollapse/>
       </div>
-      <AdminLogo :collapsed="collapsed" @click="collapse(false)" v-else/>
+      <AdminLogo v-else :collapsed="collapsed" @click="collapse(false)"/>
     </template>
 
     <template #default="{ collapsed }">
@@ -83,6 +90,7 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
       />
 
       <UNavigationMenu
+          v-if="false"
           :collapsed="collapsed"
           :items="menuLinks"
           class="mt-auto"
@@ -93,19 +101,20 @@ const menuLinks = computed<NavigationMenuItem[]>(() => [
     </template>
 
     <template #footer="{ collapsed }">
-      <div class="w-full flex justify-between">
-        <UButton
-            :avatar="{
-          src: 'https://github.com/realSamy.png'
-        }"
-            :block="collapsed"
-            :label="collapsed ? undefined : 'سامان هودجی'"
-            class="w-full"
-            color="neutral"
-            variant="ghost"
-        />
-        <UButton v-if="!collapsed" color="neutral" icon="material-symbols:logout" variant="link"/>
-      </div>
+      <ClientOnly>
+        <div class="w-full flex justify-between">
+          <UButton
+              :block="collapsed"
+              :label="collapsed ? undefined : user?.full_name"
+              class="w-full"
+              color="neutral"
+              icon="material-symbols:person"
+              variant="ghost"
+          />
+          <UButton v-if="!collapsed" :title="$t('common.labels.logout')" color="neutral" icon="material-symbols:logout"
+                   variant="link" @click="() => logout(true, $t)"/>
+        </div>
+      </ClientOnly>
     </template>
   </UDashboardSidebar>
 </template>

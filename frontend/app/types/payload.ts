@@ -1,4 +1,5 @@
-import type {ChargeMethod, TicketPriority, TicketStatus} from "~/types/index";
+import type {ChargeMethod} from "~/types";
+import type {Ticket} from '~/types/tickets';
 
 export interface LoginPayload {
   email: string
@@ -48,7 +49,7 @@ export interface CreateOrderPayload {
 export interface CreateTicketPayload {
   subject: string
   category: number
-  priority: TicketPriority
+  priority: Ticket['priority']
   message: string
   attachments?: File[]
 }
@@ -67,8 +68,8 @@ export interface CreateSupportUserPayload {
 }
 export interface AdminUpdateTicketPayload {
   assigned_to?: number | null
-  priority?: TicketPriority
-  status?: TicketStatus
+  priority?: Ticket['priority']
+  status?: Ticket['status']
 }
 
 export interface CalculatePricePayload {
@@ -82,3 +83,51 @@ export interface CalculatePriceResponse {
   tax: number
   total_payable: number
 }
+
+export interface CategoryFormPayload {
+  name_fa: string
+  name_en: string
+  slug: string
+  icon?: File | null
+  order?: number
+  is_active?: boolean
+}
+
+// For Service create/update
+export interface ServiceFormPayload {
+  // Foreign key
+  // category?: number | string | null // Category ID
+
+  // Bilingual fields
+  title_fa: string
+  title_en?: string
+  description_fa: string
+  description_en?: string
+
+  // Visual
+  icon: string
+  banner: File
+
+  // Pricing
+  commission_type: 'percent' | 'fixed'
+  commission_percent?: string | number
+  commission_fixed?: string | number
+
+  min_amount: number
+  max_amount: number
+  tax_rate: number
+
+  // Config
+  delivery_time_fa?: string
+  delivery_time_en?: string
+  requires_manual_review?: boolean
+  is_active?: boolean
+  order?: number
+}
+
+export interface TicketCategoryPayload {
+  title_fa: string
+  title_en: string
+}
+
+export type TicketCategoryUpdatePayload = Partial<TicketCategoryPayload>

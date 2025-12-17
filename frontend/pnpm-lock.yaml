@@ -35,9 +35,6 @@ importers:
       country-codes-list:
         specifier: ^2.0.0
         version: 2.0.0
-      dragon-editor:
-        specifier: ^3.8.2
-        version: 3.8.2(magicast@0.5.1)
       echarts:
         specifier: ^6.0.0
         version: 6.0.0
@@ -57,6 +54,9 @@ importers:
       '@iconify-json/cif':
         specifier: ^1.2.7
         version: 1.2.7
+      '@iconify-json/circle-flags':
+        specifier: ^1.2.10
+        version: 1.2.10
       '@iconify-json/cryptocurrency-color':
         specifier: ^1.2.2
         version: 1.2.2
@@ -894,6 +894,9 @@ packages:
 
   '@iconify-json/cif@1.2.7':
     resolution: {integrity: sha512-MUDOUt7xWMsWw9QW312wlCxblqaR+sRfQRokO6ZH7Xp+53HgzHA7K+ejrite+ULpV/bBVe6XZIrxSShXEpdpNg==}
+
+  '@iconify-json/circle-flags@1.2.10':
+    resolution: {integrity: sha512-sZRxs689a281RtZvuAiKtV7pQHv8Tk0HkinSM7QvLgdLEK8xgGRCcbDvL09Rq+/KtemmsMzGhS9/qt+r3ca+Ug==}
 
   '@iconify-json/cryptocurrency-color@1.2.2':
     resolution: {integrity: sha512-gQuPm9hRJQNQjaPenUdQe5/vtrEraLQQyXbaNeddaFCdfSfi/gP9g9lG1K9j0CuCE3P3gd/lwDYrv3FoHYn4tQ==}
@@ -3629,9 +3632,6 @@ packages:
   dotenv@17.2.3:
     resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
     engines: {node: '>=12'}
-
-  dragon-editor@3.8.2:
-    resolution: {integrity: sha512-ZDoHUNgc8hjw/Eh7+9xisvz1HnG9PW+29UQn0cTdUmrsFwdQVsPpJoD0I38/UpiHRKVzQIGu8XSbEh62wS5pvQ==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -8025,6 +8025,10 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
+  '@iconify-json/circle-flags@1.2.10':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/cryptocurrency-color@1.2.2':
     dependencies:
       '@iconify/types': 2.0.0
@@ -11371,13 +11375,6 @@ snapshots:
   dotenv@16.6.1: {}
 
   dotenv@17.2.3: {}
-
-  dragon-editor@3.8.2(magicast@0.5.1):
-    dependencies:
-      '@nuxt/kit': 4.2.1(magicast@0.5.1)
-      shiki: 3.13.0
-    transitivePeerDependencies:
-      - magicast
 
   dunder-proto@1.0.1:
     dependencies:

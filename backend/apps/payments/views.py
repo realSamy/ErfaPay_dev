@@ -41,9 +41,9 @@ class AdminChargeListView(APIView):
     permission_classes = [IsSeniorSupportOrAbove]
     def get(self, request):
         charges = Charge.objects.select_related('user').all().order_by('-created_at')
-        status = request.query_params.get('status')
-        if status:
-            charges = charges.filter(status=status)
+        _status = request.query_params.get('status')
+        if _status:
+            charges = charges.filter(status=_status)
         serializer = ChargeListSerializer(charges, many=True)
         return Response({'ok': True, 'data': serializer.data})
 

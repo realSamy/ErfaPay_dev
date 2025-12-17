@@ -9,13 +9,13 @@ export interface Category {
 
 export interface Service {
   id: number
-  category: Category
+  // category: Category
   title_fa: string
   title_en: string
   description_fa: string
   description_en: string
   icon: string
-  banner: string | null
+  banner: string
 
   // Pricing
   commission_type: 'percent' | 'fixed'

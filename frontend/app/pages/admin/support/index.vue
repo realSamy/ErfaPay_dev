@@ -10,7 +10,7 @@
     </section>
 
     <section>
-      <h2 class="font-bold text-2xl">لیست تیکت های پشتیبانی</h2>
+      <h2 class="font-bold text-2xl">{{ $t('common.titles.tickets') }}</h2>
       <ClientOnly>
         <TableAdminTickets/>
       </ClientOnly>

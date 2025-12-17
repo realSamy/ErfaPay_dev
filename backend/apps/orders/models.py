@@ -1,11 +1,6 @@
-# apps/orders/models.py
 from django.db import models, transaction
 from django.db.models import F
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -15,7 +10,7 @@ class Order(models.Model):
         ('rejected', 'Rejected'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
+    user = models.ForeignKey('users.UserProfile', on_delete=models.PROTECT, related_name='orders')
     service = models.ForeignKey('services.Service', on_delete=models.PROTECT, related_name='orders')
 
     # Pricing fields (calculated at creation)
@@ -35,7 +30,7 @@ class Order(models.Model):
 
     # Admin fields
     processed_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True,
+        'users.UserProfile', on_delete=models.SET_NULL, null=True, blank=True,
         related_name='processed_orders', help_text="Admin who is handling this order"
     )
     admin_notes = models.TextField(blank=True, help_text="Internal admin notes")

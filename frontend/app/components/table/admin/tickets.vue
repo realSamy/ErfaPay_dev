@@ -26,25 +26,25 @@
 </template>
 
 <script lang="ts" setup>
-import type {TicketItem, User} from '~/types/admin/data';
+import type {User} from '~/types/users';
 import {getPaginationRowModel} from "@tanstack/vue-table";
 import type {TableColumn, TableRow} from "@nuxt/ui";
-import {resolveComponent} from "vue";
+import {h, resolveComponent} from "vue";
+import type {Ticket} from "~/types/tickets";
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 
-const items = reactive<TicketItem[]>([])
+const items = reactive<Ticket[]>([])
 const loading = ref<boolean>(true)
-adminLoadTickets()
-    .then((orders) => {
-      items.splice(0, items.length, ...orders)
-    })
-    .finally(() => {
-      loading.value = false
-    })
 
-const {d, n} = useI18n()
+useAdminGetTickets().then(response => {
+  if (response.data.value?.ok) {
+    items.splice(0, items.length, ...response.data.value.data)
+  }
+}).finally(() => loading.value = false)
+
+const {d, n, t, locale} = useI18n()
 
 const localePath = useLocalePath()
 const table = useTemplateRef('table')
@@ -52,25 +52,28 @@ const pagination = ref({
   pageIndex: 0,
   pageSize: 5
 })
-const users = useState<User[]>('admin--users')
-const categoryItems = computed(() =>
-    []
-)
+const users = useState<User[]>('admin.users')
+const cats = await useLoadTicketCategoryList()
+const categoryItems = computed(() => {
+  return cats.value.map(c => ({value: c.id, label: locale.value === 'en' ? c.title_en : c.title_fa}))
+})
 
 const statusItems = computed(() => [
-  {value: 'open', label: 'باز'},
-  {value: 'in_progress', label: 'در حال انجام'},
-  {value: 'closed', label: 'بسته شده'},
+  {value: 'open', label: t('common.ticket_status.open')},
+  {value: 'in_progress', label: t('common.ticket_status.in_progress')},
+  {value: 'closed', label: t('common.ticket_status.closed')},
+  {value: 'resolved', label: t('common.ticket_status.resolved')},
+  {value: 'waiting_user', label: t('common.ticket_status.waiting_user')},
 ])
 
 const priorityItems = computed(() => [
-  {value: 'low', label: 'کم'},
-  {value: 'medium', label: 'متوسط'},
-  {value: 'high', label: 'بالا'},
+  {value: 'low', label: t('common.priorities.low')},
+  {value: 'medium', label: t('common.priorities.medium')},
+  {value: 'high', label: t('common.priorities.high')},
 ])
 
 const userItems = computed(() =>
-    users.value.map(u => ({value: u.id, label: `${u.first_name} ${u.last_name}`}))
+    users.value.map(u => ({value: u.id, label: u.full_name}))
 )
 
 // Filter refs
@@ -79,8 +82,7 @@ const statusFilter = ref<string[]>([])
 const priorityFilter = ref<string[]>([])
 const userFilter = ref<string[]>([])
 
-const columns: Ref<TableColumn<TicketItem>[]> = ref([
-  // Selection Checkbox
+const columns: Ref<TableColumn<Ticket>[]> = ref([
   // {
   //   id: 'select',
   //   header: ({ table }) =>
@@ -99,102 +101,121 @@ const columns: Ref<TableColumn<TicketItem>[]> = ref([
   //       'aria-label': 'انتخاب تیکت',
   //     }),
   // },
-  // Ticket ID
   {
-    accessorKey: 'id',
-    header: tableSortableLabel('شماره تیکت'),
+    accessorKey: 'ticket_id',
+    header: tableSortableLabel(t('common.tables.ticket_number')),
     cell: ({row}) => {
-      const ticket = row.getValue<TicketItem['id']>('id')
+      const ticket_id = row.getValue<Ticket['ticket_id']>('ticket_id')
       return h(UButton, {
-        label: n(ticket, {useGrouping: false}),
+        label: useConvertNumericToLocale(ticket_id, locale.value),
         variant: 'link',
-        to: localePath({name: 'admin-support-tickets-id', params: {id: ticket}})
+        to: localePath({name: 'admin-support-tickets-ticket-id', params: {id: ticket_id}})
       })
     },
   },
-  // Subject
   {
     accessorKey: 'subject',
-    header: 'موضوع',
+    header: t('common.tables.topic'),
     cell: ({row}) => {
-      const ticket = row.getValue<TicketItem['id']>('id')
-      const label = row.getValue<TicketItem['subject']>('subject')
+      const ticket_id = row.getValue<Ticket['ticket_id']>('ticket_id')
+      const label = row.getValue<Ticket['subject']>('subject')
       return h(UButton, {
         label,
         variant: 'link',
-        to: localePath({name: 'admin-support-tickets-id', params: {id: ticket}})
+        to: localePath({name: 'admin-support-tickets-ticket-id', params: {id: ticket_id}})
       })
     },
   },
-  // Category
+  {
+    accessorKey: 'user',
+    header: tableFilterableLabel(t('common.tables.user'), userItems, userFilter),
+    enableColumnFilter: true,
+    filterFn: (row: TableRow<Ticket>, columnId: string, filterValue: Number[]) => {
+      const user = row.getValue<Ticket['user']>(columnId)
+      if (!user) return false
+      return filterValue.includes(user.id)
+    },
+    cell: ({row}) => {
+      const user = row.getValue<Ticket['user']>('user')
+      const code = user?.country_code?.toLowerCase()
+      const id = user?.id
+      return user ? h(UButton, {
+        icon: code ? `cif:${code}` : 'material-symbols:globe',
+        label: user.full_name,
+        variant: 'link',
+        to: localePath({name: 'admin-users-id', params: {id}}),
+      }) : '—'
+    },
+  },
   {
     accessorKey: 'category',
-    header: tableFilterableLabel('دسته‌بندی', categoryItems, categoryFilter),
+    header: tableFilterableLabel(t('common.tables.category'), categoryItems, categoryFilter),
     enableColumnFilter: true,
-    filterFn: 'arrIncludesSome',
-    sortingFn: (rowA: TableRow<TicketItem>, rowB: TableRow<TicketItem>, columnId: string) => {
-      const typeA = rowA.getValue<TicketItem['category']>(columnId)
-      const typeB = rowB.getValue<TicketItem['category']>(columnId)
+    filterFn: (row: TableRow<Ticket>, columnId: string, filterValue: Number[]) => {
+      const category = row.getValue<Ticket['category']>(columnId)
+      if (!category) return false
+      return filterValue.includes(category.id)
+    },
+    sortingFn: (rowA: TableRow<Ticket>, rowB: TableRow<Ticket>, columnId: string) => {
+      const typeA = rowA.getValue<Ticket['category']>(columnId)
+      const typeB = rowB.getValue<Ticket['category']>(columnId)
 
       if (!typeA || !typeB) return 0
 
-      const textA = typeA.name
-      const textB = typeB.name
+      const textA = typeA[`title_${locale.value}`]
+      const textB = typeB[`title_${locale.value}`]
 
       return textA.localeCompare(textB)
     },
-    cell: ({row}) => row.getValue<Record<string, string>>('category')?.name || '—',
+    cell: ({row}) => row.getValue<Record<string, string>>('category')?.[`title_${locale.value}`] || '—',
   },
-  // Status
   {
     accessorKey: 'status',
-    header: tableFilterableLabel('وضعیت', statusItems, statusFilter),
+    header: tableFilterableLabel(t('common.tables.state'), statusItems, statusFilter),
     enableColumnFilter: true,
     filterFn: 'arrIncludesSome',
     cell: ({row}) => {
-      const status = row.getValue<TicketItem['status']>('status')
+      const status = row.getValue<Ticket['status']>('status')
       const {color, label} = {
-        open: {color: 'warning', label: 'باز'},
-        in_progress: {color: 'info', label: 'در حال انجام'},
-        closed: {color: 'success', label: 'بسته شده'},
+        open: {color: 'warning', label: t('common.ticket_status.open')},
+        in_progress: {color: 'info', label: t('common.ticket_status.in_progress')},
+        closed: {color: 'success', label: t('common.ticket_status.closed')},
+        resolved: {color: 'success', label: t('common.ticket_status.resolved')},
+        waiting_user: {color: 'info', label: t('common.ticket_status.waiting_user')},
       }[status]
 
       return h(UBadge, {class: 'capitalize w-full justify-center', variant: 'subtle', color}, () => label)
     },
   },
-  // Priority
   {
     accessorKey: 'priority',
-    header: tableFilterableLabel('اولویت', priorityItems, priorityFilter),
+    header: tableFilterableLabel(t('common.tables.priority'), priorityItems, priorityFilter),
     enableColumnFilter: true,
     filterFn: 'arrIncludesSome',
     cell: ({row}) => {
-      const priority = row.getValue<TicketItem['priority']>('priority')
+      const priority = row.getValue<Ticket['priority']>('priority')
       const {color, label} = {
-        low: {color: 'success', label: 'کم'},
-        medium: {color: 'warning', label: 'متوسط'},
-        high: {color: 'error', label: 'بالا'},
+        low: {color: 'success', label: t('common.priorities.low')},
+        medium: {color: 'warning', label: t('common.priorities.medium')},
+        high: {color: 'error', label: t('common.priorities.high')},
       }[priority]
 
       return h(UBadge, {class: 'capitalize w-full justify-center', variant: 'subtle', color}, () => label)
     },
   },
-  // Assigned To
   {
     accessorKey: 'assigned_to',
-    header: tableSortableLabel('متصل به'),
+    header: tableSortableLabel(t('common.tables.assigned_to')),
     cell: ({row}) => {
-      const assignedId = row.getValue<TicketItem['assigned_to']>('assigned_to')
-      const assignedUser = users.value.find(u => u.id === assignedId)
-      return assignedUser ? `${assignedUser.first_name} ${assignedUser.last_name}` : '—'
+      const assignedUser = row.getValue<Ticket['assigned_to']>('assigned_to')
+      return assignedUser ? assignedUser.full_name : '—'
     },
   },
-  // Created At
   {
     accessorKey: 'created_at',
-    header: tableSortableLabel('تاریخ ایجاد'),
+    header: tableSortableLabel(t('common.tables.created_at')),
     cell: ({row}) => {
-      return d(row.getValue<TicketItem['created_at']>('created_at'), {
+      return d(row.getValue<Ticket['created_at']>('created_at'), {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -207,7 +228,7 @@ const columns: Ref<TableColumn<TicketItem>[]> = ref([
 
 const columnFilters = computed(() => {
   interface TicketFilter {
-    id: keyof TicketItem
+    id: keyof Ticket
     value: any
   }
 

@@ -27,16 +27,16 @@ class Service(models.Model):
         ('fixed', 'مقداری ثابت'),
     ]
 
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='services')
+    # category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='services', blank=True, default=None, null=True)
 
     # Bilingual
-    title_fa = models.CharField(max_length=200, verbose_name="عنوان سرویس (فارسی)")
+    title_fa = models.CharField(max_length=200, verbose_name="Title (FA)")
     title_en = models.CharField(max_length=200, verbose_name="Title (EN)", blank=True)
-    description_fa = models.TextField(verbose_name="توضیحات (فارسی)")
+    description_fa = models.TextField(verbose_name="Description (FA)")
     description_en = models.TextField(verbose_name="Description (EN)", blank=True)
 
     # Visual
-    icon = models.ImageField(upload_to='services/icons/', verbose_name="آیکون")
+    icon = models.CharField(max_length=200, verbose_name="icon")
     banner = models.ImageField(upload_to='services/banners/', blank=True, null=True)
 
     # Pricing Model – درصد کارمزد از مبلغ وارد شده توسط کاربر
@@ -45,51 +45,50 @@ class Service(models.Model):
         max_digits=5, decimal_places=2,
         default=12.00,
         validators=[MinValueValidator(0), MaxValueValidator(100)],
-        verbose_name="کارمزد (%)"
+        verbose_name="Commission (%)"
     )
     commission_fixed = models.DecimalField(
         max_digits=12, decimal_places=0,
         default=0,
-        verbose_name="کارمزد ثابت (تومان)",
-        help_text="اگر نوع کارمزد 'مقداری ثابت' باشد"
+        verbose_name="Fixed Commission (Toman))",
     )
 
     min_amount = models.DecimalField(
         max_digits=12, decimal_places=0,
         default=10000,
         validators=[MinValueValidator(1000)],
-        verbose_name="حداقل مبلغ قابل پرداخت (تومان)"
+        verbose_name="Minimum Payable Amount (Toman)"
     )
     max_amount = models.DecimalField(
         max_digits=15, decimal_places=0,
         default=100000000,
-        verbose_name="حداکثر مبلغ قابل پرداخت (تومان)"
+        verbose_name="Maximum Payable Amount (Toman)"
     )
 
-    tax_rate = models.DecimalField(max_digits=5, decimal_places=2, default=9.00, verbose_name="مالیات (%)")
+    tax_rate = models.DecimalField(max_digits=5, decimal_places=2, default=9.00, verbose_name="Tax Rate (%)")
 
     # Config
-    delivery_time_fa = models.CharField(max_length=100, blank=True, verbose_name="زمان تحویل (فارسی)")
+    delivery_time_fa = models.CharField(max_length=100, blank=True)
     delivery_time_en = models.CharField(max_length=100, blank=True)
-    requires_manual_review = models.BooleanField(default=True, verbose_name="نیاز به بررسی دستی؟")
+    requires_manual_review = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        verbose_name = "سرویس"
-        verbose_name_plural = "سرویس‌ها"
-        ordering = ['category__order', 'order', 'title_fa']
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
+        ordering = ['order', 'title_fa']
 
     def __str__(self):
         return f"{self.title_fa} ({self.commission_percent}% کارمزد)"
 
     def calculate_total_cost(self, user_amount_irt):
-        """محاسبه مبلغ نهایی که کاربر باید پرداخت کند"""
+        """Calculate total cost including commission and tax based on user amount."""
         if user_amount_irt < self.min_amount:
-            raise ValueError(f"حداقل مبلغ {self.min_amount:,} تومان است")
+            raise ValueError(f"Minimum amount is {self.min_amount:,} Toman")
 
         if user_amount_irt > self.max_amount:
-            raise ValueError(f"حداکثر مبلغ {self.max_amount:,} تومان است")
+            raise ValueError(f"Maximum amount is {self.max_amount:,} Toman")
 
         commission = (
             user_amount_irt * (self.commission_percent / 100)

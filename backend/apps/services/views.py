@@ -19,7 +19,8 @@ class ServiceListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        services = Service.objects.filter(is_active=True).select_related('category')
+        services = (Service.objects.filter(is_active=True))
+                    # .select_related('category'))
         serializer = ServiceListSerializer(services, many=True, context={'request': request})
         return Response({'ok': True, 'data': serializer.data})
 

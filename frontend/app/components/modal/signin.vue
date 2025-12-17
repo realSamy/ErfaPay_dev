@@ -1,5 +1,6 @@
 <template>
-  <UModal v-model:open="isOpen" :close="currentModalProps?.keepOpen !== true" :dismissible="currentModalProps?.keepOpen !== true">
+  <UModal v-model:open="isOpen" :close="currentModalProps?.keepOpen !== true"
+          :dismissible="currentModalProps?.keepOpen !== true">
     <template #title>
       <span class="font-extrabold text-xl">{{ $t('common.site_title') }}</span>
     </template>
@@ -8,13 +9,13 @@
       <div class="flex flex-col">
         <h2 class="font-bold text-xl">{{ $t('modals.signin.title_login') }}</h2>
         <form class="p-6 space-y-4" @submit.prevent="submit">
-          <UFormField size="xl" :label="$t('modals.signin.label_email')">
+          <UFormField :label="$t('modals.signin.label_email')" size="xl">
             <UInput v-model="loginInfo.email" :placeholder="$t('modals.signin.placeholder_email')" class="w-full"
                     dir="auto"
                     required type="email"/>
           </UFormField>
 
-          <UFormField size="xl" :label="$t('modals.signin.label_password')">
+          <UFormField :label="$t('modals.signin.label_password')" size="xl">
             <UInput v-model="loginInfo.password" :placeholder="$t('modals.signin.placeholder_password')" class="w-full"
                     dir="auto"
                     required type="password"/>
@@ -46,10 +47,12 @@
 </template>
 
 <script lang="ts" setup>
-import type {LoginInfo, LoginResponse, AuthState} from "~/types/auth";
+import type {LoginInfo, AuthState} from "~/types/auth";
+import type {FailureOnly, HTTPLoginResponse} from "~/types/http";
+import {FetchError} from "ofetch";
 
 const {currentModal, open, close, currentModalProps} = useAuthModal()
-
+const {t} = useI18n()
 const loginInfo: Ref<LoginInfo> = ref({
   email: '',
   password: '',
@@ -72,7 +75,7 @@ function switchTo2fa() {
 async function submit() {
   loading.value = true
   try {
-    const response = await $fetch<LoginResponse>('/api/auth/signin/', {
+    const response = await $fetch<HTTPLoginResponse>('/api/auth/signin/', {
       method: 'POST',
       body: loginInfo.value,
     })
@@ -84,9 +87,24 @@ async function submit() {
       }))
 
       switchTo2fa()
+    } else {
+      useToast().add({
+        color: 'error',
+        title: t('common.titles.error'),
+        description: response.error,
+      })
     }
 
   } catch (error) {
+    const err_msg = (error as FetchError<FailureOnly<HTTPLoginResponse>>)?.data?.error
+    if (err_msg) {
+      useToast().add({
+        color: 'error',
+        title: t('common.titles.error'),
+        description: t(err_msg),
+      })
+
+    }
   } finally {
     loading.value = false
   }

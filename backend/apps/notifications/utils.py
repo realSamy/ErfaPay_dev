@@ -14,6 +14,7 @@ def send_notification(
     link=None,
     send_email=True
 ):
+    return
     # Create in-app notification
     notification = Notification.objects.create(
         user=user,

@@ -1,5 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  routeRules: {
+    '/fa/admin/**': {ssr: false},
+    '/en/admin/**': {ssr: false},
+    '/fa/dashboard/**': {ssr: false},
+    '/en/dashboard/**': {ssr: false},
+  },
   app: {
     pageTransition: {name: 'page', mode: 'out-in'}
   },
@@ -13,7 +19,7 @@ export default defineNuxtConfig({
   modules: [// '@nuxt/eslint',
     // '@nuxt/content',
     '@nuxt/ui', '@nuxt/fonts', '@nuxt/icon', '@nuxtjs/i18n', 'nuxt-echarts', 'nuxt-tiptap-editor'],
-
+  spaLoadingTemplate: 'assets/html/spa-loading.html',
   css: [
     '~/assets/css/main.css',
   ],
@@ -53,13 +59,15 @@ export default defineNuxtConfig({
     ],
   },
 
+  icon: {
+    localApiEndpoint: "/_nuxt_icon"
+  },
+
   nitro: {
     devProxy: {
-      '/api/_nuxt_icon': {
-        ignorePath: true
-      },
       '/api': 'http://localhost:8000/api',
       '/static': 'http://localhost:8000/static',
+      '/media': 'http://localhost:8000/media',
     }
   },
 

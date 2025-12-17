@@ -10,7 +10,7 @@
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('bold') }"
             :disabled="!editor.can().toggleBold()"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-bold-rounded"
             size="xs"
             square
@@ -20,7 +20,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('italic') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-italic-rounded"
             size="xs"
             square
@@ -30,7 +30,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('strike') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-strikethrough-rounded"
             size="xs"
             square
@@ -40,7 +40,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('code') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:code-rounded"
             size="xs"
             square
@@ -53,7 +53,7 @@
         <!-- Headings -->
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('heading', { level: 1 }) }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-h1-rounded"
             size="xs"
             square
@@ -63,7 +63,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('heading', { level: 2 }) }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-h2-rounded"
             size="xs"
             square
@@ -73,7 +73,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('heading', { level: 3 }) }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-h3-rounded"
             size="xs"
             square
@@ -86,7 +86,7 @@
         <!-- Lists -->
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('bulletList') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-list-bulleted-rounded"
             size="xs"
             square
@@ -96,7 +96,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('orderedList') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-list-numbered-rounded"
             size="xs"
             square
@@ -109,7 +109,7 @@
         <!-- Blocks -->
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('blockquote') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-quote-rounded"
             size="xs"
             square
@@ -119,7 +119,7 @@
 
         <UButton
             :class="{ 'bg-primary/10 text-primary': editor.isActive('codeBlock') }"
-            color="gray"
+            color="neutral"
             icon="material-symbols:code-blocks-rounded"
             size="xs"
             square
@@ -128,7 +128,7 @@
         />
 
         <UButton
-            color="gray"
+            color="neutral"
             icon="material-symbols:horizontal-rule-rounded"
             size="xs"
             square
@@ -142,7 +142,7 @@
         <div class="flex flex-wrap items-center gap-1" dir="ltr">
           <UButton
             :disabled="!editor.can().undo()"
-            color="gray"
+            color="neutral"
             icon="material-symbols:undo-rounded"
             size="xs"
             square
@@ -152,7 +152,7 @@
 
         <UButton
             :disabled="!editor.can().redo()"
-            color="gray"
+            color="neutral"
             icon="material-symbols:redo-rounded"
             size="xs"
             square
@@ -165,7 +165,7 @@
 
         <!-- Clear Formatting -->
         <UButton
-            color="gray"
+            color="neutral"
             icon="material-symbols:format-clear-rounded"
             size="xs"
             square

@@ -8,12 +8,13 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer, OTPVerifySerializer, SignupCompleteSerializer, SignupOTPVerifySerializer, \
-    SignupEmailSerializer, ResendOTPSerializer
+    SignupEmailSerializer, ResendOTPSerializer, UserDetailSerializer, UserOwnUpdateSerializer
 from .models import OTPCode
 from apps.users.serializers import UserSerializer, EmailTokenObtainPairSerializer
 from django.utils import timezone
 from datetime import timedelta
 
+from .utils import update_last_login
 
 User = get_user_model()
 
@@ -48,12 +49,25 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
         return response
 
-
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response({'ok': True, 'data': UserSerializer(request.user).data})
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserDetailSerializer(request.user)
+        return Response({'ok': True, 'data': serializer.data})
+
+    def patch(self, request):
+        serializer = UserOwnUpdateSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'ok': True, 'data': UserDetailSerializer(request.user).data})
+        return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
 class LoginView(APIView):
@@ -69,7 +83,7 @@ class LoginView(APIView):
                     created_at__gte=recent_cutoff
             ).exists():
                 return Response(
-                    {'ok': False, 'error': 'Please wait 75 seconds before requesting another OTP.'},
+                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
                     status=status.HTTP_429_TOO_MANY_REQUESTS
                 )
 
@@ -99,6 +113,8 @@ class OTPVerifyView(APIView):
             otp_code = serializer.validated_data['otp_code']
             if otp_code.is_valid():
                 otp_code.mark_used()
+
+                update_last_login(user)
                 # Generate tokens
                 refresh = RefreshToken.for_user(user)
                 access = refresh.access_token
@@ -130,7 +146,7 @@ class SignupEmailView(APIView):
                     created_at__gte=recent_cutoff
             ).exists():
                 return Response(
-                    {'ok': False, 'error': 'Please wait 75 seconds before requesting another OTP.'},
+                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
                     status=status.HTTP_429_TOO_MANY_REQUESTS
                 )
 
@@ -178,7 +194,7 @@ class ResendOTPView(APIView):
                     created_at__gte=recent_cutoff
             ).exists():
                 return Response(
-                    {'ok': False, 'error': 'Please wait 75 seconds before requesting another OTP.'},
+                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
                     status=status.HTTP_429_TOO_MANY_REQUESTS
                 )
 

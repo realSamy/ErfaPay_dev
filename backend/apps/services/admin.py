@@ -12,14 +12,14 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['title_fa', 'category', 'tax_rate', 'is_active', 'requires_manual_review']
-    list_filter = ['category', 'is_active', 'requires_manual_review']
+    list_display = ['title_fa', 'tax_rate', 'is_active', 'requires_manual_review']
+    list_filter = ['is_active', 'requires_manual_review']
     list_editable = ['is_active']
     search_fields = ['title_fa', 'title_en']
     prepopulated_fields = {"title_en": ("title_fa",)}  # Optional helper
     fieldsets = (
         (None, {
-            'fields': ('category', 'title_fa', 'title_en', 'icon', 'banner')
+            'fields': ('title_fa', 'title_en', 'icon', 'banner')
         }),
         (_('Pricing'), {
             'fields': ('tax_rate',)
@@ -28,6 +28,6 @@ class ServiceAdmin(admin.ModelAdmin):
             'fields': ('description_fa', 'description_en', 'delivery_time_fa', 'delivery_time_en')
         }),
         (_('Settings'), {
-            'fields': ('is_active', 'requires_manual_review', 'max_quantity_per_order', 'order')
+            'fields': ('is_active', 'requires_manual_review', 'order')
         }),
     )

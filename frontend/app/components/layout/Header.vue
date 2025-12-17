@@ -3,12 +3,12 @@
       :class="{'shadow-lg shadow-primary/50 bg-(--ui-bg-light) dark:bg-(--ui-bg-dark)': showOverlay}"
       class="z-2 h-18 rounded flex gap-2 items-center justify-between">
     <div class="header-start">
-      <UDrawer direction="right" class="md:hidden" title="Menu" description="Mobile Menu">
+      <UDrawer class="md:hidden" description="Mobile Menu" direction="right" title="Menu">
         <UButton color="neutral" icon="mdi:menu" variant="ghost"/>
 
         <template #content>
           <div class="p-10 flex flex-col">
-            <ListServices />
+            <ListServices/>
             <UButton
                 :label="$t('common.labels.contact_us')"
                 :ui="{leadingIcon: 'text-primary'}"
@@ -28,11 +28,16 @@
           icon="mdi:phone"
           variant="ghost"/>
     </div>
-    <div class="header-end" transition="test">
-      <div v-if="isIndexRoute">
-        <UButton v-if="userStore" :label="$t('common.labels.dashboard')" :to="localePath({name: 'dashboard'})"  />
-        <UButton v-else :label="$t('common.signin_or_signup')" @click="open('signin')"  />
-      </div>
+    <div class="header-end">
+      <ClientOnly>
+        <div v-if="isIndexRoute">
+          <div v-if="isLoggedIn" class="space-x-2">
+            <UButton v-if="isSupport" :label="$t('common.labels.admin_panel')" :to="localePath({name: 'admin'})"/>
+            <UButton :label="$t('common.labels.dashboard')" :to="localePath({name: 'dashboard'})"/>
+          </div>
+          <UButton v-else :label="$t('common.signin_or_signup')" @click="open('signin')"/>
+        </div>
+      </ClientOnly>
       <SelectLanguage v-model="showOverlay"/>
 
       <ButtonTheme toggle/>
@@ -48,14 +53,15 @@ const localePath = useLocalePath()
 const route = useRoute()
 const isIndexRoute = computed(() => route.name?.toString().includes('index'))
 const showOverlay = ref(false)
-const userStore = useState<User>('user')
+const {isLoggedIn, isSupport} = useAuth()
+
 const emit = defineEmits<{
   (event: 'update:modelValue', value: boolean): void
 }>()
 watch(showOverlay, (val) => {
   emit('update:modelValue', val)
 })
-const { open } = useAuthModal()
+const {open} = useAuthModal()
 </script>
 
 
@@ -65,6 +71,7 @@ const { open } = useAuthModal()
 .header-start, .header-end {
   @apply flex items-center gap-2;
 }
+
 .header-start {
   @apply md:gap-2 gap-0;
 }
