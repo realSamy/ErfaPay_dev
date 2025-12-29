@@ -13,14 +13,15 @@ const {locale} = useI18n()
 const selectedCountry = ref<Country | undefined>(undefined)
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: Country | undefined): void
+  (event: 'update:modelValue', value: string | undefined): void
 }>()
+
 defineProps<{
-  modelValue: Country | undefined
+  modelValue: string | undefined
 }>()
 
 watch(selectedCountry, (val) => {
-emit('update:modelValue', val)
+  emit('update:modelValue', val?.code)
 })
 </script>
 
@@ -38,15 +39,14 @@ emit('update:modelValue', val)
     <template #item-label="{ item }">
       <div class="flex justify-between w-full">
         <span>{{ item?.name[locale] }}</span>
-        <span dir="ltr">+{{ item?.phone }}</span>
       </div>
     </template>
 
     <template #default="{ modelValue }">
-      <div v-if="modelValue" class="w-full">
-        <span dir="ltr">+{{ modelValue?.phone }}</span>
+      <div class="w-full">
+        <span v-if="modelValue" >{{ modelValue?.name[locale] }}</span>
+        <span v-else class="text-muted" dir="ltr">{{ $t('common.labels.choose_country') }}</span>
       </div>
-      <span v-else class="text-muted" dir="ltr">+...</span>
     </template>
     <template #leading="{ modelValue, ui }">
               <span v-if="modelValue" class="size-5 text-center">

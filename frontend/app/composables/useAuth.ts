@@ -12,8 +12,8 @@ export const useAuth = () => {
   const isAdmin = computed(() => ['senior_support', 'main_admin'].includes(user.value?.role || ''))
   const isSupport = computed(() => ['simple_support', 'senior_support', 'main_admin'].includes(user.value?.role || ''))
 
-  const login = async (payload: LoginPayload) => {
-    useAuthModal().open('signin')
+  const login = (keepOpen = false) => {
+    useAuthModal().open('signin', {keepOpen})
   }
 
   const logout = async (askConfirm: boolean = false, t: (key: string) => string = () => '') => {

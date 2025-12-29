@@ -1,4 +1,3 @@
-import type {Service} from "~/types/services";
 import type {ServiceFormPayload} from "~/types/payload";
 
 export const buildServiceFormData = (form: ServiceFormPayload): FormData => {
@@ -25,6 +24,12 @@ export const buildServiceFormData = (form: ServiceFormPayload): FormData => {
   }
   if (form.is_active !== undefined) {
     fd.append('is_active', form.is_active ? 'true' : 'false')
+  }
+  if (form.required_fields !== undefined) {
+    fd.append('required_fields', JSON.stringify(form.required_fields))
+  }
+  if (form.user_pricing) {
+    fd.append('user_pricing', form.user_pricing ? 'true' : 'false')
   }
 
   // File fields

@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type {NuxtError} from '#app'
+import type {GenericError} from "~/types/errors";
 
-defineProps<{
-  error: NuxtError
+const props = defineProps<{
+  error: GenericError
 }>()
 
+
 const {t, locale} = useI18n()
-const redirectHome = () => clearError({redirect: '/'})
+const redirectHome = () => clearError({redirect: useLocalePath()(props.error.data?.returnRoute || 'index')})
 
 const isRTL = computed(() => ['fa', 'ar'].includes(locale.value)) // Example logic
 

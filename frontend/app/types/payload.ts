@@ -1,5 +1,10 @@
 import type {ChargeMethod} from "~/types";
 import type {Ticket} from '~/types/tickets';
+import type {RequiredField} from "~/types/services";
+import type {Gateway} from "~/types/payments";
+import type {CustomData} from "~/types/orders";
+import {type TimeString, WeekDayNumber} from "~/types/data";
+import type {GlobalSettings} from "~/types/settings";
 
 export interface LoginPayload {
   email: string
@@ -37,13 +42,7 @@ export interface CreateProductPayload {
   active: boolean
 }
 
-export interface UpdateProductPayload extends Partial<CreateProductPayload> {}
-
-export interface CreateOrderPayload {
-  product: number
-  amount_irr?: string
-  custom_data: Record<string, any>
-  files?: Record<string, File> // key = required_doc name
+export interface UpdateProductPayload extends Partial<CreateProductPayload> {
 }
 
 export interface CreateTicketPayload {
@@ -66,6 +65,7 @@ export interface CreateSupportUserPayload {
   role: 'simple_support' | 'senior_support'
   password: string
 }
+
 export interface AdminUpdateTicketPayload {
   assigned_to?: number | null
   priority?: Ticket['priority']
@@ -117,13 +117,18 @@ export interface ServiceFormPayload {
   max_amount: number
   tax_rate: number
 
+  user_pricing: boolean
+
   // Config
   delivery_time_fa?: string
   delivery_time_en?: string
   requires_manual_review?: boolean
   is_active?: boolean
   order?: number
+  required_fields?: RequiredField[]
 }
+
+export type ServiceFormUpdatePayload = Partial<ServiceFormPayload>
 
 export interface TicketCategoryPayload {
   title_fa: string
@@ -131,3 +136,39 @@ export interface TicketCategoryPayload {
 }
 
 export type TicketCategoryUpdatePayload = Partial<TicketCategoryPayload>
+
+export interface CreateOrderPayload {
+  service_id: number | string;
+  user_amount_irt: number;
+  custom_data?: CustomData[];
+  attachments?: File[];
+}
+
+export interface UpdateOrderPayload {
+  status: 'processing' | 'done' | 'rejected';
+  admin_notes?: string;
+}
+
+export interface CreateChargePayload {
+  foreign_amount: number | string
+  gateway: Gateway
+}
+
+export interface WalletAdjustmentPayload {
+  user_id: number
+  amount: number | string  // can be negative
+  reason?: string
+}
+
+export interface UpdateGlobalSettingsPayload extends Partial<GlobalSettings> {
+}
+
+export interface CompleteSignupPayload {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  country_code: string
+  confirm_password: string
+  tos_agreed: boolean
+}

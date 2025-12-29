@@ -1,24 +1,15 @@
 from rest_framework import serializers
-from .models import SiteSettings
+from .models import GlobalSettings
 
-class SiteSettingsSerializer(serializers.ModelSerializer):
-    logo_url = serializers.SerializerMethodField()
-    favicon_url = serializers.SerializerMethodField()
+class GlobalSettingsSerializer(serializers.ModelSerializer):
+    is_available_now = serializers.SerializerMethodField()
 
     class Meta:
-        model = SiteSettings
+        model = GlobalSettings
         fields = [
-            'order_hours', 'order_availability',
-            'site_name_fa', 'site_name_en', 'logo', 'logo_url',
-            'favicon', 'favicon_url', 'support_email', 'support_phone',
-            'support_telegram', 'tax_rate', 'min_charge_usd',
-            'maintenance_mode', 'maintenance_message_fa', 'maintenance_message_en',
-            'updated_at', 'updated_by'
+            'time_from', 'time_to', 'weekday_from', 'weekday_to',
+            'global_availability', 'enable_schedule', 'is_available_now'
         ]
-        read_only_fields = ['updated_at', 'updated_by', 'logo_url', 'favicon_url']
 
-    def get_logo_url(self, obj):
-        return obj.logo.url if obj.logo else None
-
-    def get_favicon_url(self, obj):
-        return obj.favicon.url if obj.favicon else None
+    def get_is_available_now(self, obj):
+        return obj.is_service_available()

@@ -50,10 +50,10 @@ useHead({
 })
 const currencyCheckInterval = ref<any>(null)
 onMounted(async () => {
-  await loadCurrencies()
+  await useLoadCurrenciesStore()
   await loadBenefits()
   await loadFooterLogos()
-  currencyCheckInterval.value = setInterval(async() => await loadCurrencies(), 1000 * 60 * 2)
+  currencyCheckInterval.value = setInterval(async() => await useLoadCurrenciesStore(true), 1000 * 60 * 2)
   await useLoadServicesStore()
 })
 onBeforeUnmount(async () => {

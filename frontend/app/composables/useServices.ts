@@ -1,6 +1,5 @@
-// composables/useServices.ts
 import type { Category, Service } from '~/types/services'
-import type {HTTPServicesResponse} from "~/types/http";
+import type {HTTPServiceResponse, HTTPServicesResponse} from "~/types/http";
 
 // Public: Get all active categories with services
 export const useCategories = () => {
@@ -13,15 +12,15 @@ export const useServices = () => {
 }
 
 // Public: Get single service detail
-export const useService = (id: number) => {
-  return useApi<{ data: Service }>(`/api/services/${id}/`)
+export const useService = (id: number|string) => {
+  return useApi<HTTPServiceResponse>(`/api/services/${id}/`)
 }
 
 // Public: Calculate final price (used in order form)
 export const useCalculatePrice = () => {
   const calculate = async (serviceId: number, userAmountIrt: number) => {
     const service = await useService(serviceId)
-    if (!service.data.value?.data) return null
+    if (!service.data.value?.ok) return null
 
     const s = service.data.value.data
     const amount = Number(userAmountIrt)

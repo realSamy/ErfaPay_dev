@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/orders/', include('apps.orders.urls')),
     path('api/auth/', include('apps.users.urls')),
     path('api/currencies/', include('apps.currencies.urls')),
+    path('api/global-settings/', include('apps.core.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

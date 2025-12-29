@@ -55,25 +55,40 @@ export type Order = {
   type: 'recharge' | 'exchange' | 'bills'
 }
 
-type TwoDigit<N extends number> = `${N}` extends `${infer D}`
-  ? D extends `${number}`
-    ? N extends 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-      ? `0${N}`
-      : `${N}`
-    : never
-  : never
+type TwoDigit<N extends number> =
+  N extends 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+    ? `0${N}`
+    : `${N}`
 
-type Hour = TwoDigit<
-    | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
-    | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23
->
-type Minute = TwoDigit<
-  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14
-  | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27
-  | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
-  | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53
-  | 54 | 55 | 56 | 57 | 58 | 59
->
-export type TimeString = `${Hour}:${Minute}`
+type Enumerate<
+  N extends number,
+  Acc extends number[] = []
+> = Acc['length'] extends N
+  ? Acc[number]
+  : Enumerate<N, [...Acc, Acc['length']]>
+
+type Range<
+  From extends number,
+  To extends number
+> = Exclude<Enumerate<To>, Enumerate<From>> | From
+
+type _Hour = TwoDigit<Range<0, 12>>
+type _Minute = TwoDigit<Range<0, 59>>
+type _Second = TwoDigit<Range<0, 59>>
+
+type Hour = `${0 | 1}${number}` | `2${0 | 1 | 2 | 3}`
+type MinuteSecond = `${0 | 1 | 2 | 3 | 4 | 5}${number}`
+
+export type TimeString = `${Hour}:${MinuteSecond}:${MinuteSecond}`
 
 export type WeekDay = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday'
+
+export enum WeekDayNumber {
+  Monday = 0,
+  Tuesday = 1,
+  Wednesday = 2,
+  Thursday = 3,
+  Friday = 4,
+  Saturday = 5,
+  Sunday = 6,
+}

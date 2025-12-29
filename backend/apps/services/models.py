@@ -23,8 +23,8 @@ class Category(models.Model):
 
 class Service(models.Model):
     COMMISSION_TYPE_CHOICES = [
-        ('percent', 'درصدی'),
-        ('fixed', 'مقداری ثابت'),
+        ('percent', 'Percent'),
+        ('fixed', 'Fixed'),
     ]
 
     # category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='services', blank=True, default=None, null=True)
@@ -39,7 +39,7 @@ class Service(models.Model):
     icon = models.CharField(max_length=200, verbose_name="icon")
     banner = models.ImageField(upload_to='services/banners/', blank=True, null=True)
 
-    # Pricing Model – درصد کارمزد از مبلغ وارد شده توسط کاربر
+    # Pricing Model – Percentage of the fee from the amount entered by the user
     commission_type = models.CharField(max_length=10, choices=COMMISSION_TYPE_CHOICES, default='percent')
     commission_percent = models.DecimalField(
         max_digits=5, decimal_places=2,
@@ -67,12 +67,19 @@ class Service(models.Model):
 
     tax_rate = models.DecimalField(max_digits=5, decimal_places=2, default=9.00, verbose_name="Tax Rate (%)")
 
+    user_pricing = models.BooleanField(default=True, verbose_name="Allow user to set the amount")
+
     # Config
     delivery_time_fa = models.CharField(max_length=100, blank=True)
     delivery_time_en = models.CharField(max_length=100, blank=True)
     requires_manual_review = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
+    required_fields = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name="Required Fields Configuration"
+    )
 
     class Meta:
         verbose_name = "Service"
@@ -80,7 +87,9 @@ class Service(models.Model):
         ordering = ['order', 'title_fa']
 
     def __str__(self):
-        return f"{self.title_fa} ({self.commission_percent}% کارمزد)"
+        if self.commission_type == 'percent':
+            return f"{self.title_fa} ({self.commission_percent}% Fee)"
+        return f"{self.title_fa} ({self.commission_fixed} Toman Fee)"
 
     def calculate_total_cost(self, user_amount_irt):
         """Calculate total cost including commission and tax based on user amount."""
@@ -91,12 +100,12 @@ class Service(models.Model):
             raise ValueError(f"Maximum amount is {self.max_amount:,} Toman")
 
         commission = (
-            user_amount_irt * (self.commission_percent / 100)
+            user_amount_irt * self.commission_percent
             if self.commission_type == 'percent'
             else self.commission_fixed
         )
         subtotal = user_amount_irt + commission
-        tax = subtotal * (self.tax_rate / 100)
+        tax = user_amount_irt * self.tax_rate
         total = subtotal + tax
 
         return {

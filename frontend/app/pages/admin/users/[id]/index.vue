@@ -26,6 +26,7 @@
 
 <script lang="ts" setup>
 import type {User} from "~/types/users";
+import {useBreadcrumbStore} from "~/composables/useBreadcrumbStore";
 
 definePageMeta({
   layout: 'admin',
@@ -34,8 +35,12 @@ definePageMeta({
 
 const route = useRoute()
 const userId = Number(route.params.id)
-const users = useState<User[]>('admin.users')
-const user = computed(() => users.value.find((u) => u.id === userId))
+const {getUserDetail} = useAdminUsers()
+const user = await getUserDetail(userId)
+
+const breadcrumbState = useBreadcrumbStore()
+breadcrumbState.value.name = user.value.full_name || user.value.email
+
 const {t} = useI18n()
 
 if (!user.value) {

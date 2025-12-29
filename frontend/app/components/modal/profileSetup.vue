@@ -8,32 +8,37 @@
       <div class="flex flex-col">
         <h2 class="font-bold text-xl">{{ $t('modals.signup.title_new_account') }}</h2>
 
-        <form @submit.prevent="submit" class="p-6 space-y-6">
+        <form @submit.prevent="submit" class="p-6 space-y-6" autocomplete="off">
           <UFormField size="xl" :label="$t('modals.profile_setup.label_firstname')">
             <UInput dir="auto" v-model="authInfo.first_name" :placeholder="$t('modals.profile_setup.placeholder_firstname')"
-                    autocomplete="off" autofocus class="w-full" required
+                    autocomplete="given-name" autofocus class="w-full" required
                     type="text"/>
           </UFormField>
           <UFormField size="xl" :label="$t('modals.profile_setup.label_lastname')">
             <UInput dir="auto" v-model="authInfo.last_name" :placeholder="$t('modals.profile_setup.placeholder_lastname')"
-                    autocomplete="off" autofocus class="w-full"
+                    autocomplete="family-name" autofocus class="w-full"
                     required type="text"/>
           </UFormField>
 
+          <UFormField size="xl" :label="$t('modals.profile_setup.residence_country')">
+            <SelectCountryCode v-model="authInfo.country_code" class="w-full" />
+          </UFormField>
+
           <UFormField size="xl" :label="$t('modals.profile_setup.label_email')">
-            <UInput dir="auto" disabled v-model="authInfo.email" :placeholder="$t('modals.profile_setup.placeholder_email')" autocomplete="off"
+            <UInput dir="auto" disabled v-model="authInfo.email" :placeholder="$t('modals.profile_setup.placeholder_email')"
+                    autocomplete="email"
                     class="w-full" required type="email"/>
           </UFormField>
 
           <UFormField size="xl" :label="$t('modals.profile_setup.label_password')">
             <UInput dir="auto" v-model="authInfo.password" :placeholder="$t('modals.profile_setup.placeholder_password')"
-                    autocomplete="off" class="w-full" required
+                    autocomplete="new-password" class="w-full" required
                     type="password"/>
           </UFormField>
 
           <UFormField size="xl" :label="$t('modals.profile_setup.label_password_retype')">
             <UInput dir="auto" v-model="authInfo.confirm_password" :placeholder="$t('modals.profile_setup.placeholder_password')"
-                    autocomplete="off" class="w-full" required
+                    autocomplete="new-password" class="w-full" required
                     type="password"/>
           </UFormField>
 
@@ -57,7 +62,9 @@
 </template>
 
 <script lang="ts" setup>
-import type {AuthState, CompleteSignupInfo, LoginResponse} from "~/types/auth";
+import type {AuthState} from "~/types/auth";
+import type {CompleteSignupPayload} from "~/types/payload";
+import type {HTTPLoginResponse} from "~/types/http";
 
 const {currentModal, close, currentModalProps} = useAuthModal()
 
@@ -68,19 +75,20 @@ const isOpen = computed({
 const loading = ref(false);
 const authState = useState<AuthState>('login-state')
 
-const authInfo = ref<CompleteSignupInfo>({
+const authInfo = ref<CompleteSignupPayload>({
   first_name: '',
   last_name: '',
   email: authState.value?.loginInfo?.email || '',
+  country_code: '',
   password: '',
   confirm_password: '',
   tos_agreed: false,
-} satisfies CompleteSignupInfo)
+} satisfies CompleteSignupPayload)
 
 async function submit() {
   loading.value = true
   try {
-    const response = await $fetch<LoginResponse>('/api/auth/signup/complete/', {
+    const response = await $fetch<HTTPLoginResponse>('/api/auth/signup/complete/', {
       method: 'POST',
       body: authInfo.value,
     })

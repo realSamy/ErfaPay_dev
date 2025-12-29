@@ -1,9 +1,9 @@
 <template>
   <div>
     <ClientOnly>
-      <div class="flex flex-col md:flex-row w-full h-[400px]">
-        <ChartLine/>
-        <ChartLine/>
+      <div class="flex flex-col w-full gap-30 md:gap-15">
+        <ChartCharges />
+        <ChartOrders />
       </div>
     </ClientOnly>
   </div>

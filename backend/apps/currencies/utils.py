@@ -8,7 +8,6 @@ from .models import CurrencyRate
 CACHE_KEY = "currency_rates_last_update"
 CACHE_TIMEOUT = 60 * 10  # ۱۰ دقیقه کش
 
-# تعریف ارزهای مورد نیاز (دقیقاً همون‌هایی که تو مستند داری)
 CURRENCY_MAP = {
     'USD': {"source": "tehran_cgf", "cname": "USDIRT", "name": "US Dollar", "icon": "circle-flags:us"},
     'EUR': {"source": "tehran_cgf", "cname": "EURIRT", "name": "Euro", "icon": "circle-flags:eu"},
@@ -19,7 +18,6 @@ CURRENCY_MAP = {
 }
 
 def fetch_and_update_rates():
-    """این تابع رو هر ۱۰ دقیقه با celery beat یا management command صدا بزن"""
     updated_count = 0
     for code, info in CURRENCY_MAP.items():
         try:

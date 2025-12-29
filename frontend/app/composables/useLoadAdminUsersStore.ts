@@ -6,8 +6,8 @@ export default async function (force: boolean=false) {
   if (force || !users.value.length) {
     const {listUsers} = useAdminUsers()
     const response = await listUsers()
-    if (response.data.value?.results.ok) {
-      users.value = response.data.value?.results.data
+    if (response.data.value?.results) {
+      users.value = response.data.value?.results
     }
   }
   return users

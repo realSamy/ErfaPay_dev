@@ -1,4 +1,4 @@
-import type {User} from "~/types/auth";
+import type {User} from "~/types/users";
 import type {SimpleError, HTTPUserResponse} from "~/types/http";
 
 export default async (forceLogin: boolean = false) => {

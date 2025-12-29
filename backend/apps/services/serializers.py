@@ -1,4 +1,6 @@
 # apps/services/serializers.py
+import json
+
 from rest_framework import serializers
 from .models import Category, Service
 
@@ -22,7 +24,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
             'id', 'title_fa', 'title_en', 'description_fa', 'description_en',
             'icon', 'commission_percent', 'commission_fixed', 'commission_type',
             'min_amount', 'max_amount', 'tax_rate', 'delivery_time_fa', 'delivery_time_en',
-            'requires_manual_review', 'is_active', 'icon', 'banner'
+            'requires_manual_review', 'is_active', 'icon', 'banner', 'required_fields', 'user_pricing'
             # 'category'
         ]
 
@@ -41,29 +43,29 @@ class ServiceDetailSerializer(ServiceListSerializer):
         }
 
 class ServiceAdminSerializer(serializers.ModelSerializer):
-    # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    required_fields = serializers.JSONField(
+        required=False,
+        default=list
+    )
 
     class Meta:
         model = Service
         fields = [
             'id',
-            # 'category',
             'title_fa', 'title_en', 'description_fa', 'description_en',
             'icon', 'banner', 'commission_type', 'commission_percent', 'commission_fixed',
             'min_amount', 'max_amount', 'tax_rate', 'delivery_time_fa', 'delivery_time_en',
-            'requires_manual_review', 'is_active', 'order'
+            'requires_manual_review', 'is_active', 'order', 'required_fields', 'user_pricing'
         ]
         read_only_fields = ['id']
 
     def validate(self, attrs):
-        # Only run commission/min-max checks if relevant fields are being updated
-        commission_type = attrs.get('commission_type', self.instance.commission_type if self.instance else None)
-        commission_percent = attrs.get('commission_percent',
-                                       getattr(self.instance, 'commission_percent', None) if self.instance else None)
-        commission_fixed = attrs.get('commission_fixed',
-                                     getattr(self.instance, 'commission_fixed', None) if self.instance else None)
+        commission_type = attrs.get('commission_type', getattr(self.instance, 'commission_type', None) if self.instance else None)
+        commission_percent = attrs.get('commission_percent', getattr(self.instance, 'commission_percent', None) if self.instance else None)
+        commission_fixed = attrs.get('commission_fixed', getattr(self.instance, 'commission_fixed', None) if self.instance else None)
         min_amount = attrs.get('min_amount', getattr(self.instance, 'min_amount', None) if self.instance else None)
         max_amount = attrs.get('max_amount', getattr(self.instance, 'max_amount', None) if self.instance else None)
+        user_pricing = attrs.get('user_pricing', getattr(self.instance, 'user_pricing', None) if self.instance else None)
 
         if commission_type == 'fixed':
             if commission_fixed is not None and commission_fixed <= 0:
@@ -72,8 +74,37 @@ class ServiceAdminSerializer(serializers.ModelSerializer):
             if commission_percent is not None and not (0 <= commission_percent <= 100):
                 raise serializers.ValidationError("commission_percent must be between 0 and 100")
 
-        if min_amount is not None and max_amount is not None:
-            if min_amount >= max_amount:
-                raise serializers.ValidationError("min_amount must be less than max_amount")
+            if not user_pricing:
+                raise serializers.ValidationError("User pricing is required for percent commission type")
+
+        if min_amount is not None and max_amount is not None and min_amount >= max_amount:
+            raise serializers.ValidationError("min_amount must be less than max_amount")
 
         return attrs
+
+    def validate_required_fields(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("required_fields must be a list")
+
+        allowed_types = {'text', 'number', 'file', 'photo', 'textarea', 'select'}
+        for i, field in enumerate(value):
+            if not isinstance(field, dict):
+                raise serializers.ValidationError(f"Item {i}: must be a dictionary")
+
+            required_keys = ['type', 'label_fa', 'label_en']
+            for key in required_keys:
+                if key not in field:
+                    raise serializers.ValidationError(f"Item {i}: '{key}' is required")
+
+            if field['type'] not in allowed_types:
+                raise serializers.ValidationError(f"Item {i}: invalid type '{field['type']}'")
+
+            if field['type'] == 'select':
+                if 'options' not in field or not isinstance(field['options'], list):
+                    raise serializers.ValidationError(f"Item {i}: 'options' must be a list for select type")
+
+            # Optional: handle is_required
+            if 'is_required' not in field:
+                field['is_required'] = True  # default
+
+        return value

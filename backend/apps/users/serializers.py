@@ -69,7 +69,7 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             attrs['user'] = user
             return attrs
-        raise serializers.ValidationError('Invalid email or password.')
+        raise serializers.ValidationError('errors.auth.invalid_creds')
 
 
 class OTPVerifySerializer(serializers.Serializer):
@@ -178,10 +178,15 @@ class UserListSerializer(serializers.ModelSerializer):
         return f"{obj.first_name} {obj.last_name}".strip()
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'role', 'phone_prefix', 'country_code', 'is_verified', 'is_blocked', 'last_login', 'date_joined']
+        fields = ['id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'role', 'phone_prefix', 'country_code', 'is_verified', 'is_blocked', 'last_login', 'date_joined']
         read_only_fields = fields
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
 
 class UserOwnUpdateSerializer(serializers.ModelSerializer):
     class Meta:

@@ -46,6 +46,8 @@ export function filterableLabel<TData = unknown>(label: string, items: Ref<strin
       _label = label;
     }
 
+    const {t} = useI18n()
+
     const dropdownItems = computed<DropdownMenuItem[]>(() => [
       // {
       //   label: 'فیلتر انواع',
@@ -70,7 +72,7 @@ export function filterableLabel<TData = unknown>(label: string, items: Ref<strin
         type: 'separator' as const
       },
       {
-        label: 'پاک کردن همه',
+        label: t('common.labels.clear_filters'),
         icon: 'i-lucide-x-circle',
         type: 'checkbox' as const,
         onUpdateChecked() {

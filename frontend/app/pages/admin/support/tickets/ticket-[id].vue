@@ -171,6 +171,7 @@
 <script lang="ts" setup>
 import type {TicketMessage, Ticket} from "~/types/tickets";
 import type {ReplyTicketPayload} from '~/types/payload';
+import {useBreadcrumbStore} from "~/composables/useBreadcrumbStore";
 
 definePageMeta({
   middleware: ['auth', 'support'],
@@ -191,7 +192,7 @@ const payload = ref<ReplyTicketPayload>({
   attachments: []
 })
 
-const breadcrumbState = useState('breadcrumb.state', () => ({}))
+const breadcrumbState = useBreadcrumbStore()
 breadcrumbState.value = {ticket: ticket_id}
 
 const ticket = ref<Ticket>();

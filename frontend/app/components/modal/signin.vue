@@ -48,7 +48,7 @@
 
 <script lang="ts" setup>
 import type {LoginInfo, AuthState} from "~/types/auth";
-import type {FailureOnly, HTTPLoginResponse} from "~/types/http";
+import type {FailureOnly, GenericHTTPMultiResponse, HTTPLoginResponse} from "~/types/http";
 import {FetchError} from "ofetch";
 
 const {currentModal, open, close, currentModalProps} = useAuthModal()
@@ -96,7 +96,8 @@ async function submit() {
     }
 
   } catch (error) {
-    const err_msg = (error as FetchError<FailureOnly<HTTPLoginResponse>>)?.data?.error
+    console.log({error})
+    const err_msg = (error as FetchError<FailureOnly<GenericHTTPMultiResponse>>)?.data?.errors['non_field_errors']?.[0]
     if (err_msg) {
       useToast().add({
         color: 'error',

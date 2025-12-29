@@ -30,13 +30,12 @@ class ChargeCreateSerializer(serializers.Serializer):
 
 class ChargeListSerializer(serializers.ModelSerializer):
     gateway_display = serializers.CharField(source='get_gateway_display', read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
         model = Charge
         fields = [
             'id', 'foreign_amount', 'irt_amount', 'exchange_rate',
-            'gateway', 'gateway_display', 'status', 'status_display',
+            'gateway', 'gateway_display', 'status',
             'gateway_reference', 'created_at'
         ]
         read_only_fields = fields

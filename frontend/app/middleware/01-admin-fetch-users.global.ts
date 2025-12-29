@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const {listUsers} = useAdminUsers()
     const response = await listUsers()
     if (response.data.value?.results.ok) {
-      usersState.value = response.data.value?.results.data
+      usersState.value = response.data.value?.results
     }
   } catch (error) {
     console.error('Failed to load users:', error)

@@ -7,14 +7,11 @@ import {h, resolveComponent} from 'vue'
 import type {TableColumn} from '@nuxt/ui'
 import type {Service} from "~/types/services";
 import type {TableRow} from "@nuxt/ui";
-import {LazyModalConfirm} from "#components";
 
 const {n, t, locale} = useI18n()
 const UButton = resolveComponent('UButton')
 
 const toast = useToast()
-const overlay = useOverlay()
-const modal = overlay.create(LazyModalConfirm)
 
 const services = reactive<Service[]>([])
 
@@ -86,7 +83,7 @@ const columns = ref<TableColumn<Service>[]>([
           {
             variant: 'ghost',
             color: 'neutral',
-            onClick: () => handleEditService(row),
+            to: useLocalePath()({name: 'admin-services-id', params: {id: row.original.id}}),
             class: 'p-1',
             icon: 'material-symbols:edit-square-outline',
           }
@@ -141,7 +138,7 @@ async function handleDeleteService(row: TableRow<Service>) {
     } else {
       toast.add({
         title: 'خطا در حذف سرویس',
-        description: response.value?.errors?.[0] || 'خطای ناشناخته',
+        description: response.value?.error || 'خطای ناشناخته',
         color: 'error',
         icon: 'i-hero-x-circle'
       })

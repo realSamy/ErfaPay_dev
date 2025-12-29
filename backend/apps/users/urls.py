@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from .admin_views import AdminUserListView, AdminUserDetailView
+from .admin_views import AdminUserListView, AdminUserDetailView, AdminGrowthStatsView
 from .views import (LoginView, OTPVerifyView, MeView, SignupEmailView, SignupOTPVerifyView, SignupCompleteView,
                     ResendOTPView, UserProfileView)
 
@@ -29,6 +29,7 @@ urlpatterns = [
 
     # Admin
     path('admin/users/', AdminUserListView.as_view(), name='admin-user-list'),
+    path('admin/users/stats/', AdminGrowthStatsView.as_view(), name='admin-user-stats'),
     path('admin/users/<int:pk>/', AdminUserDetailView.as_view(), name='admin-user-detail'),
     path('admin/users/create/', AdminUserDetailView.as_view(), name='admin-user-detail'),
 ]

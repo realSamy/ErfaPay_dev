@@ -45,6 +45,7 @@ import type {TableColumn} from '@nuxt/ui'
 import type {User} from '~/types/users'
 import {h, resolveComponent} from 'vue'
 import {getPaginationRowModel} from '@tanstack/vue-table'
+import type {WalletAdjustmentPayload} from "~/types/payload";
 
 const UButton = resolveComponent('UButton')
 const UIcon = resolveComponent('UIcon')
@@ -52,7 +53,7 @@ const UCheckbox = resolveComponent('UCheckbox')
 const {t, d} = useI18n()
 
 const localePath = useLocalePath()
-const users = useState<User[]>('admin.users')
+const users = await useLoadAdminUsersStore()
 const table = useTemplateRef('table')
 const rowSelection = ref({})
 const globalFilter = ref('')
@@ -142,6 +143,12 @@ const columns = ref<TableColumn<User>[]>([
           return h('div', {class: 'flex gap-1'}, [
             h(UButton, {
               variant: 'ghost',
+              color: 'info',
+              icon: 'material-symbols:attach-money',
+              onClick: () => handleAdjustWallet(userId)
+            }),
+            h(UButton, {
+              variant: 'ghost',
               color: row.original.is_blocked ? 'warning' : 'success',
               title: (row.original.is_blocked ? 'common.states.enable' : 'common.states.disable'),
               icon: row.original.is_blocked ? 'material-symbols:account-circle-off-outline-rounded' : 'material-symbols:account-circle-outline',
@@ -152,7 +159,8 @@ const columns = ref<TableColumn<User>[]>([
               color: 'error',
               icon: 'material-symbols:delete-outline',
               onClick: () => handleDelete(userId)
-            })
+            }),
+
           ])
         },
       }
@@ -166,5 +174,30 @@ const handleDeactivate = (id: number) => {
 const handleDelete = (id: number) => {
   if (confirm('آیا مطمئن هستید؟')) {
   }
+}
+
+const handleAdjustWallet = async (id: number) => {
+  const {adjustWallet} = useAdminPayments()
+
+  const wa_payload = <WalletAdjustmentPayload>{
+    amount: 0,
+    reason: '',
+  }
+
+  const payload = await usePrompt<WalletAdjustmentPayload>()(wa_payload, {
+    amount: {label: 'Amount'},
+    reason: {label: 'Reason'},
+    user_id: {label: 'User'},
+  })
+
+  if (payload) {
+    const response = await adjustWallet({
+      ...payload,
+      user_id: id
+    })
+
+    console.log(response)
+  }
+
 }
 </script>

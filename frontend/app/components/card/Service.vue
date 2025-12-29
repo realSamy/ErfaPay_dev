@@ -6,11 +6,11 @@
     root: 'flex flex-col'
       }"
       class="w-full md:w-55 h-auto bg-primary text-white">
-    <p>{{ $t(item.description) }}</p>
+    <p>{{ item[`description_${locale}`] }}</p>
 
     <template #header>
       <div class="flex justify-between items-center">
-        <h3 class="font-bold text-md">{{ $t(item.title) }}</h3>
+        <h3 class="font-bold text-md">{{ item[`title_${locale}`] }}</h3>
         <UIcon :name="item.icon" size="30"/>
       </div>
     </template>
@@ -22,17 +22,20 @@
             :trailing-icon="directionalIcon('mdi:chevron-left', 'mdi:chevron-right')"
             class="mt-3 bg-white text-black dark:text-black hover:bg-primary-800 hover:text-white"
             variant="ghost"
+            :to="useLocalePath()({ name: 'dashboard-orders-new-id', params: { id: item.id } })"
             size="xl"/>
       </div>
     </template>
   </UCard>
 </template>
 <script lang="ts" setup>
-import type {ServiceItem} from "~/types/data";
+import type {Service} from "~/types/services";
 
-const props = defineProps<{
-  item: ServiceItem
+defineProps<{
+  item: Service
 }>()
+
+const {locale} = useI18n()
 </script>
 
 

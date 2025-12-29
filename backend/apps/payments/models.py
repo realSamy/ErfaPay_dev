@@ -33,7 +33,7 @@ class WalletTransaction(models.Model):
         help_text=_('Positive for charge/adjustment add, negative for spend/adjustment subtract')
     )
     transaction_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    balance_after = models.DecimalField(max_digits=20, decimal_places=0)
+    balance_after = models.DecimalField(max_digits=20, decimal_places=0, blank=True, null=True)
     reference_id = models.CharField(max_length=100, null=True, blank=True)  # Order ID or Charge ID
     description = models.TextField(blank=True)
     adjusted_by = models.ForeignKey(

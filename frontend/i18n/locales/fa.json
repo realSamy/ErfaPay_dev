@@ -1,4 +1,18 @@
 {
+  "admin": {
+    "charts": {
+      "max_1_year": "حداکثر بازه زمانی مجاز برای انتخاب یک سال است",
+      "max_20_days": "حداکثر بازه زمانی برای انتخاب {0} روز است",
+      "modes": {
+        "daily": "روزانه",
+        "monthly": "ماهانه",
+        "weekly": "هفتگی"
+      },
+      "pick_date": "فیلتر بازه زمانی",
+      "title_charges": "نمودار شارژ کیف پول",
+      "title_orders": "نمودار سفارشات"
+    }
+  },
   "common": {
     "currencies": {
       "symbol": {
@@ -20,10 +34,20 @@
         "usdt": "تتر (USDT)"
       }
     },
+    "field_types": {
+      "file": "فایل",
+      "number": "عدد",
+      "select": "لیست",
+      "text": "متن",
+      "textarea": "متن طولانی"
+    },
     "labels": {
       "add": "اضافه کردن",
+      "admin_notes": "توضیحات ادمین",
       "admin_panel": "پنل مدیریت",
       "cancel": "لغو",
+      "choose_country": "انتخاب کشور",
+      "clear_filters": "پاک کردن همه",
       "contact_us": "تماس با ما",
       "create": "ایجاد",
       "dashboard": "داشبورد",
@@ -33,13 +57,16 @@
       "logout": "خروج از حساب",
       "more": "بیشتر",
       "new_ticket": "ثبت تیکت جدید",
+      "order_status": "وضعیت سفارش",
       "password": "رمز",
       "phone": "شماره همراه",
+      "save": "ذخیره",
       "send": "ارسال",
       "services": "لیست خدمات",
       "signup": "ثبت نام",
       "title_en": "عنوان (انگلیسی)",
       "title_fa": "عنوان (فارسی)",
+      "user_pricing": "قیمتگذاری کاربر",
       "username": "نام کاربری"
     },
     "layouts": {
@@ -60,6 +87,7 @@
     },
     "messages": {
       "confirm_logout": "میخوای از حسابت خارج بشی؟",
+      "global_settings_applied": "تنظیمات جدید اعمال شد",
       "support_24_7": "۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم.",
       "warn_add_users_to_show": "کاربران را اضافه کنید تا اینجا نمایش داده شوند",
       "warn_no_user": "هیچ کاربری یافت نشد"
@@ -103,6 +131,7 @@
       "priority": "اولویت",
       "role": "سمت کاربر",
       "search": "جستجو...",
+      "service": "سرویس",
       "state": "وضعیت",
       "tax": "مالیات",
       "ticket_number": "شماره تیکت",
@@ -124,9 +153,11 @@
       "login": "ورود به سایت",
       "login_notice": "قبلا ثبت نام کردی؟",
       "order_number": "شماره سفارش",
+      "orders_update": "بروزرسانی سفارش",
       "payment_amount": "مبلغ سفارش",
       "redirecting": "در حال انتقال...",
       "request_type": "نوع درخواست",
+      "required_fields": "فیلد های مورد نیاز",
       "signup": "ایجاد حساب جدید",
       "signup_notice": "اینجا حساب نداری؟",
       "ticket_categories": "دسته بندی های تیکت",
@@ -134,6 +165,15 @@
       "tickets_desc": "تاریخچه و وضعیت درخواست های پشتیبانی",
       "user_info": "مشخصات کاربر",
       "user_orders": "سفارشات کاربر"
+    },
+    "weekdays": {
+      "friday": "جمعه",
+      "monday": "دوشنبه",
+      "saturday": "شنبه",
+      "sunday": "یکشنبه",
+      "thursday": "پنج‌شنبه",
+      "tuesday": "سه‌شنبه",
+      "wednesday": "چهارشنبه"
     }
   },
   "error": {
@@ -141,6 +181,7 @@
     "404": "صفحه مورد نظر پیدا نشد",
     "500": "خطای داخلی سرور",
     "default": "خطای غیرمنتظره‌ای رخ داده است",
+    "invalid_amount": "مبلغ وارد شده صحیح نیست",
     "invalid_login": "نام کاربری یا رمز اشتباه است.",
     "title": "خطا",
     "try_again_later": "لطفا بعدا تلاش کن",
@@ -148,9 +189,13 @@
     "user_not_found": "کاربر یافت نشد"
   },
   "errors": {
+    "auth": {
+      "invalid_creds": "ایمیل یا رمز وارد شده اشتباه است"
+    },
     "otp": {
       "too_many_requests": "به تازگی کد برات ساخته شده، برای ساخت کد جدید لطفا ۷۵ ثانیه صبر کن."
-    }
+    },
+    "voucher_required": "لطفاً شماره واچر و کد فعال‌سازی را وارد کنید"
   },
   "footer": {
     "about_us": "پرسش و پاسخ",
@@ -216,6 +261,7 @@
       "placeholder_fullname": "نام خود را وارد کنید",
       "placeholder_lastname": "نام خانوادگی خود را وارد کنید",
       "placeholder_password": "********",
+      "residence_country": "کشور محل اقامت",
       "text_tos_agreement": "با {0} ارفاپی موافقم.",
       "title_profile_setup": "تکمیل اطلاعات پروفایل"
     },
@@ -231,6 +277,18 @@
       "edit_ticket_category": {
         "title": "ویرایش دسته بندی تیکت"
       }
+    },
+    "required_fields": {
+      "description_en": "توضیحات (انگلیسی)",
+      "description_fa": "توضیحات (فارسی)",
+      "is_required": "الزامی است؟",
+      "label_en": "عنوان (انگلیسی)",
+      "label_fa": "عنوان (فارسی)",
+      "options": "گزینه‌ها (یکی در هر خط)",
+      "options_placeholder": "گزینه‌ها را وارد کنید، یکی در هر خط",
+      "title": "تعریف فیلد مورد نیاز",
+      "type": "نوع فیلد",
+      "unnamed": "فیلد بدون نام"
     },
     "signin": {
       "label_change_email": "تغییر ایمیل",
@@ -259,14 +317,30 @@
     }
   },
   "navigation": {
+    "back_orders": "بازگشت به سفارشات",
     "back_tickets": "بازگشت به تیکت ها",
     "home": "برگشت به خانه"
+  },
+  "orders": {
+    "labels": {
+      "base_amount": "مبلغ پایه",
+      "commission": "کارمزد",
+      "pay_and_submit": "پرداخت و ثبت درخواست",
+      "payment_summary": "خلاصه پرداخت",
+      "tax": "مالیات",
+      "total_payable": "مجموع"
+    },
+    "messages": {
+      "order_created": "سفارش با موفقیت ثبت شد",
+      "order_updated": "سفارش با موفقیت بروز شد"
+    }
   },
   "pages": {
     "admin": {
       "labels": {
         "services": {
-          "button_new_service": "سرویس جدید"
+          "button_new_service": "سرویس جدید",
+          "button_save": "ذخیره"
         }
       },
       "title": {
@@ -277,6 +351,7 @@
         "orders": "مدیریت سفارشات",
         "orders_id": "سفارش [{order}]",
         "orders_new": "سرویس جدید",
+        "services_edit": "ویرایش سرویس",
         "support": "ارتباطات",
         "ticket_id": "تیکت [{ticket}]",
         "tickets": "تیکت ها",
@@ -300,18 +375,23 @@
         "transparent_reports_title": "گزارشات شفاف"
       },
       "charge_wallet": "شارژ حساب",
+      "crypto": "رمزارز",
       "cta_section_title": "در کمتر از یک دقیقه ثبت نام کنید و اولین تراکنش خود را انجام دهید.",
       "current_prices": "قیمت لحظه‌ای ارزها",
       "deposit_amount": "مبلغ واریزی",
       "hero_section_cta": "ثبت درخواست",
       "hero_section_description": "ارفاپی یک پلتفرم سریع و امن برای انتقال وجه به کارت‌های بانکی داخل کشور ایران.",
       "hero_section_title": "انتقال وجه کارت‌به‌کارت به ایران",
+      "irt_equivalent": "معادل به تومان",
       "learn_more": "بیشتر بدانید",
+      "redeem_voucher": "اعمال ووچر",
       "register_now": "ثبت نام",
-      "rial_equivalent": "معادل به تومان",
       "select_currency": "انتخاب ارز",
       "social_media_title": "ما را در شبکه‌های اجتماعی دنبال کنید.",
       "support_phone": "تلفن پشتیبانی:",
+      "voucher_code": "کد فعال‌سازی",
+      "voucher_number": "شماره واچر",
+      "voucher_success": "واچر با موفقیت اعمال شد!",
       "why_erfapay_description": "ارفاپی یک پلتفرم سریع و امن برای انجام پرداخت‌های مالی به ایرانیان خارج کشور است. این سرویس به گونه‌ای طراحی شده تا نیازهای مهاجران و افراد مقیم خارج از کشور را پوشش دهد.",
       "why_erfapay_title": "چرا ارفاپی انتخاب مناسبی است؟"
     },
@@ -358,7 +438,24 @@
       "button_new_order": "ثبت سفارش",
       "charge_account": "افزایش شارژ",
       "internal_payment": "پرداخت داخلی",
-      "money_transfer": "انتقال وجه"
+      "money_transfer": "انتقال وجه",
+      "order_attachments": "فایل های ضمیمه مورد نیاز",
+      "order_price": "مبلغ سفارش",
+      "order_total_price": "کل پرداخت"
+    },
+    "messages": {
+      "order_attachments": "در صورتی که این سرویس یا سفارش شما نیاز به ضمیمه کردن فایل دارد، فایل هارا وارد کنید",
+      "order_price": "مبلغی که جهت انجام این سفارش هزینه میشود وارد کنید",
+      "user_pricing": "اجازه به کاربر برای تعیین مبلغ سفارش",
+      "user_pricing_forced": "این فیلد برای سفارشات با کارمزد درصدی اجباری است"
     }
+  },
+  "wallet": {
+    "balance": "موجودی فعلی",
+    "overview": "نمای کلی حساب شما در یک نگاه",
+    "overview_desc": "خلاصه‌ی اطلاعات مالی حساب، موجودی و سفارشات شما",
+    "popular_services": "سرویس های محبوب ارفاپی",
+    "wallet_add_charge": "شارژ کیف پول",
+    "wallet_overview": "وضعیت کیف پول"
   }
 }

@@ -18,7 +18,7 @@ class UserProfile(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='regular')
     phone_prefix = models.CharField(max_length=10, blank=True)  # e.g., '+98'
     country_code = models.CharField(max_length=3, blank=True)  # e.g., 'IR'
-    is_verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=True)
     is_blocked = models.BooleanField(default=False)
 
     class Meta:

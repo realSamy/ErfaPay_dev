@@ -41,7 +41,7 @@ export const useAdminServices = () => {
   return useAuthApi<GenericHTTPResponse<Service[]>>('/api/services/admin/services/')
 }
 
-export const useAdminServiceDetail = (id: number) => {
+export const useAdminServiceDetail = (id: number | string) => {
   return useAuthApi<GenericHTTPResponse<Service>>(`/api/services/admin/services/${id}/`)
 }
 
@@ -69,7 +69,7 @@ export const useAdminCreateService = () => {
   return {create, pending, error}
 }
 
-export const useAdminUpdateService = (id: number) => {
+export const useAdminUpdateService = (id: number|string) => {
   const update = async (payload: Partial<ServiceFormPayload>) => {
     const fd = buildServiceFormData(payload as ServiceFormPayload)
     return await useAuthApi<GenericHTTPResponse<Service>>(`/api/services/admin/services/${id}/`, {
@@ -80,7 +80,7 @@ export const useAdminUpdateService = (id: number) => {
   return {update}
 }
 
-export const useAdminDeleteService = (id: number) => {
+export const useAdminDeleteService = (id: number|string) => {
   const remove = async () => {
     return await useAuthApi<GenericHTTPResponse>(`/api/services/admin/services/${id}/`, {
       method: 'DELETE',

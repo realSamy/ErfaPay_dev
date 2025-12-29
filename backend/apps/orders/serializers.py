@@ -2,16 +2,18 @@
 from rest_framework import serializers
 from apps.services.serializers import ServiceDetailSerializer
 from .models import Order
+from apps.users.models import UserProfile
+from ..users.serializers import UserSerializer
+
 
 class OrderListSerializer(serializers.ModelSerializer):
     service = ServiceDetailSerializer(read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
         model = Order
         fields = [
             'id', 'service', 'user_amount_irt', 'commission_irt', 'tax_amount',
-            'total_irt', 'status', 'status_display', 'created_at', 'custom_data'
+            'total_irt', 'status', 'created_at', 'custom_data', 'admin_notes',
         ]
 
 class OrderCreateSerializer(serializers.Serializer):
@@ -34,7 +36,7 @@ class OrderCreateSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        Order.objects.create(
+        return Order.objects.create(
             user=self.context['request'].user,
             service=validated_data['service'],
             user_amount_irt=validated_data['user_amount_irt'],
@@ -43,3 +45,34 @@ class OrderCreateSerializer(serializers.Serializer):
             total_irt=validated_data['total_irt'],
             custom_data=validated_data.get('custom_data', {}),
         )
+
+
+class OrderAdminListSerializer(serializers.ModelSerializer):
+    service = ServiceDetailSerializer(read_only=True)
+    user = serializers.SerializerMethodField()
+    processed_by = serializers.SerializerMethodField()
+    attachments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = [
+            'id', 'service', 'user_amount_irt', 'commission_irt', 'tax_amount',
+            'total_irt', 'status', 'created_at', 'custom_data', 'user', 'admin_notes', 'processed_by',
+            'updated_at', 'attachments'
+        ]
+
+    def get_user(self, obj):
+        if obj.user:
+            return UserSerializer(obj.user).data
+        return None
+
+    def get_processed_by(self, obj):
+        if obj.processed_by:
+            return UserSerializer(obj.processed_by).data
+        return None
+
+    def get_attachments(self, obj: Order):
+        if obj.attachments:
+            attachments = obj.attachments.all()
+            return [{'filename': attachment.attachment.name.split('/')[-1], 'url': attachment.attachment.url} for attachment in attachments]
+        return None

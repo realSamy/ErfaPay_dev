@@ -25,40 +25,6 @@ export interface ChargeTransaction {
   created_at: string
 }
 
-// Product (Service)
-export interface Product {
-  id: number
-  name: string
-  name_fa: string
-  description: string
-  description_fa: string
-  image?: string
-  required_docs: string[] // e.g. ["card_photo", "car_card"]
-  custom_form_fields: Record<string, any> // JSON from admin
-  price_irr: string
-  active: boolean
-  created_by: User
-}
-
-// Order
-export interface Order {
-  id: number
-  order_number: string
-  user: User
-  product: Product
-  amount_irr: string
-  tax_amount: string
-  total_amount: string
-  custom_data: Record<string, any>
-  status: OrderStatus
-  receipt_url?: string
-  notes?: string
-  processed_by?: User
-  created_at: string
-  updated_at: string
-}
-
-
 // Site Settings (singleton)
 export interface SiteSettings {
   id: number

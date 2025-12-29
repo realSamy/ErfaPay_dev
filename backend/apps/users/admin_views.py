@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -10,6 +13,8 @@ from .models import UserProfile
 from .serializers import UserListSerializer, UserDetailSerializer, UserAdminUpdateSerializer
 from rest_framework.pagination import PageNumberPagination
 from time import sleep
+
+from ..orders.models import Order
 
 
 class UserPagination(PageNumberPagination):
@@ -58,10 +63,7 @@ class AdminUserListView(APIView):
         page = paginator.paginate_queryset(queryset, request)
         if page is not None:
             serializer = UserListSerializer(page, many=True)
-            return paginator.get_paginated_response({
-                'ok': True,
-                'data': serializer.data
-            })
+            return paginator.get_paginated_response(serializer.data)
 
         serializer = UserListSerializer(queryset, many=True)
         return Response({'ok': True, 'data': serializer.data})
@@ -169,3 +171,103 @@ class AdminUserDetailView(APIView):
         user.is_blocked = True
         user.save()
         return Response({'ok': True, 'message': 'User deactivated and blocked'})
+
+class AdminGrowthStatsView(APIView):
+    permission_classes = [IsSeniorSupportOrAbove]
+
+    def get(self, request):
+        now = timezone.now()
+        today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        yesterday_start = today_start - timedelta(days=1)
+        last_week_start = today_start - timedelta(days=7)
+        last_month_start = today_start - timedelta(days=30)  # Approximate 30 days
+
+        # Helper to calculate percentage growth
+        def growth(current: int, previous: int) -> float:
+            if previous == 0:
+                return 100.0 if current > 0 else 0.0
+            return round(((current - previous) / previous) * 100, 2)
+
+        # 1. Total regular users (all users count - excluding staff/support)
+        all_users = UserProfile.objects.filter(role='regular').count()
+
+        # 2. Total users who have at least one order ever (active users)
+        total_active_users = UserProfile.objects.filter(orders__isnull=False).distinct().count()
+
+        # 3. Currently active orders (pending or processing)
+        active_orders_count = Order.objects.filter(status__in=['pending', 'processing']).count()
+
+        # New users growth (based on date_joined)
+        new_today = UserProfile.objects.filter(date_joined__gte=today_start).count()
+        new_yesterday = UserProfile.objects.filter(
+            date_joined__gte=yesterday_start,
+            date_joined__lt=today_start
+        ).count()
+
+        new_last_week = UserProfile.objects.filter(
+            date_joined__gte=last_week_start,
+            date_joined__lt=today_start
+        ).count()
+        new_prev_week = UserProfile.objects.filter(
+            date_joined__gte=last_week_start - timedelta(days=7),
+            date_joined__lt=last_week_start
+        ).count()
+
+        new_last_month = UserProfile.objects.filter(
+            date_joined__gte=last_month_start,
+            date_joined__lt=today_start
+        ).count()
+        new_prev_month = UserProfile.objects.filter(
+            date_joined__gte=last_month_start - timedelta(days=30),
+            date_joined__lt=last_month_start
+        ).count()
+
+        new_users_growth = {
+            "day": growth(new_today, new_yesterday),
+            "week": growth(new_last_week, new_prev_week),
+            "month": growth(new_last_month, new_prev_month),
+        }
+
+        # Active users growth (users who placed at least one order in the period)
+        active_today = UserProfile.objects.filter(
+            orders__created_at__gte=today_start
+        ).distinct().count()
+        active_yesterday = UserProfile.objects.filter(
+            orders__created_at__gte=yesterday_start,
+            orders__created_at__lt=today_start
+        ).distinct().count()
+
+        active_last_week = UserProfile.objects.filter(
+            orders__created_at__gte=last_week_start,
+            orders__created_at__lt=today_start
+        ).distinct().count()
+        active_prev_week = UserProfile.objects.filter(
+            orders__created_at__gte=last_week_start - timedelta(days=7),
+            orders__created_at__lt=last_week_start
+        ).distinct().count()
+
+        active_last_month = UserProfile.objects.filter(
+            orders__created_at__gte=last_month_start,
+            orders__created_at__lt=today_start
+        ).distinct().count()
+        active_prev_month = UserProfile.objects.filter(
+            orders__created_at__gte=last_month_start - timedelta(days=30),
+            orders__created_at__lt=last_month_start
+        ).distinct().count()
+
+        active_users_growth = {
+            "day": growth(active_today, active_yesterday),
+            "week": growth(active_last_week, active_prev_week),
+            "month": growth(active_last_month, active_prev_month),
+        }
+
+        return Response({
+            'ok': True,
+            'data': {
+                'total_users': all_users,
+                'total_active_users': total_active_users,        # Users with at least one order ever
+                'total_active_orders': active_orders_count,      # Pending + Processing
+                'new_users_growth': new_users_growth,
+                'active_users_growth': active_users_growth,      # Daily active ordering users growth
+            }
+        })

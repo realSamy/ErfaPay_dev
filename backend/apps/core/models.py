@@ -6,127 +6,56 @@ from django.utils import timezone
 
 User = get_user_model()
 
-class SiteSettings(models.Model):
-    # === Order Hours & Availability (from your admin page) ===
-    order_hours = models.JSONField(
-        default=dict,
-        help_text="Example: {'from': '09:00', 'to': '18:00', 'days': ['Saturday', 'Sunday', ...]}"
-    )
-    order_availability = models.BooleanField(
-        default=True,
-        verbose_name="Order placement enabled"
-    )
+from django.db import models
+from django.utils import timezone
+from datetime import timezone as dt_timezone
+from datetime import time
 
-    # === Branding ===
-    site_name_fa = models.CharField(max_length=100, default="ErfaPay", verbose_name="نام سایت (فارسی)")
-    site_name_en = models.CharField(max_length=100, default="ErfaPay", verbose_name="Site Name (EN)")
-    logo = models.ImageField(upload_to='site/', blank=True, null=True, verbose_name="لوگو")
-    favicon = models.ImageField(upload_to='site/', blank=True, null=True, verbose_name="Favicon")
+class GlobalSettings(models.Model):
+    WEEKDAY_CHOICES = [
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    ]
 
-    # === Support Info ===
-    support_email = models.EmailField(default="support@erfapay.com")
-    support_phone = models.CharField(max_length=20, default="+98 21 1234 5678")
-    support_telegram = models.CharField(max_length=100, blank=True)
+    time_from = models.TimeField(default=time(9, 0))
+    time_to = models.TimeField(default=time(17, 0))
+    weekday_from = models.IntegerField(choices=WEEKDAY_CHOICES, default=0)
+    weekday_to = models.IntegerField(choices=WEEKDAY_CHOICES, default=4)
+    global_availability = models.BooleanField(default=True)
+    enable_schedule = models.BooleanField(default=False)
 
-    # === Financial Settings ===
-    tax_rate = models.DecimalField(max_digits=5, decimal_places=2, default=9.00, verbose_name="Tax Rate (%)")
-    min_charge_usd = models.DecimalField(max_digits=8, decimal_places=2, default=1.00, verbose_name="Min Charge (USD)")
-
-    # === Maintenance & Messages ===
-    maintenance_mode = models.BooleanField(default=False, verbose_name="Maintenance Mode")
-    maintenance_message_fa = models.TextField(blank=True, verbose_name="پیام تعمیرات (فارسی)")
-    maintenance_message_en = models.TextField(blank=True, verbose_name="Maintenance Message (EN)")
-
-    # === Audit ===
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(
-        'users.UserProfile', on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='settings_updates', verbose_name="آخرین ویرایش توسط"
-    )
-
-    class Meta:
-        verbose_name = "تنظیمات سایت"
-        verbose_name_plural = "تنظیمات سایت"
-
-    def save(self, *args, **kwargs):
-        self.pk = 1  # Force singleton
-        super().save(*args, **kwargs)
-        cache.delete('site_settings')
-
-    def __str__(self):
-        return "ErfaPay Site Settings"
-
-    @classmethod
-    def get_settings(cls):
-        """Cached singleton access – use this everywhere"""
-        cached = cache.get('site_settings')
-        if cached:
-            return cached
-        obj, created = cls.objects.get_or_create(pk=1)
-        cache.set('site_settings', obj, timeout=60*60*24)  # 24h
-        return obj
-
-    @classmethod
-    def is_order_allowed_now(cls) -> bool:
-        """
-        Returns True if orders are allowed right now.
-        Considers:
-        - Global toggle (order_availability)
-        - Scheduled hours (order_hours)
-        """
-        settings = cls.get_settings()
-
-        # 1. Global toggle off → blocked
-        if not settings.order_availability:
+    def is_service_available(self) -> bool:
+        if not self.global_availability:
             return False
 
-        # 2. If no schedule defined → allow 24/7
-        if not settings.order_hours:
+        if not self.enable_schedule:
             return True
 
-        hours = settings.order_hours
-        if not all(k in hours for k in ('from', 'to', 'days')):
-            return True  # Malformed → default allow
+        now = timezone.now().astimezone(dt_timezone.utc)
+        current_weekday = now.weekday()  # 0=Monday ... 6=Sunday
+        current_time = now.time()
 
-        try:
-            start_str = hours['from']  # "09:00"
-            end_str = hours['to']  # "18:00"
-            allowed_days = hours['days']  # ["Saturday", "Sunday", ...]
+        if not self._is_weekday_in_range(current_weekday):
+            return False
 
-            start_time = datetime.strptime(start_str, "%H:%M").time()
-            end_time = datetime.strptime(end_str, "%H:%M").time()
-
-            now = timezone.localtime()  # Tehran time
-            current_time = now.time()
-            current_weekday = now.strftime("%A")  # "Monday", "Tuesday", ...
-
-            # Check day
-            if current_weekday not in allowed_days:
-                return False
-
-            # Check time range
-            if start_time <= end_time:
-                return start_time <= current_time <= end_time
-            else:  # Overnight (e.g. 22:00 → 06:00)
-                return current_time >= start_time or current_time <= end_time
-
-        except Exception:
-            # Any parsing error → default to ALLOW (fail-open)
-            return True
+        if not self._is_time_in_range(current_time):
+            return False
 
         return True
 
-    @classmethod
-    def get_availability_message(cls) -> str:
-        settings = cls.get_settings()
-        if not settings.order_availability:
-            return "سفارش‌گیری در حال حاضر غیرفعال است."
+    def _is_weekday_in_range(self, day: int) -> bool:
+        if self.weekday_from <= self.weekday_to:
+            return self.weekday_from <= day <= self.weekday_to
+        else:
+            return day >= self.weekday_from or day <= self.weekday_to
 
-        if not settings.order_hours:
-            return "سفارش‌گیری ۲۴ ساعته فعال است."
-
-        h = settings.order_hours
-        days_fa = {'Monday': 'دوشنبه', 'Tuesday': 'سه‌شنبه', 'Wednesday': 'چهارشنبه',
-                   'Thursday': 'پنج‌شنبه', 'Friday': 'جمعه', 'Saturday': 'شنبه', 'Sunday': 'یکشنبه'}
-        days = ', '.join(days_fa.get(d, d) for d in h.get('days', []))
-        return f"ساعات سفارش‌گیری: {h['from']} تا {h['to']} – {days}"
+    def _is_time_in_range(self, current: time) -> bool:
+        if self.time_from <= self.time_to:
+            return self.time_from <= current <= self.time_to
+        else:
+            return current >= self.time_from or current <= self.time_to

@@ -22,14 +22,12 @@
 </template>
 
 <script lang="ts" setup>
-import type {ServiceItem} from "~/types/data";
-
 definePageMeta({
   layout: 'dashboard',
   middleware: ['auth'],
 })
 
-const services = useState<ServiceItem[]>('services')
+const {services} = await useLoadServicesStore()
 </script>
 
 <style scoped>

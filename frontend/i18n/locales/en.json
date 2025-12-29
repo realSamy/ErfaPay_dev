@@ -1,4 +1,18 @@
 {
+  "admin": {
+    "charts": {
+      "max_1_year": "Maximum allowed range is one year",
+      "max_20_days": "Maximum range to select for days is {0}",
+      "modes": {
+        "daily": "Daily",
+        "monthly": "Monthly",
+        "weekly": "Weekly"
+      },
+      "pick_date": "Pick Date Range",
+      "title_charges": "Wallet Charges Chart",
+      "title_orders": "Orders Charts"
+    }
+  },
   "common": {
     "currencies": {
       "symbol": {
@@ -20,10 +34,20 @@
         "usdt": "Tether (USDT)"
       }
     },
+    "field_types": {
+      "file": "File",
+      "number": "Number",
+      "select": "Select",
+      "text": "Text",
+      "textarea": "Textarea"
+    },
     "labels": {
       "add": "Add",
+      "admin_notes": "Admin Notes",
       "admin_panel": "Admin Panel",
       "cancel": "Cancel",
+      "choose_country": "Choose Country",
+      "clear_filters": "Clear Filters",
       "contact_us": "Contact Us",
       "create": "Create",
       "dashboard": "Dashboard",
@@ -33,13 +57,16 @@
       "logout": "Logout",
       "more": "More",
       "new_ticket": "New Ticket",
+      "order_status": "Order Status",
       "password": "Password",
       "phone": "Phone Number",
+      "save": "Save",
       "send": "Send",
       "services": "Services",
       "signup": "Sign Up",
       "title_en": "Title (English)",
       "title_fa": "Title (Farsi)",
+      "user_pricing": "User Pricing",
       "username": "Username"
     },
     "layouts": {
@@ -60,6 +87,7 @@
     },
     "messages": {
       "confirm_logout": "Are you sure you want to logout?",
+      "global_settings_applied": "Applied new settings",
       "support_24_7": "We are available 24/7.",
       "warn_add_users_to_show": "Add users to show here",
       "warn_no_user": "No user found"
@@ -103,6 +131,7 @@
       "priority": "Priority",
       "role": "Role",
       "search": "Search...",
+      "service": "Service",
       "state": "State",
       "tax": "Tax",
       "ticket_number": "Ticket Number",
@@ -124,9 +153,11 @@
       "login": "Login",
       "login_notice": "Already have account?",
       "order_number": "Order Number",
+      "orders_update": "Update Order",
       "payment_amount": "Payment Amount",
       "redirecting": "Redirecting...",
       "request_type": "Request Type",
+      "required_fields": "Required Fields",
       "signup": "Sign Up",
       "signup_notice": "Are you new here?",
       "ticket_categories": "Ticket Categories",
@@ -134,6 +165,15 @@
       "tickets_desc": "Tickets and support history",
       "user_info": "User Info",
       "user_orders": "User Orders"
+    },
+    "weekdays": {
+      "friday": "Friday",
+      "monday": "Monday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "thursday": "Thursday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday"
     }
   },
   "error": {
@@ -141,6 +181,7 @@
     "404": "Page not found",
     "500": "Internal server error",
     "default": "An unexpected error occurred",
+    "invalid_amount": "Entered amount is not valid",
     "invalid_login": "Invalid username or password.",
     "title": "Error",
     "try_again_later": "Please try again later",
@@ -148,9 +189,13 @@
     "user_not_found": "User not found"
   },
   "errors": {
+    "auth": {
+      "invalid_creds": "Incorrect email or password"
+    },
     "otp": {
       "too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code."
-    }
+    },
+    "voucher_required": "Please enter both voucher number and code"
   },
   "footer": {
     "about_us": "Questions and Answers",
@@ -205,6 +250,7 @@
       "placeholder_fullname": "Enter your full name",
       "placeholder_lastname": "Enter your last name",
       "placeholder_password": "********",
+      "residence_country": "Residence Country",
       "text_tos_agreement": "I agree with {0} ErfaPay",
       "title_profile_setup": "Complete Setup"
     },
@@ -220,6 +266,18 @@
       "edit_ticket_category": {
         "title": "Edit ticket category"
       }
+    },
+    "required_fields": {
+      "description_en": "Description (English)",
+      "description_fa": "Description (Persian)",
+      "is_required": "Is Required?",
+      "label_en": "Label (English)",
+      "label_fa": "Label (Persian)",
+      "options": "Options (one per line)",
+      "options_placeholder": "Enter options, one per line",
+      "title": "Define Required Field",
+      "type": "Field Type",
+      "unnamed": "Unnamed Field"
     },
     "signin": {
       "label_change_email": "Change email",
@@ -266,14 +324,30 @@
     }
   },
   "navigation": {
+    "back_orders": "Back to orders",
     "back_tickets": "Back to tickets",
     "home": "Back to Home"
+  },
+  "orders": {
+    "labels": {
+      "base_amount": "Base Amount",
+      "commission": "Commission",
+      "pay_and_submit": "Pay And Submit",
+      "payment_summary": "Payment Summary",
+      "tax": "Tax",
+      "total_payable": "Total"
+    },
+    "messages": {
+      "order_created": "Order created successfully",
+      "order_updated": "Order updated successfully"
+    }
   },
   "pages": {
     "admin": {
       "labels": {
         "services": {
-          "button_new_service": "New Service"
+          "button_new_service": "New Service",
+          "button_save": "Save"
         }
       },
       "title": {
@@ -284,6 +358,7 @@
         "orders": "Orders management",
         "orders_id": "Order [{order}]",
         "orders_new": "New Order",
+        "services_edit": "Edit Service",
         "support": "Communications",
         "ticket_id": "Ticket [{ticket}]",
         "tickets": "Tickets",
@@ -307,18 +382,23 @@
         "transparent_reports_title": "Transparent Reports"
       },
       "charge_wallet": "Charge Wallet",
+      "crypto": "Cryptocurrency",
       "cta_section_title": "Register in less than a minute and make your first transaction.",
       "current_prices": "Current Currency Prices",
       "deposit_amount": "Deposit Amount",
       "hero_section_cta": "Submit Request",
       "hero_section_description": "ErfaPay is a fast and secure platform for transferring money to Iranian bank cards within the country.",
       "hero_section_title": "Card-to-Card Transfer to Iran",
+      "irt_equivalent": "Toman Equivalent",
       "learn_more": "Learn More",
+      "redeem_voucher": "Redeem Voucher",
       "register_now": "Register Now",
-      "rial_equivalent": "Rial Equivalent",
       "select_currency": "Select Currency",
       "social_media_title": "Follow us on social networks.",
       "support_phone": "Support Phone:",
+      "voucher_code": "Activation Code",
+      "voucher_number": "Voucher Number",
+      "voucher_success": "Voucher redeemed successfully!",
       "why_erfapay_description": "ErfaPay is a fast and secure platform for financial transactions for Iranians abroad. This service is designed to meet the needs of immigrants and residents outside of Iran.",
       "why_erfapay_title": "Why is ErfaPay the Right Choice?"
     },
@@ -362,10 +442,27 @@
   },
   "services": {
     "labels": {
-      "button_new_order": "New Service",
+      "button_new_order": "New Order",
       "charge_account": "Charge Account",
       "internal_payment": "Internal Payment",
-      "money_transfer": "Money Transfer"
+      "money_transfer": "Money Transfer",
+      "order_attachments": "Needed File Attachments",
+      "order_price": "Order Price",
+      "order_total_price": "Total Payment"
+    },
+    "messages": {
+      "order_attachments": "If this order or service requires uploading files, you can attach them here",
+      "order_price": "Enter the amount that will be spent for this order",
+      "user_pricing": "Allow user to set order price",
+      "user_pricing_forced": "This field is required for services with percent commission"
     }
+  },
+  "wallet": {
+    "balance": "Current Balance",
+    "overview": "Your wallet overview",
+    "overview_desc": "Your financial overview and orders",
+    "popular_services": "Erfapay Popular Services",
+    "wallet_add_charge": "Charge Wallet",
+    "wallet_overview": "Wallet Overview"
   }
 }

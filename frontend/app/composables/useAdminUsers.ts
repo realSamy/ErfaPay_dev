@@ -1,5 +1,6 @@
 import type {User, AdminCreateUserPayload, AdminUserUpdatePayload, UserListFilters} from '~/types/users'
 import type {GenericHTTPExtendedResponse, GenericHTTPPaginationResponse, GenericHTTPResponse} from "~/types/http";
+import {FetchError} from "ofetch";
 
 
 export const useAdminUsers = () => {
@@ -14,8 +15,12 @@ export const useAdminUsers = () => {
   }
 
   // Detail
-  const getUserDetail = async (id: number) => {
-    return await useAuthApi<GenericHTTPResponse<User>>(`/api/auth/admin/users/${id}/`)
+  const getUserDetail = async (id: number): Promise<Ref<User>> => {
+    const {data: response, error} = await useAuthApi<GenericHTTPResponse<User>>(`/api/auth/admin/users/${id}/`)
+    if (response.value?.ok) return ref<User>(response.value.data)
+    throw createError({
+      message: 'User not found',
+    })
   }
 
   // Create Support User (Main Admin only)

@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts" setup>
-import {useRoute, useLocalePath, useI18n} from '#imports'
+import {useRoute, useLocalePath, useI18n, useBreadcrumbStore} from '#imports'
 import type {BreadcrumbItem} from '@nuxt/ui'
 
 const route = useRoute()
 const router = useRouter()
 const localePath = useLocalePath()
 const {t} = useI18n()
-const breadcrumbState = useState<Record<string, unknown>>('breadcrumb.state')
+const breadcrumbState = useBreadcrumbStore()
 
 
 function normalizeName(name: string) {

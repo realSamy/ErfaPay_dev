@@ -9,7 +9,7 @@ export interface User {
   full_name: string
   role: UserRole
   phone_prefix?: string
-  country_code?: string
+  country_code: string
   is_verified: boolean
   is_blocked: boolean
   last_login?: string
@@ -23,6 +23,21 @@ export interface UserListFilters {
   page?: number
   page_size?: number
   active?: true
+}
+
+
+export interface PeriodicStats {
+  day: number
+  week: number
+  month: number
+}
+
+export interface UsersStats {
+  total_users: number
+  total_active_users: number
+  total_active_orders: number
+  new_users_growth: PeriodicStats
+  active_users_growth: PeriodicStats
 }
 
 // ── Payloads ──

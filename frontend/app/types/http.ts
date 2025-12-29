@@ -1,6 +1,6 @@
 import {FetchError} from "ofetch";
 import type {CurrencyItem} from "~/types/data";
-import type {User} from "~/types/auth";
+import type {User} from "~/types/users";
 import type {Ticket, TicketCategory, TicketMessage} from "~/types/tickets";
 import type {Service} from "~/types/services";
 
@@ -100,11 +100,12 @@ export interface GenericHTTPPaginationResponse<T = undefined> {
   count: number
   next?: string | null
   previous?: string | null
-  results: GenericHTTPResponse<T>
+  results: T
 }
 export type HTTPTicketResponse = GenericHTTPResponse<Ticket>
 export type HTTPTicketsResponse = GenericHTTPResponse<Ticket[]>
 
+export type HTTPServiceResponse = GenericHTTPResponse<Service>
 export type HTTPServicesResponse = GenericHTTPResponse<Service[]>
 
 export type HTTPTicketCategoryResponse = GenericHTTPMultiResponse<TicketCategory>

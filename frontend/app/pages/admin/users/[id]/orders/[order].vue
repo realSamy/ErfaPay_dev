@@ -1,13 +1,13 @@
 <template>
-  <div class="space-y-12">
+  <div v-if="order" class="space-y-12">
     <section class="flex flex-col xl:flex-row justify-between gap-12">
       <!-- User Information Column -->
       <div class="column">
         <div class="has-hr">
           <h2 class="title">کاربر سفارش دهنده:</h2>
           <div class="tr-value">
-            <span class="font-bold">{{ user.first_name }} {{ user.last_name }}</span>
-            <UIcon :name="`cif:${user.country_code.toLowerCase()}`" class="rounded-md" size="20"/>
+            <span class="font-bold">{{ order.user.full_name }}</span>
+            <UIcon :name="`cif:${order.user.country_code.toLowerCase()}`" class="rounded-md" size="20"/>
           </div>
         </div>
 
@@ -15,21 +15,13 @@
           <h2 class="title">مشخصات کاربری:</h2>
           <div class="tr">
             <span class="tr-title">ایمیل:</span>
-            <span class="tr-value">{{ user.email }}</span>
-          </div>
-          <div class="tr">
-            <span class="tr-title">وضعیت تأیید:</span>
-            <span class="tr-value">
-              <UBadge :color="user.is_verified ? 'success' : 'error'" variant="subtle">
-                {{ user.is_verified ? 'تأیید شده' : 'تأیید نشده' }}
-              </UBadge>
-            </span>
+            <span class="tr-value">{{ order.user.email }}</span>
           </div>
           <div class="tr">
             <span class="tr-title">وضعیت حساب:</span>
             <span class="tr-value">
-              <UBadge :color="user.blocked ? 'error' : 'success'" variant="subtle">
-                {{ user.blocked ? 'مسدود شده' : 'فعال' }}
+              <UBadge :color="order.user.is_blocked ? 'error' : 'success'" variant="subtle">
+                {{ order.user.is_blocked ? 'مسدود شده' : 'فعال' }}
               </UBadge>
             </span>
           </div>
@@ -43,31 +35,25 @@
           <div class="tr has-hr">
             <span class="tr-title">شماره سفارش:</span>
             <span class="tr-value">
-              {{ $n(order.orderNumber, {useGrouping: false}) }}
+              {{ $n(Number(order.id), {useGrouping: false}) }}
             </span>
           </div>
           <div class="tr has-hr">
             <span class="tr-title">نوع درخواست:</span>
             <span class="tr-value">
-              {{ order.type.title[locale.toLowerCase()] }}
+              {{ order.service[`title_${locale}`] }}
             </span>
           </div>
           <div class="tr has-hr">
             <span class="tr-title">مبلغ سفارش:</span>
             <span class="tr-value">
-              {{ $n(order.amount_irr) }} ریال
-            </span>
-          </div>
-          <div class="tr has-hr">
-            <span class="tr-title">مالیات:</span>
-            <span class="tr-value">
-              {{ order.tax_amount ? $n(order.tax_amount) + ' ریال' : '—' }}
+              {{ $n(Number(order.user_amount_irt)) }} تومان
             </span>
           </div>
           <div class="tr has-hr">
             <span class="tr-title">تاریخ ثبت:</span>
             <span class="tr-value">
-              {{ formatJalaliDate(order.created_at) }}
+              {{ $d(new Date(order.created_at), DATEFORMAT) }}
             </span>
           </div>
         </div>
@@ -80,36 +66,40 @@
           <div class="tr has-hr">
             <span class="tr-title">اپراتور:</span>
             <span class="tr-value">
-              {{
-                order.processed_by ? (order.processed_by as User).full_name : '—'
-              }}
+              {{ order.processed_by?.full_name || '—' }}
             </span>
           </div>
           <div class="tr has-hr">
             <span class="tr-title">آخرین وضعیت:</span>
             <div class="tr-value">
-              <UBadge :color="statusBadge.color" class="capitalize">
-                {{ statusBadge.label }}
-              </UBadge>
-              <UModal v-model="openStatusModal">
-                <UButton
-                    class="mr-2"
-                    icon="material-symbols:edit-square-outline"
-                    size="xs"
-                    variant="link"
-                    @click="openStatusModal = true"
-                />
-                <template #body>
-                  <div class="p-6">تغییر وضعیت سفارش (در آینده پیاده‌سازی می‌شود)</div>
-                </template>
-              </UModal>
-
+              <UBadge :color="statusBadge.color" :label="statusBadge.label" class="capitalize"/>
+              <UButton
+                  class="mr-2"
+                  icon="material-symbols:edit-square-outline"
+                  size="xs"
+                  variant="link"
+                  @click="handleUpdateStatus"
+              />
             </div>
+          </div>
+          <div v-if="order.admin_notes" class="tr has-hr">
+            <span class="tr-title">توضیحات پشتیبان:</span>
+            <UPopover mode="hover">
+              <span class="text-info tr-value max-h-6 overflow-hidden truncate ">
+                {{ order.admin_notes }}
+              </span>
+
+              <template #content>
+                <div class="w-100 p-2">
+                  <span class="max-w-10 wrap-normal">{{ order.admin_notes }}</span>
+                </div>
+              </template>
+            </UPopover>
           </div>
           <div class="tr has-hr">
             <span class="tr-title">تاریخ بروزرسانی:</span>
             <span class="tr-value">
-              {{ order.updated_at ? formatJalaliDate(order.updated_at) : '—' }}
+              {{ order.updated_at ? $d(new Date(order.updated_at), DATEFORMAT) : '—' }}
             </span>
           </div>
         </div>
@@ -118,12 +108,26 @@
 
     <section class="space-y-2">
       <h2 class="title">توضیحات:</h2>
-      <div class="w-full h-30 bg-ui-highlight p-4">
-        <p class="text-sm">توضیحات کاربر</p>
+      <div class="w-full bg-ui-highlight p-4 grid md:grid-cols-2 gap-4">
+        <div v-for="data in order.custom_data" class="space-y-2">
+          <div>
+            <h4 class="font-bold">{{ data[`label_${locale}`] }}</h4>
+            <p class="text-muted">{{ data[`description_${locale}`] }}</p>
+          </div>
+          <p class="font-medium bg-elevated p-2 rounded-md">
+            {{ data.value }}
+          </p>
+        </div>
       </div>
-      <div class="inline-flex gap-2">
-        <UButton icon="material-symbols:attachment" variant="soft" label="فایل ضمیمه 1" />
-        <UButton icon="material-symbols:attachment" variant="soft" label="فایل ضمیمه 2" />
+      <div v-if="order.attachments" class="inline-flex gap-2 flex-wrap">
+        <UButton v-for="attachment in order.attachments"
+                 :href="attachment.url"
+                 :label="attachment.filename"
+                 external
+                 icon="material-symbols:attachment"
+                 target="_blank"
+                 variant="soft"
+        />
       </div>
     </section>
 
@@ -132,65 +136,75 @@
 
 <script lang="ts" setup>
 import type {User} from "~/types/users";
-import type {Order} from "~/types";
+import type {Order} from "~/types/orders";
+import type {UpdateOrderPayload} from "~/types/payload";
 
 definePageMeta({
   layout: 'admin',
   title: 'pages.admin.title.orders_id',
 })
 
-// Demo data — in real app this comes from API
-const {locale} = useI18n()
+const {locale, t} = useI18n()
+const route = useRoute()
+const order_id = route.params.order as string
 
-const user = ref<User>({} as User)
+const breadcrumbStore = useBreadcrumbStore()
 
-const order = ref<Order>({
-  id: 187,
-  user: user.value,
-  orderNumber: 1000333,
-  amount_irr: '2850000',
-  tax_amount: '256500',
-  status: 'done',
-  type: {
-    title: {fa: 'پرداخت قبض', en: 'Electricity Bill Payment'},
-    description: {fa: 'پرداخت قبوض خدماتی', en: 'Utility bill payment'},
-  },
-  created_at: '2025-02-11T14:30:00Z',
-  updated_at: '2025-02-12T09:15:00Z',
-  processed_by: {
-    id: 5,
-    first_name: 'علی',
-    last_name: 'رضایی',
-    email: 'ali.support@erfapay.ir',
-    role: 'senior_support',
-    is_verified: true,
-    blocked: false,
-    country_code: 'IR',
-  } as User,
-})
+const {order} = await useAdminFetchOrder(order_id)
 
-// Helpers
-const formatJalaliDate = (isoDate: string) => {
-  return new Date(isoDate).toLocaleDateString('fa-IR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+breadcrumbStore.value = {
+  name: order.value.user.full_name,
+  order: order_id
+}
+
+const DATEFORMAT = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
 }
 
 const statusBadge = computed(() => {
   const map = {
-    pending: {label: 'در انتظار', color: 'neutral' as const},
-    processing: {label: 'در حال انجام', color: 'info' as const},
-    done: {label: 'انجام شده', color: 'success' as const},
-    rejected: {label: 'رد شده', color: 'error' as const},
+    pending: {label: t('common.states.orders.pending'), color: 'neutral' as const},
+    processing: {label: t('common.states.orders.processing'), color: 'info' as const},
+    done: {label: t('common.states.orders.done'), color: 'success' as const},
+    rejected: {label: t('common.states.orders.rejected'), color: 'error' as const},
   }
   return map[order.value.status]
 })
 
-const openStatusModal = ref(false)
+const statusItems = ref<{ label: string, value: Order['status'] }[]>([
+  {label: t('common.states.orders.pending'), value: 'pending'},
+  {label: t('common.states.orders.processing'), value: 'processing'},
+  {label: t('common.states.orders.done'), value: 'done'},
+  {label: t('common.states.orders.rejected'), value: 'rejected'},
+])
+
+const handleUpdateStatus = async () => {
+  const payload = await usePrompt<UpdateOrderPayload>()({
+        status: order.value.status as Exclude<Order['status'], 'pending'>,
+        admin_notes: order.value.admin_notes,
+      }, {
+        status: {label: t('common.labels.order_status'), type: 'select', options: statusItems},
+        admin_notes: {label: t('common.labels.admin_notes'), type: 'textarea'}
+      },
+      {
+        title: t('common.titles.orders_update'),
+      })
+
+  if (payload) {
+    const {updateOrder, updatedOrder} = useUpdateAdminOrder()
+    await updateOrder(order_id, payload)
+    order.value = updatedOrder.value
+    useToast().add({
+      title: t('common.titles.orders_update'),
+      description: t('orders.messages.order_updated'),
+      color: 'success',
+    })
+  }
+}
 </script>
 
 <style scoped>

@@ -20,7 +20,7 @@ class CurrencyRate(models.Model):
 
     code = models.CharField(max_length=10, unique=True, choices=CODE_CHOICES)
     name = models.CharField(max_length=50)
-    icon = models.CharField(max_length=50)  # مثل: "circle-flags:us" یا "cryptocurrency-color:btc"
+    icon = models.CharField(max_length=50)
     rate_to_irt = models.DecimalField(
         max_digits=24, decimal_places=2,
         help_text="نرخ تبدیل ۱ واحد این ارز به تومان (IRT)"

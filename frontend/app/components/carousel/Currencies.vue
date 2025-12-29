@@ -33,8 +33,9 @@
 
 <script lang="ts" setup>
 import type {CurrencyItem} from "~/types/data";
+import {useLoadCurrenciesStore} from "~/composables/useLoadCurrenciesStore";
 
-const currencyItems = useState<CurrencyItem[]>('currencies')
+const currencyItems = await useLoadCurrenciesStore()
 
 
 </script>

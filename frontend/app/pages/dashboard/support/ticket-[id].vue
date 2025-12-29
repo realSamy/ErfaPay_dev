@@ -182,6 +182,7 @@
 import type {TicketMessage, Ticket} from "~/types/tickets";
 import type {ReplyTicketPayload} from '~/types/payload';
 import {useCloseTicket} from "~/composables/useTickets";
+import {useBreadcrumbStore} from "~/composables/useBreadcrumbStore";
 
 definePageMeta({
   middleware: ['auth'],
@@ -201,7 +202,7 @@ const payload = ref<ReplyTicketPayload>({
   attachments: []
 })
 
-const breadcrumbState = useState('breadcrumb.state', () => ({}))
+const breadcrumbState = useBreadcrumbStore()
 breadcrumbState.value = {ticket: ticket_id}
 
 const ticket = ref<Ticket>();
@@ -233,8 +234,6 @@ const replyHandler = async () => {
   if (!ticket.value)
     return;
   const {data: response, error} = await ticketReply(payload.value)
-  console.log('response', response.value)
-  console.log('error', error.value)
   if (response.value?.ok) {
     ticket.value = response.value.data
     payload.value = {

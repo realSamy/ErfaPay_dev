@@ -21,7 +21,7 @@ class Order(models.Model):
 
     usd_irt_rate = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
 
-    custom_data = models.JSONField(default=dict, blank=True)  # link, username, quantity, etc.
+    custom_data = models.JSONField(default=list, blank=True)  # link, username, quantity, etc.
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     wallet_transaction = models.OneToOneField(
         'payments.WalletTransaction', null=True, blank=True, on_delete=models.SET_NULL
@@ -50,28 +50,44 @@ class Order(models.Model):
         if self.status != 'pending':
             raise ValueError("Order already processed")
 
-        if self.user.wallet.balance < self.total_irt:
+        wallet = self.user.wallet
+        if wallet.balance < self.total_irt:
             raise ValueError("Insufficient balance")
 
         from apps.currencies.models import CurrencyRate
         self.usd_irt_rate = CurrencyRate.get_current_rate('USD')
 
-        # Deduct from wallet
+        # Deduct from wallet balance atomically
+        updated_rows = wallet.__class__.objects.filter(
+            id=wallet.id,
+            balance__gte=self.total_irt
+        ).update(balance=F('balance') - self.total_irt)
+
+        if updated_rows == 0:
+            raise ValueError("Insufficient balance or concurrent modification")
+
+        # Refresh wallet balance from DB
+        wallet.refresh_from_db(fields=['balance'])
+        new_balance = wallet.balance
+
+        # Create transaction record
         from apps.payments.models import WalletTransaction
         wt = WalletTransaction.objects.create(
-            wallet=self.user.wallet,
+            wallet=wallet,
             amount=-self.total_irt,
             transaction_type='spend',
             reference_id=str(self.id),
             description=f"Order {self.id}: {self.service.title_fa}",
-            balance_after=F('wallet__balance') - self.total_irt
+            balance_after=new_balance
         )
-        self.wallet_transaction = wt
-        self.user.wallet.balance = F('balance') - self.total_irt
-        self.user.wallet.save(update_fields=['balance'])
-        wt.refresh_from_db()
-        wt.balance_after = self.user.wallet.balance
-        wt.save(update_fields=['balance_after'])
 
-        self.status = 'processing' if self.service.requires_manual_review else 'done'
-        self.save()
+        self.wallet_transaction = wt
+        self.status = 'processing' #  if self.service.requires_manual_review else 'done'
+        self.save(update_fields=['usd_irt_rate', 'wallet_transaction', 'status'])
+
+        return wt
+
+
+class OrderAttachment(models.Model):
+    attachment = models.FileField(upload_to='orders/attachments/')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='attachments')

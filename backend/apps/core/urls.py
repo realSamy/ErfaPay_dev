@@ -1,6 +1,6 @@
 from django.urls import path
-from .admin_views import SiteSettingsView
+from .views import GlobalSettingsView
 
 urlpatterns = [
-    path('', SiteSettingsView.as_view(), name='site-settings'),
+    path('', GlobalSettingsView.as_view(), name='global-settings'),
 ]
