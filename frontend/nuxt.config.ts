@@ -68,7 +68,8 @@ export default defineNuxtConfig({
       '/api': 'http://localhost:8000/api',
       '/static': 'http://localhost:8000/static',
       '/media': 'http://localhost:8000/media',
-    }
+    },
+    preset: 'node-server'
   },
 
   compatibilityDate: '2024-11-27'
