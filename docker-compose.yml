@@ -41,6 +41,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - certbot_www:/var/www/certbot
       - certbot_certs:/etc/letsencrypt
+    entrypoint: /bin/sh -c "envsubst '\$DOMAIN' < /etc/nginx/conf.d/app.conf.template > /etc/nginx/conf.d/app.conf && nginx -g 'daemon off;'"
     depends_on:
       - frontend
       - backend
