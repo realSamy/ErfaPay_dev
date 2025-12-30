@@ -1,4 +1,4 @@
-from base import *
+from .base import *
 from celery.schedules import crontab
 
 DEBUG = os.environ.get('DEBUG', False) in ['True', 'true', True]
