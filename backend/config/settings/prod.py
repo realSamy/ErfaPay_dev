@@ -25,9 +25,21 @@ DB_USER = os.environ.get('POSTGRES_USER')
 DB_PASS = os.environ.get('POSTGRES_PASSWORD')
 
 DOMAIN = os.environ.get('DOMAIN')
+
+print('=======================================')
+print('=======================================')
+print('=======================================')
+print('=======================================')
+print('=======================================')
+print('Domain:', DOMAIN)
+print('=======================================')
+print('=======================================')
+print('=======================================')
+print('=======================================')
+print('=======================================')
 if DOMAIN:
-    CORS_ALLOWED_ORIGINS = [f'https://{DOMAIN}']
-    ALLOWED_HOSTS = [f'https://{DOMAIN}']
+    CORS_ALLOWED_ORIGINS = [DOMAIN]
+    ALLOWED_HOSTS = [DOMAIN]
 
 
 DATABASES = {
