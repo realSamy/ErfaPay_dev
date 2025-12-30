@@ -9,18 +9,23 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
-PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com'  # Switch to live
-PAYPAL_CLIENT_ID = 'your_client_id'
-PAYPAL_SECRET = 'your_secret'
-PAYPAL_RETURN_URL = 'https://yourdomain.com/paypal/success'
-PAYPAL_CANCEL_URL = 'https://yourdomain.com/paypal/cancel'
+PAYPAL_API_URL = os.environ.get('PAYPAL_API_URL')
+PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+PAYPAL_SECRET = os.environ.get('PAYPAL_SECRET')
+PAYPAL_RETURN_URL = os.environ.get('PAYPAL_RETURN_URL')
+PAYPAL_CANCEL_URL = os.environ.get('PAYPAL_CANCEL_URL')
+
+NOWPAYMENTS_API_KEY = os.environ.get('NOWPAYMENTS_API_KEY')
+NOWPAYMENTS_API_URL = os.environ.get('NOWPAYMENTS_API_URL')
 
 AUTH_USER_MODEL = 'users.UserProfile'
 
