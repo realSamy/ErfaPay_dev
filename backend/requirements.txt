@@ -13,3 +13,4 @@ pytest-django~=4.11.1
 weasyprint
 django-sendfile2
 celery
+gunicorn
