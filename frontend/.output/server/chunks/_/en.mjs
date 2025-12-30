@@ -1,0 +1,484 @@
+var admin = {
+	charts: {
+		max_1_year: "Maximum allowed range is one year",
+		max_20_days: "Maximum range to select for days is {0}",
+		modes: {
+			daily: "Daily",
+			monthly: "Monthly",
+			weekly: "Weekly"
+		},
+		pick_date: "Pick Date Range",
+		title_charges: "Wallet Charges Chart",
+		title_orders: "Orders Charts"
+	}
+};
+var common = {
+	currencies: {
+		symbol: {
+			btc: "₿",
+			eur: "€",
+			gbp: "£",
+			rial: "﷼",
+			toman: "Toman",
+			usd: "$",
+			usdt: "₮"
+		},
+		text: {
+			btc: "Bitcoin",
+			eur: "Euro",
+			gbp: "British Pound",
+			rial: "Rial",
+			toman: "Toman",
+			usd: "US Dollar",
+			usdt: "Tether (USDT)"
+		}
+	},
+	field_types: {
+		file: "File",
+		number: "Number",
+		select: "Select",
+		text: "Text",
+		textarea: "Textarea"
+	},
+	labels: {
+		add: "Add",
+		admin_notes: "Admin Notes",
+		admin_panel: "Admin Panel",
+		cancel: "Cancel",
+		choose_country: "Choose Country",
+		clear_filters: "Clear Filters",
+		contact_us: "Contact Us",
+		create: "Create",
+		dashboard: "Dashboard",
+		"delete": "Delete",
+		edit: "Edit",
+		login: "Login",
+		logout: "Logout",
+		more: "More",
+		new_ticket: "New Ticket",
+		order_status: "Order Status",
+		password: "Password",
+		phone: "Phone Number",
+		save: "Save",
+		send: "Send",
+		services: "Services",
+		signup: "Sign Up",
+		title_en: "Title (English)",
+		title_fa: "Title (Farsi)",
+		user_pricing: "User Pricing",
+		username: "Username"
+	},
+	layouts: {
+		sidebars: {
+			admin: {
+				labels: {
+					agents: "Agents",
+					agents_new: "New Agent",
+					finance: "Financial and Reports",
+					services: "Services and Orders",
+					services_new: "New Service",
+					support: "Support and Communications",
+					users: "Users Management",
+					users_new: "New User"
+				}
+			}
+		}
+	},
+	messages: {
+		confirm_logout: "Are you sure you want to logout?",
+		global_settings_applied: "Applied new settings",
+		support_24_7: "We are available 24/7.",
+		warn_add_users_to_show: "Add users to show here",
+		warn_no_user: "No user found"
+	},
+	priorities: {
+		high: "High",
+		low: "Low",
+		medium: "Medium"
+	},
+	roles: {
+		main_admin: "Main Admin",
+		regular: "Regular",
+		senior_support: "Senior Support",
+		simple_support: "Simple Support"
+	},
+	signin_or_signup: "Sign in {'|'} Sign up",
+	site_title: "ErfaPay",
+	states: {
+		disable: "Disable",
+		disabled: "Deactive",
+		enable: "Enable",
+		enabled: "Active",
+		orders: {
+			done: "Done",
+			pending: "Pending",
+			processing: "Processing",
+			rejected: "Rejected"
+		}
+	},
+	tables: {
+		agent_name: "Agent Name",
+		assigned_to: "Assigned To",
+		category: "Category",
+		commission: "Commision",
+		created_at: "Created At",
+		date: "Date",
+		download: "Download",
+		email: "Email",
+		last_login: "Last Login",
+		operations: "Operations",
+		priority: "Priority",
+		role: "Role",
+		search: "Search...",
+		service: "Service",
+		state: "State",
+		tax: "Tax",
+		ticket_number: "Ticket Number",
+		title: "Title",
+		topic: "Topic",
+		user: "User",
+		user_name: "Name"
+	},
+	ticket_status: {
+		closed: "Closed",
+		in_progress: "In Progress",
+		open: "Open",
+		resolved: "Resolved",
+		waiting_user: "Waiting for user"
+	},
+	titles: {
+		email: "Email",
+		error: "Error",
+		login: "Login",
+		login_notice: "Already have account?",
+		order_number: "Order Number",
+		orders_update: "Update Order",
+		payment_amount: "Payment Amount",
+		redirecting: "Redirecting...",
+		request_type: "Request Type",
+		required_fields: "Required Fields",
+		signup: "Sign Up",
+		signup_notice: "Are you new here?",
+		ticket_categories: "Ticket Categories",
+		tickets: "Support Tickets",
+		tickets_desc: "Tickets and support history",
+		user_info: "User Info",
+		user_orders: "User Orders"
+	},
+	weekdays: {
+		friday: "Friday",
+		monday: "Monday",
+		saturday: "Saturday",
+		sunday: "Sunday",
+		thursday: "Thursday",
+		tuesday: "Tuesday",
+		wednesday: "Wednesday"
+	}
+};
+var error = {
+	"401": "Unauthorized access",
+	"404": "Page not found",
+	"500": "Internal server error",
+	"default": "An unexpected error occurred",
+	invalid_amount: "Entered amount is not valid",
+	invalid_login: "Invalid username or password.",
+	title: "Error",
+	try_again_later: "Please try again later",
+	unexpected: "Something went wrong",
+	user_not_found: "User not found"
+};
+var errors = {
+	auth: {
+		invalid_creds: "Incorrect email or password"
+	},
+	otp: {
+		too_many_requests: "You've got a code recently, please wait 75 seconds before requesting a new code."
+	},
+	voucher_required: "Please enter both voucher number and code"
+};
+var footer = {
+	about_us: "Questions and Answers",
+	address: "Central Office: Venice, Upper Bazaar, Seyyedi Building, PO Box 098999999",
+	contact_info_title: "Contact Information",
+	email: "Hi{'@'}ErfaPay.com",
+	erfapay_links_title: "ErfaPay",
+	faqs: "Submit Complaints",
+	privacy_policy: "ErfaPay Licenses",
+	rules_regulations: "Terms and Conditions of Use"
+};
+var http = {
+	response: {
+		tickets: {
+			admin_reply_sent: "Your reply is sent",
+			reply_sent: "Reply is sent"
+		}
+	}
+};
+var layout = {
+	sidebar: {
+		label_dashboard: "Dashboard",
+		label_orders: "Orders",
+		label_support: "Support",
+		label_tickets: "Tickets"
+	}
+};
+var modals = {
+	confirms: {
+		delete_ticket_category: {
+			description: "This action cannot be undone.",
+			title: "Delete ticket category"
+		}
+	},
+	profileSetup: {
+		labelEmail2: ""
+	},
+	profile_setup: {
+		label_create_account: "Create Account",
+		label_email: "Email Address",
+		label_firstname: "First Name",
+		label_fullname: "Full name",
+		label_lastname: "Last Name",
+		label_password: "Password",
+		label_password_retype: "Confirm Password",
+		label_phone: "Phone number",
+		label_role: "Role",
+		label_tos: "Terms of use",
+		label_username: "Username",
+		placeholder_email: "your_email{'@'}example.com",
+		placeholder_firstname: "Enter your first name",
+		placeholder_fullname: "Enter your full name",
+		placeholder_lastname: "Enter your last name",
+		placeholder_password: "********",
+		residence_country: "Residence Country",
+		text_tos_agreement: "I agree with {0} ErfaPay",
+		title_profile_setup: "Complete Setup"
+	},
+	prompts: {
+		add_ticket_category: {
+			title: "New ticket category"
+		},
+		defaults: {
+			cancel: "Cancel",
+			confirm: "Confirm",
+			title: "Prompt"
+		},
+		edit_ticket_category: {
+			title: "Edit ticket category"
+		}
+	},
+	required_fields: {
+		description_en: "Description (English)",
+		description_fa: "Description (Persian)",
+		is_required: "Is Required?",
+		label_en: "Label (English)",
+		label_fa: "Label (Persian)",
+		options: "Options (one per line)",
+		options_placeholder: "Enter options, one per line",
+		title: "Define Required Field",
+		type: "Field Type",
+		unnamed: "Unnamed Field"
+	},
+	signin: {
+		label_change_email: "Change email",
+		label_change_phone: "Change phone number",
+		label_code_check: "Verify code",
+		label_code_get: "Send verification code",
+		label_code_resend: "Resend code",
+		label_email: "Email address",
+		label_phone: "Mobile number",
+		label_restore_password: "Recover password",
+		label_switch_signup: "Create new account",
+		placeholder_email: "Enter your email address",
+		placeholder_password: "Enter your password",
+		placeholder_phone: "Enter your phone number",
+		text_code_not_received: "I didn’t receive the verification code.",
+		text_code_sent: "Verification code has been sent to {0}.",
+		text_forget_password: "Forgot your password?",
+		text_has_no_account_yet: "I don't have ErfaPay account.",
+		title_login: "Sign in to your account"
+	},
+	signup: {
+		label_change_email: "Change email",
+		label_change_phone: "Change phone number",
+		label_code_check: "Verify code",
+		label_code_get: "Send verification code",
+		label_code_resend: "Resend code",
+		label_create_account: "Create account",
+		label_email: "Email address",
+		label_fullname: "Full name",
+		label_password: "Password",
+		label_password_retype: "Repeat password",
+		label_phone: "Mobile number",
+		label_switch_signin: "Sign in to your account",
+		label_tos: "Terms and Conditions",
+		placeholder_email: "Enter your email address",
+		placeholder_password: "Enter your password",
+		placeholder_phone: "Enter your phone number",
+		text_already_has_account: "I already have an ErfaPay account.",
+		text_code_not_received: "I didn’t receive the verification code.",
+		text_tos_agreement: "I agree with the {0} of ErfaPay.",
+		title_new_account: "Create a new account",
+		title_verify_email: "Verify email address",
+		title_verify_phone: "Verify phone number"
+	}
+};
+var navigation = {
+	back_orders: "Back to orders",
+	back_tickets: "Back to tickets",
+	home: "Back to Home"
+};
+var orders = {
+	labels: {
+		base_amount: "Base Amount",
+		commission: "Commission",
+		pay_and_submit: "Pay And Submit",
+		payment_summary: "Payment Summary",
+		tax: "Tax",
+		total_payable: "Total"
+	},
+	messages: {
+		order_created: "Order created successfully",
+		order_updated: "Order updated successfully"
+	}
+};
+var pages = {
+	admin: {
+		labels: {
+			services: {
+				button_new_service: "New Service",
+				button_save: "Save"
+			}
+		},
+		title: {
+			agents: "Agents management",
+			agents_new: "New Agent",
+			financial: "Financial managements and reports",
+			index: "Dashboard",
+			orders: "Orders management",
+			orders_id: "Order [{order}]",
+			orders_new: "New Order",
+			services_edit: "Edit Service",
+			support: "Communications",
+			ticket_id: "Ticket [{ticket}]",
+			tickets: "Tickets",
+			tickets_new: "New Ticket",
+			users: "Users management",
+			users_id: "{name}",
+			users_new: "New User"
+		}
+	},
+	home: {
+		benefits: {
+			buy_charge_desc: "Purchase mobile credit and internet packages anytime, anywhere.",
+			buy_charge_title: "Buy Mobile Credit",
+			money_transfer_desc: "Send and receive money instantly with a secure and easy transfer process.",
+			money_transfer_title: "Money Transfer",
+			pay_expenses_desc: "Easily pay all your bills, installments, rent, and other expenses quickly and securely.",
+			pay_expenses_title: "Pay Expenses",
+			support_24h_desc: "Get assistance anytime with our dedicated 24/7 customer support.",
+			support_24h_title: "24/7 Support",
+			transparent_reports_desc: "Track all your transactions with clear and detailed financial reports.",
+			transparent_reports_title: "Transparent Reports"
+		},
+		charge_wallet: "Charge Wallet",
+		crypto: "Cryptocurrency",
+		cta_section_title: "Register in less than a minute and make your first transaction.",
+		current_prices: "Current Currency Prices",
+		deposit_amount: "Deposit Amount",
+		hero_section_cta: "Submit Request",
+		hero_section_description: "ErfaPay is a fast and secure platform for transferring money to Iranian bank cards within the country.",
+		hero_section_title: "Card-to-Card Transfer to Iran",
+		irt_equivalent: "Toman Equivalent",
+		learn_more: "Learn More",
+		redeem_voucher: "Redeem Voucher",
+		register_now: "Register Now",
+		select_currency: "Select Currency",
+		social_media_title: "Follow us on social networks.",
+		support_phone: "Support Phone:",
+		voucher_code: "Activation Code",
+		voucher_number: "Voucher Number",
+		voucher_success: "Voucher redeemed successfully!",
+		why_erfapay_description: "ErfaPay is a fast and secure platform for financial transactions for Iranians abroad. This service is designed to meet the needs of immigrants and residents outside of Iran.",
+		why_erfapay_title: "Why is ErfaPay the Right Choice?"
+	},
+	tickets: {
+		labels: {
+			assign_to_self: "Accept Ticket",
+			change_state: "Change State",
+			choose_category: "Category",
+			choose_priority: "Priority",
+			faq: "FAQ",
+			mark_as_closed: "Close Ticket",
+			mark_as_progress: "Mark as \"In Progress\"",
+			new_ticket_description: "Descriptions (Ticket content)",
+			new_ticket_topic: "New ticket topic"
+		},
+		messages: {
+			created: "Ticket \"{0}\" created successfully",
+			is_assigned_to_other: "This ticket is getting managed by another agent",
+			is_closed: "The ticket is closed",
+			is_waiting_assign: "Waiting for support team",
+			mark_as_closed: "Mark ticket \"{0}\" as closed?",
+			mark_as_progress: "Mark ticket \"{0}\" as \"In Progress\"?",
+			notice_faq: "Dear Erfapay user, if you have any questions, you can find the answers to most of your questions by searching the Frequently Asked Questions section. If you do not find the answer you are looking for, you can contact Orfap experts by sending a ticket to the relevant department."
+		},
+		placeholders: {
+			choose_category: "Please choose a category"
+		},
+		titles: {
+			created: "Ticket created",
+			current_state: "Current State",
+			new_ticket: "Add new ticket",
+			subject: "Subject",
+			waiting_open: "In Queue"
+		}
+	},
+	users: {
+		messages: {
+			created: "User created successfully"
+		}
+	}
+};
+var services = {
+	labels: {
+		button_new_order: "New Order",
+		charge_account: "Charge Account",
+		internal_payment: "Internal Payment",
+		money_transfer: "Money Transfer",
+		order_attachments: "Needed File Attachments",
+		order_price: "Order Price",
+		order_total_price: "Total Payment"
+	},
+	messages: {
+		order_attachments: "If this order or service requires uploading files, you can attach them here",
+		order_price: "Enter the amount that will be spent for this order",
+		user_pricing: "Allow user to set order price",
+		user_pricing_forced: "This field is required for services with percent commission"
+	}
+};
+var wallet = {
+	balance: "Current Balance",
+	overview: "Your wallet overview",
+	overview_desc: "Your financial overview and orders",
+	popular_services: "Erfapay Popular Services",
+	wallet_add_charge: "Charge Wallet",
+	wallet_overview: "Wallet Overview"
+};
+const en = {
+	admin: admin,
+	common: common,
+	error: error,
+	errors: errors,
+	footer: footer,
+	http: http,
+	layout: layout,
+	modals: modals,
+	navigation: navigation,
+	orders: orders,
+	pages: pages,
+	services: services,
+	wallet: wallet
+};
+
+export { admin, common, en as default, error, errors, footer, http, layout, modals, navigation, orders, pages, services, wallet };
+//# sourceMappingURL=en.mjs.map

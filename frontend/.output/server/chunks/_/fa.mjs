@@ -1,0 +1,477 @@
+var admin = {
+	charts: {
+		max_1_year: "حداکثر بازه زمانی مجاز برای انتخاب یک سال است",
+		max_20_days: "حداکثر بازه زمانی برای انتخاب {0} روز است",
+		modes: {
+			daily: "روزانه",
+			monthly: "ماهانه",
+			weekly: "هفتگی"
+		},
+		pick_date: "فیلتر بازه زمانی",
+		title_charges: "نمودار شارژ کیف پول",
+		title_orders: "نمودار سفارشات"
+	}
+};
+var common = {
+	currencies: {
+		symbol: {
+			btc: "₿",
+			eur: "€",
+			gbp: "£",
+			rial: "﷼",
+			toman: "تومان",
+			usd: "$",
+			usdt: "₮"
+		},
+		text: {
+			btc: "بیت‌کوین",
+			eur: "یورو",
+			gbp: "پوند انگلیس",
+			rial: "ریال",
+			toman: "تومان",
+			usd: "دلار آمریکا",
+			usdt: "تتر (USDT)"
+		}
+	},
+	field_types: {
+		file: "فایل",
+		number: "عدد",
+		select: "لیست",
+		text: "متن",
+		textarea: "متن طولانی"
+	},
+	labels: {
+		add: "اضافه کردن",
+		admin_notes: "توضیحات ادمین",
+		admin_panel: "پنل مدیریت",
+		cancel: "لغو",
+		choose_country: "انتخاب کشور",
+		clear_filters: "پاک کردن همه",
+		contact_us: "تماس با ما",
+		create: "ایجاد",
+		dashboard: "داشبورد",
+		"delete": "حذف",
+		edit: "ویرایش",
+		login: "ورود",
+		logout: "خروج از حساب",
+		more: "بیشتر",
+		new_ticket: "ثبت تیکت جدید",
+		order_status: "وضعیت سفارش",
+		password: "رمز",
+		phone: "شماره همراه",
+		save: "ذخیره",
+		send: "ارسال",
+		services: "لیست خدمات",
+		signup: "ثبت نام",
+		title_en: "عنوان (انگلیسی)",
+		title_fa: "عنوان (فارسی)",
+		user_pricing: "قیمتگذاری کاربر",
+		username: "نام کاربری"
+	},
+	layouts: {
+		sidebars: {
+			admin: {
+				labels: {
+					agents: "تیم پشتیبانی",
+					agents_new: "پشتیبان جدید",
+					finance: "مدیریت مالی و گزارشات",
+					services: "خدمات و سفارش ها",
+					services_new: "سرویس جدید",
+					support: "پشتیبانی و ارتباطات",
+					users: "مدیریت کاربران",
+					users_new: "کاربر جدید"
+				}
+			}
+		}
+	},
+	messages: {
+		confirm_logout: "میخوای از حسابت خارج بشی؟",
+		global_settings_applied: "تنظیمات جدید اعمال شد",
+		support_24_7: "۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم.",
+		warn_add_users_to_show: "کاربران را اضافه کنید تا اینجا نمایش داده شوند",
+		warn_no_user: "هیچ کاربری یافت نشد"
+	},
+	priorities: {
+		high: "زیاد",
+		low: "کم",
+		medium: "متوسط"
+	},
+	roles: {
+		main_admin: "مدیر سایت",
+		regular: "کاربر عادی",
+		senior_support: "پشتیبان ارشد",
+		simple_support: "پشتیبان ساده"
+	},
+	signin_or_signup: "ورود {'|'} ثبت نام",
+	site_title: "ارفاپی",
+	states: {
+		disable: "غیرفعال‌سازی",
+		disabled: "غیرفعال",
+		enable: "فعال‌سازی",
+		enabled: "فعال",
+		orders: {
+			done: "انجام شده",
+			pending: "در انتظار",
+			processing: "در حال انجام",
+			rejected: "رد شده"
+		}
+	},
+	tables: {
+		agent_name: "نام پشتیبان",
+		assigned_to: "متصل به",
+		category: "دسته بندی",
+		commission: "کارمزد",
+		created_at: "تاریخ ایجاد",
+		date: "تاریخ",
+		download: "دانلود",
+		email: "ایمیل",
+		last_login: "آخرین ورود",
+		operations: "عملیات",
+		priority: "اولویت",
+		role: "سمت کاربر",
+		search: "جستجو...",
+		service: "سرویس",
+		state: "وضعیت",
+		tax: "مالیات",
+		ticket_number: "شماره تیکت",
+		title: "عنوان",
+		topic: "موضوع",
+		user: "کاربر",
+		user_name: "نام کاربر"
+	},
+	ticket_status: {
+		closed: "بسته شده",
+		in_progress: "در حال انجام",
+		open: "باز",
+		resolved: "حل شده",
+		waiting_user: "منتظر پاسخ کاربر"
+	},
+	titles: {
+		email: "ایمیل",
+		error: "خطا",
+		login: "ورود به سایت",
+		login_notice: "قبلا ثبت نام کردی؟",
+		order_number: "شماره سفارش",
+		orders_update: "بروزرسانی سفارش",
+		payment_amount: "مبلغ سفارش",
+		redirecting: "در حال انتقال...",
+		request_type: "نوع درخواست",
+		required_fields: "فیلد های مورد نیاز",
+		signup: "ایجاد حساب جدید",
+		signup_notice: "اینجا حساب نداری؟",
+		ticket_categories: "دسته بندی های تیکت",
+		tickets: "تیکت های پشتیبانی",
+		tickets_desc: "تاریخچه و وضعیت درخواست های پشتیبانی",
+		user_info: "مشخصات کاربر",
+		user_orders: "سفارشات کاربر"
+	},
+	weekdays: {
+		friday: "جمعه",
+		monday: "دوشنبه",
+		saturday: "شنبه",
+		sunday: "یکشنبه",
+		thursday: "پنج‌شنبه",
+		tuesday: "سه‌شنبه",
+		wednesday: "چهارشنبه"
+	}
+};
+var error = {
+	"401": "شما اجازه دسترسی ندارید",
+	"404": "صفحه مورد نظر پیدا نشد",
+	"500": "خطای داخلی سرور",
+	"default": "خطای غیرمنتظره‌ای رخ داده است",
+	invalid_amount: "مبلغ وارد شده صحیح نیست",
+	invalid_login: "نام کاربری یا رمز اشتباه است.",
+	title: "خطا",
+	try_again_later: "لطفا بعدا تلاش کن",
+	unexpected: "مشکلی پیش اومده",
+	user_not_found: "کاربر یافت نشد"
+};
+var errors = {
+	auth: {
+		invalid_creds: "ایمیل یا رمز وارد شده اشتباه است"
+	},
+	otp: {
+		too_many_requests: "به تازگی کد برات ساخته شده، برای ساخت کد جدید لطفا ۷۵ ثانیه صبر کن."
+	},
+	voucher_required: "لطفاً شماره ووچر و کد فعال‌سازی را وارد کنید"
+};
+var footer = {
+	about_us: "پرسش و پاسخ",
+	address: "دفتر مرکزی: ونیز، بالا بازار، سرای سیدی، صندوق پستی ۰۹۸۹۹۹۹۹۹",
+	contact_info_title: "اطلاعات تماس",
+	email: "Hi{'@'}ErfaPay.com",
+	erfapay_links_title: "ارفاپی",
+	faqs: "ثبت شکایات",
+	privacy_policy: "مجوزهای ارفاپی",
+	rules_regulations: "شرایط و قوانین استفاده"
+};
+var http = {
+	response: {
+		tickets: {
+			admin_reply_sent: "پاسخ شما ثبت شد",
+			reply_sent: "پاسخ ارسال شد"
+		}
+	}
+};
+var layout = {
+	sidebar: {
+		label_dashboard: "داشبورد",
+		label_orders: "سفارشات",
+		label_support: "پشتیبانی",
+		label_tickets: "تیکت ها"
+	}
+};
+var modals = {
+	"2fa": {
+		label_change_email: "تغییر ایمیل",
+		label_change_phone: "تغییر شماره تلفن",
+		label_code_check: "بررسی کد تایید",
+		label_code_get: "ارسال کد تایید",
+		label_code_resend: "ارسال دوباره کد",
+		text_code_not_received: "کد تایید را دریافت نکردم.",
+		text_code_sent_email: "کد تایید به ایمیل {0} ارسال گردید.",
+		text_code_sent_phone: "کد تایید به شماره {0} ارسال گردید.",
+		text_code_timer: "ارسال دوباره {0}",
+		title_login: "ورود به حساب کاربری",
+		title_verify_email: "تایید ایمیل",
+		title_verify_phone: "تایید شماره تلفن"
+	},
+	confirms: {
+		delete_ticket_category: {
+			description: "دسته بندی برای همیشه حذف خواهد شد.",
+			title: "حذف دسته بندی تیکت"
+		}
+	},
+	profile_setup: {
+		label_create_account: "ایجاد حساب کاربری",
+		label_email: "آدرس ایمیل",
+		label_firstname: "نام",
+		label_fullname: "نام و نام خانوادگی",
+		label_lastname: "نام خانوادگی",
+		label_password: "رمز عبور",
+		label_password_retype: "تکرار رمز عبور",
+		label_phone: "شماره همراه",
+		label_role: "سطح دسترسی",
+		label_tos: "قوانین و مقررات",
+		label_username: "نام کاربری",
+		placeholder_email: "your_email{'@'}example.com",
+		placeholder_firstname: "نام خود را وارد کنید",
+		placeholder_fullname: "نام خود را وارد کنید",
+		placeholder_lastname: "نام خانوادگی خود را وارد کنید",
+		placeholder_password: "********",
+		residence_country: "کشور محل اقامت",
+		text_tos_agreement: "با {0} ارفاپی موافقم.",
+		title_profile_setup: "تکمیل اطلاعات پروفایل"
+	},
+	prompts: {
+		add_ticket_category: {
+			title: "دسته بندی تیکت جدید"
+		},
+		defaults: {
+			cancel: "لغو",
+			confirm: "تایید",
+			title: "ورود اطلاعات"
+		},
+		edit_ticket_category: {
+			title: "ویرایش دسته بندی تیکت"
+		}
+	},
+	required_fields: {
+		description_en: "توضیحات (انگلیسی)",
+		description_fa: "توضیحات (فارسی)",
+		is_required: "الزامی است؟",
+		label_en: "عنوان (انگلیسی)",
+		label_fa: "عنوان (فارسی)",
+		options: "گزینه‌ها (یکی در هر خط)",
+		options_placeholder: "گزینه‌ها را وارد کنید، یکی در هر خط",
+		title: "تعریف فیلد مورد نیاز",
+		type: "نوع فیلد",
+		unnamed: "فیلد بدون نام"
+	},
+	signin: {
+		label_change_email: "تغییر ایمیل",
+		label_change_phone: "تغییر شماره همراه",
+		label_email: "آدرس ایمیل",
+		label_password: "رمز عبور",
+		label_phone: "شماره همراه",
+		label_restore_password: "بازیابی رمز عبور",
+		label_switch_signup: "ایجاد حساب کاربری جدید",
+		placeholder_email: "ایمیل خود را وارد نمایید",
+		placeholder_password: "رمز عبور خود را وارد نمایید",
+		placeholder_phone: "شماره خود را وارد نمایید",
+		text_forget_password: "رمز عبور خود را فراموش کرده اید؟",
+		text_has_no_account_yet: "حساب کاربری در ارفاپی ندارم.",
+		title_login: "ورود به حساب کاربری"
+	},
+	signup: {
+		label_email: "آدرس ایمیل",
+		label_phone: "شماره همراه",
+		label_switch_signin: "ورود به حساب کاربری",
+		placeholder_email: "ایمیل خود را وارد نمایید",
+		placeholder_password: "رمز عبور خود را وارد نمایید",
+		placeholder_phone: "شماره خود را وارد نمایید",
+		text_already_has_account: "حساب کاربری در ارفاپی دارم.",
+		title_new_account: "ایجاد حساب کاربری جدید"
+	}
+};
+var navigation = {
+	back_orders: "بازگشت به سفارشات",
+	back_tickets: "بازگشت به تیکت ها",
+	home: "برگشت به خانه"
+};
+var orders = {
+	labels: {
+		base_amount: "مبلغ پایه",
+		commission: "کارمزد",
+		pay_and_submit: "پرداخت و ثبت درخواست",
+		payment_summary: "خلاصه پرداخت",
+		tax: "مالیات",
+		total_payable: "مجموع"
+	},
+	messages: {
+		order_created: "سفارش با موفقیت ثبت شد",
+		order_updated: "سفارش با موفقیت بروز شد"
+	}
+};
+var pages = {
+	admin: {
+		labels: {
+			services: {
+				button_new_service: "سرویس جدید",
+				button_save: "ذخیره"
+			}
+		},
+		title: {
+			agents: "مدیریت تیم پشتیبانی",
+			agents_new: "پشتیبان جدید",
+			financial: "مدیریت مالی و گزارشات",
+			index: "داشبورد",
+			orders: "مدیریت سفارشات",
+			orders_id: "سفارش [{order}]",
+			orders_new: "سرویس جدید",
+			services_edit: "ویرایش سرویس",
+			support: "ارتباطات",
+			ticket_id: "تیکت [{ticket}]",
+			tickets: "تیکت ها",
+			tickets_new: "تیکت جدید",
+			users: "مدیریت کاربران",
+			users_id: "{name}",
+			users_new: "کاربر جدید"
+		}
+	},
+	home: {
+		benefits: {
+			buy_charge_desc: "خرید شارژ تلفن همراه و بسته‌های اینترنت در هر زمان و مکان.",
+			buy_charge_title: "خرید شارژ",
+			money_transfer_desc: "ارسال و دریافت پول به صورت آنی با فرآیند انتقال امن و آسان.",
+			money_transfer_title: "انتقال وجه",
+			pay_expenses_desc: "پرداخت تمامی قبوض، اقساط، اجاره و سایر هزینه‌ها به سادگی و با امنیت بالا.",
+			pay_expenses_title: "پرداخت هزینه ها",
+			support_24h_desc: "دریافت کمک و پشتیبانی در هر زمان با تیم پشتیبانی ۲۴ ساعته.",
+			support_24h_title: "پشتیبانی ۲۴ ساعته",
+			transparent_reports_desc: "پیگیری تمام تراکنش‌ها با گزارش‌های مالی شفاف و دقیق.",
+			transparent_reports_title: "گزارشات شفاف"
+		},
+		charge_wallet: "شارژ حساب",
+		crypto: "رمزارز",
+		cta_section_title: "در کمتر از یک دقیقه ثبت نام کنید و اولین تراکنش خود را انجام دهید.",
+		current_prices: "قیمت لحظه‌ای ارزها",
+		deposit_amount: "مبلغ واریزی",
+		hero_section_cta: "ثبت درخواست",
+		hero_section_description: "ارفاپی یک پلتفرم سریع و امن برای انتقال وجه به کارت‌های بانکی داخل کشور ایران.",
+		hero_section_title: "انتقال وجه کارت‌به‌کارت به ایران",
+		irt_equivalent: "معادل به تومان",
+		learn_more: "بیشتر بدانید",
+		redeem_voucher: "اعمال ووچر",
+		register_now: "ثبت نام",
+		select_currency: "انتخاب ارز",
+		social_media_title: "ما را در شبکه‌های اجتماعی دنبال کنید.",
+		support_phone: "تلفن پشتیبانی:",
+		voucher_code: "کد فعال‌سازی",
+		voucher_number: "شماره ووچر",
+		voucher_success: "ووچر با موفقیت اعمال شد!",
+		why_erfapay_description: "ارفاپی یک پلتفرم سریع و امن برای انجام پرداخت‌های مالی به ایرانیان خارج کشور است. این سرویس به گونه‌ای طراحی شده تا نیازهای مهاجران و افراد مقیم خارج از کشور را پوشش دهد.",
+		why_erfapay_title: "چرا ارفاپی انتخاب مناسبی است؟"
+	},
+	tickets: {
+		labels: {
+			assign_to_self: "پاسخ به تیکت",
+			change_state: "تغییر وضعیت",
+			choose_category: "دسته بندی",
+			choose_priority: "اولویت",
+			faq: "سوالات متداول",
+			mark_as_closed: "بستن تیکت",
+			mark_as_progress: "تغییر وضعیت به \"در حال انجام\"",
+			new_ticket_description: "توضیحات (متن پیام ارسالی)",
+			new_ticket_topic: "موضوع پیام ارسالی"
+		},
+		messages: {
+			created: "تیکت \"{0}\" با موفقیت ایجاد شد",
+			is_assigned_to_other: "پشتیبان دیگری به این تیکت رسیدگی میکند",
+			is_closed: "تیکت بسته شده است",
+			is_waiting_assign: "در حال انتظار برای تیم پشتیبانی",
+			mark_as_closed: "تیکت \"{0}\" بسته شود؟",
+			mark_as_progress: "وضعیت تیکت \"{0}\" به \"در حال انجام\" تغییر کند؟",
+			notice_faq: "کاربر گرامی ارفاپی چنانچه سوالی دارید می‌توانید با جستجو در قسمت سوالات متداول پاسخ اکثر سوالات خود را بیابید ، در صورتیکه به پاسخ مورد نظر خود دست نیافتید می‌توانید از طریق ارسال تیکت به دپارتمان مربوطه با کارشناسان ارفاپی در ارتباط باشید."
+		},
+		placeholders: {
+			choose_category: "لطفا یک دسته بندی رو انتخاب کن"
+		},
+		titles: {
+			created: "تیکت ایجاد شد",
+			current_state: "وضعیت کنونی",
+			new_ticket: "افزودن تیکت جدید",
+			subject: "عنوان تیکت",
+			waiting_open: "در صف انتظار"
+		}
+	},
+	users: {
+		messages: {
+			created: "کاربر جدید با موفقیت ایجاد شد"
+		}
+	}
+};
+var services = {
+	labels: {
+		button_new_order: "ثبت سفارش",
+		charge_account: "افزایش شارژ",
+		internal_payment: "پرداخت داخلی",
+		money_transfer: "انتقال وجه",
+		order_attachments: "فایل های ضمیمه مورد نیاز",
+		order_price: "مبلغ سفارش",
+		order_total_price: "کل پرداخت"
+	},
+	messages: {
+		order_attachments: "در صورتی که این سرویس یا سفارش شما نیاز به ضمیمه کردن فایل دارد، فایل هارا وارد کنید",
+		order_price: "مبلغی که جهت انجام این سفارش هزینه میشود وارد کنید",
+		user_pricing: "اجازه به کاربر برای تعیین مبلغ سفارش",
+		user_pricing_forced: "این فیلد برای سفارشات با کارمزد درصدی اجباری است"
+	}
+};
+var wallet = {
+	balance: "موجودی فعلی",
+	overview: "نمای کلی حساب شما در یک نگاه",
+	overview_desc: "خلاصه‌ی اطلاعات مالی حساب، موجودی و سفارشات شما",
+	popular_services: "سرویس های محبوب ارفاپی",
+	wallet_add_charge: "شارژ کیف پول",
+	wallet_overview: "وضعیت کیف پول"
+};
+const fa = {
+	admin: admin,
+	common: common,
+	error: error,
+	errors: errors,
+	footer: footer,
+	http: http,
+	layout: layout,
+	modals: modals,
+	navigation: navigation,
+	orders: orders,
+	pages: pages,
+	services: services,
+	wallet: wallet
+};
+
+export { admin, common, fa as default, error, errors, footer, http, layout, modals, navigation, orders, pages, services, wallet };
+//# sourceMappingURL=fa.mjs.map

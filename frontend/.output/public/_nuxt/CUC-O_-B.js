@@ -1,0 +1,1 @@
+import{z as t,k as s,j as o,g as n}from"./B9jAKPWx.js";const a={class:"page-section"},p=t({__name:"new",setup(c){return(r,e)=>(n(),s("section",a,[...e[0]||(e[0]=[o("h2",{class:"font-bold text-2xl"},"ایجاد کاربر جدید",-1)])]))}});export{p as default};

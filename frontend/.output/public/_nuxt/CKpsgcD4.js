@@ -1,0 +1,1 @@
+import{u as r}from"./BK8geQZK.js";import{K as n}from"./B9jAKPWx.js";async function i(a=!1){const s=await r(a),e=n("admin.agents",()=>[]);return(a||!e.value.length)&&(e.value=s.value.filter(t=>t.role!=="regular")),e}export{i as u};

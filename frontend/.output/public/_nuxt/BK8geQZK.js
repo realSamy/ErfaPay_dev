@@ -1,0 +1,1 @@
+import{K as r,ax as u}from"./B9jAKPWx.js";async function o(a=!1){const s=r("admin.users",()=>[]);if(a||!s.value.length){const{listUsers:t}=u(),e=await t();e.data.value?.results&&(s.value=e.data.value?.results)}return s}export{o as u};

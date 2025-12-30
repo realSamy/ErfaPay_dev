@@ -1,0 +1,1 @@
+import{bF as o,bG as n,ab as r,L as l,bH as p}from"./B9jAKPWx.js";const f=o(async(i,c)=>{let e,t;[e,t]=n(()=>r()),await e,t();const{user:s}=l(),{open:u,currentModalProps:a}=p();if(s.value)a.value?.keepOpen&&(a.value.keepOpen=!1);else return u("signin",{keepOpen:!0})});export{f as default};
