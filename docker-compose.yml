@@ -30,7 +30,7 @@ services:
     restart: always
 
   proxy:
-    image: linuxserver/letsencrypt
+    image: linuxserver/letsencrypt:version-1.11.0
     container_name: nginx
     restart: always
     platform: linux/amd64
