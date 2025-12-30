@@ -20,7 +20,23 @@ EMAIL_HOST_USER = os.environ.get('SMTP_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('SMTP_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('SMTP_FROM')
 
+DB_NAME = os.environ.get('POSTGRES_DB')
+DB_USER = os.environ.get('POSTGRES_USER')
+DB_PASS = os.environ.get('POSTGRES_PASSWORD')
+
 DOMAIN = os.environ.get('DOMAIN')
 if DOMAIN:
     CORS_ALLOWED_ORIGINS = [f'https://{DOMAIN}']
     ALLOWED_HOSTS = [f'https://{DOMAIN}']
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}
