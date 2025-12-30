@@ -44,16 +44,6 @@ services:
       - frontend
       - backend
 
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - certbot_www:/var/www/certbot
-      - certbot_certs:/etc/letsencrypt
-      - ./certbot/certbot.sh:/certbot.sh
-    env_file: .env
-    entrypoint: /certbot.sh
-
 volumes:
   postgres_data:
-  certbot_www:
-  certbot_certs:
+  nginx_config:
