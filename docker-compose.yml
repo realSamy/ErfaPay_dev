@@ -40,7 +40,8 @@ services:
       - "443:443"
     volumes:
       - nginx_config:/config
-      - ./nginx/site-confs:/config/nginx/site-confs   # <-- custom site config
+      - ./nginx/site-confs:/config/nginx/site-confs
+      - ./nginx/swag-conf/nginx.conf:/config/nginx.conf
     depends_on:
       - frontend
       - backend
