@@ -1,24 +1,21 @@
-FROM python:3.12-slim
+FROM python:3.12-alpine
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt /app/
+RUN apk add --no-cache \
+    build-base \
+    postgresql-dev \
+    libpq \
+    linux-headers
+
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
-COPY . /app/
+COPY . .
 
-# Expose the port (if using Gunicorn)
 EXPOSE 8000
 
-COPY entrypoint.sh /app/
-ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Run the application with Gunicorn (adjust 'erfapay.wsgi' if the project name differs)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "config.wsgi:application"]
+CMD ["gunicorn", "config.wsgi", "--bind", "0.0.0.0:8000"]
