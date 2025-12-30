@@ -15,6 +15,7 @@ CURRENCY_MAP = {
     'BTC': {"source": "nobitex_spot", "cname": "BTCIRT", "name": "Bitcoin", "icon": "cryptocurrency-color:btc"},
     'USDT': {"source": "nobitex_spot", "cname": "USDTIRT", "name": "Tether USDT", "icon": "cryptocurrency-color:usdt"},
     'TRX': {"source": "nobitex_spot", "cname": "TRXIRT", "name": "TRON", "icon": "cryptocurrency-color:trx"},
+    'BNB': {"source": "nobitex_spot", "cname": "BNBIRT", "name": "Binance Coin", "icon": "cryptocurrency-color:bnb"},
 }
 
 def fetch_and_update_rates():

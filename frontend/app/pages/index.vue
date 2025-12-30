@@ -33,7 +33,7 @@
       </div>
     </UContainer>
 
-    <ChargeAccount/>
+      <ChargeAccount v-if="user"/>
 
     <UContainer class="max-w-screen bg-primary py-10">
       <UContainer class="space-y-3">
@@ -63,15 +63,12 @@
 </template>
 
 <script lang="ts" setup>
-import type {User} from "~/types/auth";
-import {FetchError} from "ofetch";
 import ChargeAccount from "~/components/ChargeAccount.vue";
 
 const {locale} = useI18n();
 
 const benefits = useState('benefits')
 
-const user: Ref<User> = useState('user')
-const authError: Ref<FetchError> = useState('auth_error')
+const {user} = useAuth()
 
 </script>
