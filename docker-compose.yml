@@ -33,6 +33,7 @@ services:
     image: linuxserver/letsencrypt
     container_name: nginx
     restart: always
+    platform: linux/amd64
     env_file: .env
     ports:
       - "80:80"
