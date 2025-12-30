@@ -9,7 +9,13 @@ RUN apk add --no-cache \
     build-base \
     postgresql-dev \
     libpq \
-    linux-headers
+    linux-headers \
+    glib \
+    cairo \
+    pango \
+    gdk-pixbuf \
+    libffi \
+    shared-mime-info
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
