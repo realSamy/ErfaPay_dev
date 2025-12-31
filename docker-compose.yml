@@ -43,7 +43,6 @@ services:
     volumes:
       - nginx_config:/config
       - ./nginx/site-confs:/config/nginx/site-confs
-      - ./nginx/swag-conf/nginx.conf:/config/nginx/nginx.conf
       - ./nginx/swag-conf/nginx/ssl.conf:/config/nginx/ssl.conf
     depends_on:
       - frontend
