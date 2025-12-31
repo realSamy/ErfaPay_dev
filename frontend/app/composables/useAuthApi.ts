@@ -6,11 +6,9 @@ export const useAuthApi = async <T = any>(
   const error = ref<any | null>(null)
 
   const { accessToken, refreshToken, logout } = useAuth()
-  const config = useRuntimeConfig()
 
   const makeRequest = async (token: string) => {
     return await $fetch<T>(url, {
-      baseURL: config.public.apiBase,
       ...opts,
       headers: {
         Authorization: `Bearer ${token}`,
