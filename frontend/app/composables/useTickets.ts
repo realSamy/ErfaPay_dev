@@ -28,7 +28,7 @@ export const useMyTickets = (filters?: { status?: Ticket['status']; priority?: T
  * Fetch single ticket with messages
  */
 export const useGetTicket = async (id: number | string) => {
-  const {data, ...rest} = await useAuthApi<HTTPTicketResponse>(`/api/tickets/admin/${id}/`)
+  const {data, ...rest} = await useAuthApi<HTTPTicketResponse>(`/api/tickets/${id}/`)
 
   return {
     data,
@@ -121,7 +121,15 @@ export const useAdminGetTickets = () => {
   return useAuthApi<HTTPTicketsResponse>('/api/tickets/admin/')
 }
 
-export const useAdminGetTicket = useGetTicket
+export const useAdminGetTicket = async (id: number | string) => {
+  const {data, ...rest} = await useAuthApi<HTTPTicketResponse>(`/api/tickets/admin/${id}/`)
+
+  return {
+    data,
+    ...rest,
+  }
+}
+
 
 export const useAdminUpdateTicket = (ticketId: string) => {
   const update = async (payload: AdminUpdateTicketPayload) => {

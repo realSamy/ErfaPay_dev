@@ -62,9 +62,10 @@
 </template>
 
 <script lang="ts" setup>
-import type {AuthState} from "~/types/auth";
+import type {AuthState, User} from "~/types/auth";
 import type {CompleteSignupPayload} from "~/types/payload";
 import type {HTTPLoginResponse} from "~/types/http";
+import {useStorage} from "@vueuse/core";
 
 const {currentModal, close, currentModalProps} = useAuthModal()
 
@@ -75,16 +76,21 @@ const isOpen = computed({
 const loading = ref(false);
 const authState = useState<AuthState>('login-state')
 
-const authInfo = ref<CompleteSignupPayload>({
-  first_name: '',
-  last_name: '',
-  email: authState.value?.loginInfo?.email || '',
-  country_code: '',
-  password: '',
-  confirm_password: '',
-  tos_agreed: false,
-} satisfies CompleteSignupPayload)
-
+const authInfo = ref(<CompleteSignupPayload>{})
+watch(isOpen, () => {
+  if (isOpen.value) {
+    // Reset form when modal opens
+    authInfo.value = {
+      first_name: '',
+      last_name: '',
+      email: authState.value?.loginInfo?.email || '',
+      country_code: '',
+      password: '',
+      confirm_password: '',
+      tos_agreed: false,
+    } satisfies CompleteSignupPayload
+  }
+})
 async function submit() {
   loading.value = true
   try {
@@ -98,8 +104,13 @@ async function submit() {
         state: 'complete',
         loginInfo: authInfo.value,
       } satisfies AuthState))
-      const store = useStorage()
+      const accessToken = useStorage('auth.access_token', '');
+      const refreshToken = useStorage('auth.refresh_token', '');
+      const user = useState<User | null>('auth.user', () => null)
 
+      accessToken.value = response.data.access
+      refreshToken.value = response.data.refresh
+      user.value = response.data.user
 
       return close()
     }

@@ -28,28 +28,23 @@
 </template>
 
 <script lang="ts" setup>
-import type {DropdownMenuItem} from "#ui/components/DropdownMenu.vue";
-
 const emit = defineEmits<{
   (event: 'update:modelValue', isOpen: boolean): void
 }>()
 
-const {t} = useI18n();
+const {t, locale} = useI18n();
 const isOpen = ref(false)
-const items: ComputedRef<DropdownMenuItem[]> = computed(() => [
-  {
-    label: t('services.labels.internal_payment'),
-    icon: 'mdi:currency-usd'
-  },
-  {
-    label: t('services.labels.money_transfer'),
-    icon: 'mdi:bank-transfer-out'
-  },
-  {
-    label: t('services.labels.charge_account'),
-    icon: 'mdi:cash-plus'
-  }
-])
+const {services} = await useLoadServicesStore()
+
+
+const items = computed(() => {
+  return services.value.map(service => ({
+    label: service[`title_${locale.value}`],
+    icon: service.icon,
+    to: useLocalePath()({name: 'dashboard-orders-new-id', params: {id: service.id}})
+  }))
+})
+
 </script>
 <style scoped>
 

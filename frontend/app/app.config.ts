@@ -11,10 +11,12 @@ export default defineAppConfig({
         // color: 'neutral'
       },
       slots: {
-        base: 'cursor-pointer dark:text-white',
-        label: 'dark:text-white',
-        leadingIcon: 'dark:text-white',
-        trailingIcon: 'dark:text-white',
+        base: 'cursor-pointer',
+      },
+      variants: {
+        color: {
+          primary: 'dark:text-white'
+        }
       }
     },
     switch: {

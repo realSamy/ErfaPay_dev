@@ -2,7 +2,7 @@
   <div class="max-h-full h-full flex flex-col lg:flex-row-reverse gap-4 relative">
     <section
         v-if="ticket"
-        class="bg-blue-400 text-white dark:bg-blue-900 w-full p-2 h-100 lg:w-[400px] lg:h-full rounded-md shadow-sm">
+        class="bg-blue-400 text-white dark:bg-blue-900 w-full p-2 h-100 lg:w-100 lg:h-full rounded-md shadow-sm">
       <div class="justify-end lg:hidden flex">
         <UButton
               variant="link"
@@ -39,25 +39,25 @@
         </div>
 
         <div class="space-y-3">
-          <h2 class="font-medium text-center">جزییات تیکت ارسالی</h2>
+          <h2 class="font-medium text-center">{{$t('tickets.title.ticket_details')}}</h2>
           <div class="space-y-1">
             <div class="grid grid-cols-2">
-              <span>زمان ایجاد تیکت:</span>
+              <span>{{$t('tickets.title.created_at')}}}</span>
               <span class="font-bold text-end">{{ $d(new Date(ticket.created_at), fullDate) }}</span>
             </div>
             <div class="grid grid-cols-2">
-              <span>زمان آخرین بروزرسانی:</span>
+              <span>{{$t('tickets.title.updated_at')}}</span>
               <span class="font-bold text-end">{{ $d(new Date(ticket.updated_at), fullDate) }}</span>
             </div>
             <div class="grid grid-cols-2">
-              <span>نام پشتیبان:</span>
+              <span>{{ $t('tickets.title.agent_name') }}</span>
               <span class="font-bold text-end">
                   {{ ticket.assigned_to ? ticket.assigned_to.full_name : '-' }}
                 </span>
             </div>
             <div class="grid grid-cols-2">
               <span>{{ $t('common.tables.category') }}:</span>
-              <span class="font-bold text-end">{{ ticket.category.title_fa }}</span>
+              <span class="font-bold text-end">{{ ticket.category[`title_${locale}`] }}</span>
             </div>
             <div class="grid grid-cols-2">
               <span>{{ $t('pages.tickets.titles.current_state') }}:</span>
@@ -188,6 +188,8 @@ definePageMeta({
   middleware: ['auth'],
   layout: 'dashboard',
 })
+
+const {locale} = useI18n()
 
 const fullDate = {
   day: 'numeric',

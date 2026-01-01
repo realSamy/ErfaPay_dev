@@ -23,7 +23,6 @@ const menuItems = computed<NavigationMenuItem[]>(() => [
     icon: 'material-symbols:contact-support-outline',
     to: localePath('dashboard-support'),
     active: route.name?.toString().startsWith('dashboard-support'),
-    badge: '4',
     children: [
       {
         label: t('pages.tickets.titles.new_ticket'),

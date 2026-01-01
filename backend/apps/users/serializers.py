@@ -124,6 +124,7 @@ class SignupCompleteSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=8)
     confirm_password = serializers.CharField(write_only=True, min_length=8)
     tos_agreed = serializers.BooleanField()
+    country_code = serializers.CharField(max_length=2)
 
     def validate(self, attrs):
         email = attrs.get('email')
@@ -151,7 +152,6 @@ class SignupCompleteSerializer(serializers.Serializer):
     def create(self, validated_data):
         validated_data.pop('confirm_password')
         validated_data.pop('tos_agreed')
-        validated_data.pop('email')  # Not needed for create
         user = User.objects.create_user(**validated_data)
         user.is_verified = True  # Auto-verify on signup
         user.save()

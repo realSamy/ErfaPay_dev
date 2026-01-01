@@ -39,25 +39,25 @@
         </div>
 
         <div class="space-y-3">
-          <h2 class="font-medium text-center">جزییات تیکت ارسالی</h2>
+          <h2 class="font-medium text-center">{{ $t('tickets.title.ticket_details') }}</h2>
           <div class="space-y-1">
             <div class="grid grid-cols-2">
-              <span>زمان ایجاد تیکت:</span>
+              <span>{{ $t('tickets.title.created_at') }}</span>
               <span class="font-bold text-end">{{ $d(new Date(ticket.created_at), fullDate) }}</span>
             </div>
             <div class="grid grid-cols-2">
-              <span>زمان آخرین بروزرسانی:</span>
+              <span>{{ $t('tickets.title.updated_at') }}</span>
               <span class="font-bold text-end">{{ $d(new Date(ticket.updated_at), fullDate) }}</span>
             </div>
             <div class="grid grid-cols-2">
-              <span>آخرین پاسخ توسط:</span>
+              <span>{{ $t('tickets.title.agent_name') }}</span>
               <span class="font-bold text-end">
                   {{ ticket.assigned_to ? ticket.assigned_to.full_name : '-' }}
                 </span>
             </div>
             <div class="grid grid-cols-2">
               <span>{{ $t('common.tables.category') }}:</span>
-              <span class="font-bold text-end">{{ ticket.category.title_fa }}</span>
+              <span class="font-bold text-end">{{ ticket.category[`title_${locale}`] }}</span>
             </div>
             <div class="grid grid-cols-2">
               <span>{{ $t('pages.tickets.titles.current_state') }}:</span>
@@ -178,6 +178,8 @@ definePageMeta({
   layout: 'admin',
   title: 'pages.admin.title.ticket_id',
 })
+
+const {locale} = useI18n()
 
 const fullDate = {
   day: 'numeric',

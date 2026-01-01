@@ -3,15 +3,27 @@
     <Overlay v-if="showOverlay"/>
     <LayoutHeader v-model="showOverlay"/>
 
-    <slot/>
-
+    <NuxtPage :transition="{ name: 'page', mode: 'out-in' }"/>
+    <ClientOnly>
+      <FloatingChat/>
+    </ClientOnly>
     <LayoutFooter/>
   </div>
 </template>
-<style scoped>
-
-</style>
 
 <script lang="ts" setup>
+
 const showOverlay = ref(false)
 </script>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+</style>

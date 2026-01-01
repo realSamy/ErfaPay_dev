@@ -26,6 +26,9 @@
         </template>
       </UDashboardPanel>
     </UDashboardGroup>
+    <ClientOnly>
+      <FloatingChat/>
+    </ClientOnly>
   </div>
 </template>
 <style scoped>

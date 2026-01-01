@@ -16,9 +16,9 @@ export default defineNuxtConfig({
   },
 
   devtools: {enabled: true},
-  modules: [// '@nuxt/eslint',
-    // '@nuxt/content',
-    '@nuxt/ui', '@nuxt/fonts', '@nuxt/icon', '@nuxtjs/i18n', 'nuxt-echarts', 'nuxt-tiptap-editor'],
+  modules: [
+    '@nuxt/ui', '@nuxt/fonts', '@nuxt/icon', '@nuxtjs/i18n', 'nuxt-echarts', 'nuxt-tiptap-editor'
+  ],
   spaLoadingTemplate: 'assets/html/spa-loading.html',
   css: [
     '~/assets/css/main.css',
@@ -64,10 +64,19 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    devProxy: {
-      '/api': 'http://localhost:8000/api',
-      '/static': 'http://localhost:8000/static',
-      '/media': 'http://localhost:8000/media',
+    routeRules: {
+      "/api/**": {
+        proxy: "http://localhost:8000/api/**",
+      },
+      "/static/**": {
+        proxy: "http://localhost:8000/static/**",
+      },
+      "/media/**": {
+        proxy: "http://localhost:8000/media/**",
+      },
+      "/ws/**": {
+        proxy: "ws://localhost:8000/ws/**",
+      },
     },
     preset: 'node-server'
   },

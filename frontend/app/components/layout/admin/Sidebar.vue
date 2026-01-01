@@ -59,6 +59,12 @@ const menuItems = computed<NavigationMenuItem[]>(() => [
       }
     ]
   },
+  {
+    label: t('common.layouts.sidebars.admin.labels.online_chat'),
+    icon: 'material-symbols:chat',
+    to: localePath('admin-chat'),
+  },
+
 
 ])
 

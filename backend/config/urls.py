@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/auth/', include('apps.users.urls')),
     path('api/currencies/', include('apps.currencies.urls')),
     path('api/global-settings/', include('apps.core.urls')),
+    path('api/chat/', include('apps.chat_app.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

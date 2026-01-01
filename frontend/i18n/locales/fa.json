@@ -76,6 +76,7 @@
             "agents": "تیم پشتیبانی",
             "agents_new": "پشتیبان جدید",
             "finance": "مدیریت مالی و گزارشات",
+            "online_chat": "چت آنلاین",
             "services": "خدمات و سفارش ها",
             "services_new": "سرویس جدید",
             "support": "پشتیبانی و ارتباطات",
@@ -222,6 +223,22 @@
       "label_support": "پشتیبانی",
       "label_tickets": "تیکت ها"
     }
+  },
+  "live_chat": {
+    "description": "بزودی به یکی از پشتیبان ها متصل میشوید",
+    "labels": {
+      "assign_me": "پاسخ",
+      "end_chat": "خاتمه چت"
+    },
+    "messages": {
+      "assigned_else": "پشتیبان دیگری در این چت است",
+      "send_to_start": "برای شروع چت پیامی بفرستید",
+      "starting_new": "در حال شروع چت جدید..."
+    },
+    "placeholders": {
+      "write_message": "پیام خود را بنویسید"
+    },
+    "title": "پشتیبانی آنلاین"
   },
   "modals": {
     "2fa": {
@@ -448,6 +465,14 @@
       "order_price": "مبلغی که جهت انجام این سفارش هزینه میشود وارد کنید",
       "user_pricing": "اجازه به کاربر برای تعیین مبلغ سفارش",
       "user_pricing_forced": "این فیلد برای سفارشات با کارمزد درصدی اجباری است"
+    }
+  },
+  "tickets": {
+    "title": {
+      "agent_name": "نام پشتیبان:",
+      "created_at": "زمان ایجاد تیکت:",
+      "ticket_details": "جزییات تیکت ارسالی",
+      "updated_at": "زمان آخرین بروزرسانی:"
     }
   },
   "wallet": {

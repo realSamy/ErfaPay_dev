@@ -88,7 +88,7 @@ export type GenericHTTPExtendedMultiResponse<
   >;
 
 
-export type HTTPLoginResponse = GenericHTTPResponse
+export type HTTPLoginResponse = GenericHTTPResponse<AuthResponse>
 export type HTTPOTPLoginResponse = GenericHTTPResponse<AuthResponse>
 export type HTTPOTPSignupResponse = GenericHTTPResponse
 export type HTTPSignupResponse = GenericHTTPResponse

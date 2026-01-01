@@ -76,6 +76,7 @@
             "agents": "Agents",
             "agents_new": "New Agent",
             "finance": "Financial and Reports",
+            "online_chat": "Online Chat",
             "services": "Services and Orders",
             "services_new": "New Service",
             "support": "Support and Communications",
@@ -222,6 +223,22 @@
       "label_support": "Support",
       "label_tickets": "Tickets"
     }
+  },
+  "live_chat": {
+    "description": "We will response in a moment",
+    "labels": {
+      "assign_me": "Assign",
+      "end_chat": "End Chat"
+    },
+    "messages": {
+      "assigned_else": "Another agent has assigned",
+      "send_to_start": "Send a message to start the chat",
+      "starting_new": "Starting new chat..."
+    },
+    "placeholders": {
+      "write_message": "Write your message"
+    },
+    "title": "Live Support"
   },
   "modals": {
     "confirms": {
@@ -455,6 +472,14 @@
       "order_price": "Enter the amount that will be spent for this order",
       "user_pricing": "Allow user to set order price",
       "user_pricing_forced": "This field is required for services with percent commission"
+    }
+  },
+  "tickets": {
+    "title": {
+      "agent_name": "Agent Name:",
+      "created_at": "Created At:",
+      "ticket_details": "Ticket Details",
+      "updated_at": "Updated At:"
     }
   },
   "wallet": {

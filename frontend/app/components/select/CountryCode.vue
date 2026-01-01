@@ -21,7 +21,7 @@ defineProps<{
 }>()
 
 watch(selectedCountry, (val) => {
-  emit('update:modelValue', val?.code)
+  emit('update:modelValue', val?.code.toLowerCase())
 })
 </script>
 

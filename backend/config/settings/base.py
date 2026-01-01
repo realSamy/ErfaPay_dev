@@ -31,10 +31,10 @@ AUTH_USER_MODEL = 'users.UserProfile'
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gg6v7l=x^%53(qxov5l)^m94&l)ffz!fp45xc58!6o)%#h(4#*'
+SECRET_KEY = 'iov5l)^m94&l)ffz!fp45x4ov5l)^m94&l)ffz!fp45xf53(qxov5l)^m94&l)ffz!fp45xc58!6o)%#h(4#*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'apps.tickets',
     'apps.services',
     'apps.currencies',
+    'apps.chat_app',
 
     'django_sendfile',
 
@@ -115,6 +116,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

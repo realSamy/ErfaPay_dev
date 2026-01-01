@@ -14,3 +14,8 @@ weasyprint
 django-sendfile2
 celery
 gunicorn
+uvicorn
+channels
+pillow
+markdown
+channels-redis

@@ -33,7 +33,9 @@
       </div>
     </UContainer>
 
+    <ClientOnly>
       <ChargeAccount v-if="user"/>
+    </ClientOnly>
 
     <UContainer class="max-w-screen bg-primary py-10">
       <UContainer class="space-y-3">
@@ -46,10 +48,12 @@
     </UContainer>
 
     <UContainer>
-      <div class="p-10 text-center space-y-4">
-        <h2 class="font-extrabold text-2xl">{{ $t('pages.home.cta_section_title') }}</h2>
-        <UButton :label="$t('common.labels.signup')" class="mt-3" size="xl"/>
-      </div>
+      <ClientOnly>
+        <div class="p-10 text-center space-y-4" v-if="!user">
+          <h2 class="font-extrabold text-2xl">{{ $t('pages.home.cta_section_title') }}</h2>
+          <UButton :label="$t('common.labels.signup')" class="mt-3" size="xl" @click="() => login()"/>
+        </div>
+      </ClientOnly>
       <div class="flex flex-col-reverse md:flex-row items-center justify-center md:justify-between text-xl">
         <h2>{{ $t('common.messages.support_24_7') }}</h2>
         <p>
@@ -69,6 +73,6 @@ const {locale} = useI18n();
 
 const benefits = useState('benefits')
 
-const {user} = useAuth()
+const {user, login} = useAuth()
 
 </script>
