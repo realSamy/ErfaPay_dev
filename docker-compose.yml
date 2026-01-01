@@ -15,7 +15,6 @@ services:
       - redis
     expose:
       - "8000"
-    command: gunicorn yourproject.wsgi:application --bind 0.0.0.0:8000  # or whatever you use
 
   celery_worker:
     build: ./backend
