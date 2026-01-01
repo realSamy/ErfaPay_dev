@@ -29,6 +29,18 @@ class MessageConsumer(WebsocketConsumer):
             'message': event['message']
         }))
 
+    def room_end(self, _):
+        self.send(text_data=json.dumps({
+            'type': 'room_end',
+        }))
+        self.close()
+
+    def introduce_agent(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'introduce_agent',
+            'agent': event['agent']
+        }))
+
     def disconnect(self, code):
         if hasattr(self, 'room_group_name'):
             async_to_sync(self.channel_layer.group_discard)(

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from apps.chat_app.models import ChatRoom
 from apps.chat_app.serializers import MessageSerializer, ChatRoomSerializer, ChatRoomDetailSerializer
+from apps.chat_app.utils import ws
 from apps.users.permissions import IsSupportStaff
 
 
@@ -36,7 +37,7 @@ class AgentChatListView(APIView):
 
     def get(self, request):
         # All active chats (assigned + unassigned for agents to pick)
-        rooms = ChatRoom.objects.filter(is_active=True).select_related('customer', 'agent')
+        rooms = ChatRoom.objects.all().select_related('customer', 'agent')
         return Response(ChatRoomSerializer(rooms, many=True).data)
 
 class AdminChatRoomDetailView(APIView):
@@ -54,6 +55,7 @@ class AdminChatRoomDetailView(APIView):
             room = ChatRoom.objects.get(id=room_id, agent__isnull=True)
             room.agent = request.user
             room.save()
+            ws.introduce_agent(room_id, room.agent.get_full_name() or room.agent.username)
             return Response(ChatRoomDetailSerializer(room).data)
         except ChatRoom.DoesNotExist:
             return Response({"error": "Chat not found or already assigned"}, status=400)
@@ -63,6 +65,7 @@ class AdminChatRoomDetailView(APIView):
             room = ChatRoom.objects.get(id=room_id, agent=request.user)
             room.is_active = False
             room.save()
+            ws.room_end(room_id)
             return Response({"ok": True})
         except ChatRoom.DoesNotExist:
             return Response({"ok": False, "error": "Chat not found"}, status=400)

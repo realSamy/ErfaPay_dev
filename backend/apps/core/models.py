@@ -59,3 +59,15 @@ class GlobalSettings(models.Model):
             return self.time_from <= current <= self.time_to
         else:
             return current >= self.time_from or current <= self.time_to
+
+    @classmethod
+    def get_global_settings(cls) -> 'GlobalSettings':
+        settings = cache.get('global_settings')
+        if not settings:
+            settings, created = cls.objects.get_or_create(id=1)
+            cache.set('global_settings', settings, 300)
+        return settings
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.set('global_settings', self, 300)

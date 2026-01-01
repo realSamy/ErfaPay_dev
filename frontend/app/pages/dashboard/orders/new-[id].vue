@@ -13,7 +13,7 @@
       </section>
 
       <section class="max-w-2xl">
-        <UForm @submit="submitOrder">
+        <UForm @submit="submitOrder" :disabled="!settings.is_available_now">
           <div class="space-y-6">
             <!-- Dynamic Required Fields -->
             <template v-for="(field, index) in orderPayload.custom_data" :key="index">
@@ -118,7 +118,17 @@ definePageMeta({
   middleware: ['auth'],
 })
 
+const settings = await useLoadGlobalSettingsStore()
 const {t, locale, n} = useI18n()
+
+if (!settings.value.is_available_now) {
+  useToast().add({
+    title: t('services.messages.orders_unavailable'),
+    color: 'warning',
+  })
+  navigateTo(useLocalePath()('index'))
+}
+
 const service_id = useRoute().params.id as string
 
 const {createOrder, loading} = useCreateOrder()

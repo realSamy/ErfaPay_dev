@@ -15,7 +15,9 @@ export default defineAppConfig({
       },
       variants: {
         color: {
-          primary: 'dark:text-white'
+          primary: 'dark:text-white',
+          secondary: 'dark:text-white',
+          info: 'dark:text-white',
         }
       }
     },
@@ -27,6 +29,15 @@ export default defineAppConfig({
     dropdownMenu: {
       slots: {
         item: 'cursor-pointer',
+      }
+    },
+    badge: {
+      variants: {
+        color: {
+          primary: 'dark:text-white',
+          secondary: 'dark:text-white',
+          info: 'dark:text-white',
+        }
       }
     }
   }

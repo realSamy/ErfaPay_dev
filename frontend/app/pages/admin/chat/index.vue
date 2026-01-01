@@ -23,8 +23,10 @@
                 {{ room.last_message?.text || 'No messages yet' }}
               </p>
             </div>
-            <UBadge v-if="!room.agent_name" color="secondary" size="sm">Unassigned</UBadge>
-            <UBadge v-else-if="room.agent_name === user.full_name" color="success" size="sm">You</UBadge>
+            <UBadge v-if="!room.is_active" color="neutral" size="sm">{{ $t('live_chat.labels.ended') }}</UBadge>
+            <UBadge v-else-if="!room.agent_name" color="secondary" size="sm">{{ $t('live_chat.labels.unassigned') }}</UBadge>
+            <UBadge v-else-if="room.agent_name === user.full_name" color="success" size="sm">{{ $t('live_chat.labels.assigned_you') }}</UBadge>
+            <UBadge v-else color="success" size="sm">{{ $t('live_chat.labels.assigned_busy') }}</UBadge>
           </div>
           <p class="text-xs text-gray-400 mt-1">
             {{ $d(new Date(room.last_message_at), {hour: '2-digit', minute: '2-digit'}) }}
@@ -44,7 +46,7 @@
           <div>
             <h2 class="font-bold text-xl">{{ selectedRoom.customer_name || selectedRoom.customer_username }}</h2>
             <p class="text-sm text-gray-500">
-              {{ selectedRoom.agent_name ? `Assigned to: ${selectedRoom.agent_name}` : 'Unassigned' }}
+              {{ selectedRoom.agent_name ? $t('live_chat.labels.assigned_to', [selectedRoom.agent_name]) : $t('live_chat.labels.unassigned') }}
             </p>
           </div>
           <div>
@@ -53,13 +55,14 @@
                 color="error"
                 icon="material-symbols:block-outline"
                 size="xl"
-                variant="link"/>
+                variant="link"
+                @click="handleEndChat"/>
             <UButton
                 :icon="directionalIcon('material-symbols:arrow-back', 'material-symbols:arrow-forward')"
                 color="neutral"
                 size="xl"
                 variant="link"
-                @click="selectedRoom = null"/>
+                @click="handleCloseChat"/>
           </div>
         </div>
 
@@ -79,16 +82,16 @@
             <UButton
                 v-if="!selectedRoom?.agent_name"
                 :label="$t('live_chat.labels.assign_me')"
-                color="primary"
                 block
+                color="primary"
                 @click="assignSelectedRoom"
             />
             <UButton
                 v-else-if="selectedRoom?.agent_name !== user.full_name"
-                disabled
                 :label="$t('live_chat.messages.assigned_else')"
-                color="primary"
                 block
+                color="primary"
+                disabled
                 @click="assignSelectedRoom"
             />
 
@@ -117,6 +120,7 @@ definePageMeta({
 })
 
 const {user} = useAuth()
+const {t} = useI18n()
 const chatRooms = ref<ChatRoom[]>([])
 const selectedRoom = ref<ChatRoom | null>(null)
 const messages = ref<ChatMessage[]>([])
@@ -187,6 +191,28 @@ const assignSelectedRoom = async () => {
     selectRoom(data.value) // refresh
   }
 
+}
+
+const handleEndChat = async () => {
+  if (!selectedRoom.value) return
+  const confirmed = await useConfirm({
+    title: t('live_chat.labels.end_chat'),
+    message: t('live_chat.messages.confirm_end'),
+    confirmLabel: t('live_chat.labels.end_chat'),
+    confirmColor: 'error',
+    cancelLabel: t('common.labels.cancel')
+  })
+  if (!confirmed) return
+  await useAuthApi(`/api/chat/admin/room/${selectedRoom.value.id}/`, {method: 'DELETE'})
+  selectedRoom.value = null
+  await fetchChats()
+}
+
+const handleCloseChat = () => {
+  selectedRoom.value = null
+  if (ws) {
+    ws.close()
+  }
 }
 
 onMounted(() => {

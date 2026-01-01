@@ -228,10 +228,18 @@
     "description": "بزودی به یکی از پشتیبان ها متصل میشوید",
     "labels": {
       "assign_me": "پاسخ",
-      "end_chat": "خاتمه چت"
+      "assigned_busy": "مشغول",
+      "assigned_to": "پاسخ توسط: {0}",
+      "assigned_you": "شما",
+      "end_chat": "پایان چت",
+      "ended": "پایان یافته",
+      "new_chat": "شروع چت جدید",
+      "unassigned": "اختصاص نیافته"
     },
     "messages": {
       "assigned_else": "پشتیبان دیگری در این چت است",
+      "chat_ended": "چت توسط پشتیبان خاتمه یافت",
+      "confirm_end": "برای خاتمه چت مطمئنید؟",
       "send_to_start": "برای شروع چت پیامی بفرستید",
       "starting_new": "در حال شروع چت جدید..."
     },
@@ -458,11 +466,13 @@
       "money_transfer": "انتقال وجه",
       "order_attachments": "فایل های ضمیمه مورد نیاز",
       "order_price": "مبلغ سفارش",
-      "order_total_price": "کل پرداخت"
+      "order_total_price": "کل پرداخت",
+      "orders_unavailable": "سرویس در دسترس نیست"
     },
     "messages": {
       "order_attachments": "در صورتی که این سرویس یا سفارش شما نیاز به ضمیمه کردن فایل دارد، فایل هارا وارد کنید",
       "order_price": "مبلغی که جهت انجام این سفارش هزینه میشود وارد کنید",
+      "orders_unavailable": "ثبت سفارش جدید در حال حاضر در دسترس نیست.",
       "user_pricing": "اجازه به کاربر برای تعیین مبلغ سفارش",
       "user_pricing_forced": "این فیلد برای سفارشات با کارمزد درصدی اجباری است"
     }

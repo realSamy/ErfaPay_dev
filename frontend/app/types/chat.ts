@@ -3,6 +3,7 @@ export interface ChatRoom {
   customer_name: string
   customer_username: string
   agent_name: string | null
+  is_active: boolean
   messages: ChatMessage[]
   last_message_at: string
   last_message: { text: string } | null

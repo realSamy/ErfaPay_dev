@@ -228,10 +228,18 @@
     "description": "We will response in a moment",
     "labels": {
       "assign_me": "Assign",
-      "end_chat": "End Chat"
+      "assigned_busy": "Busy",
+      "assigned_to": "Assigned To: {0}",
+      "assigned_you": "You",
+      "end_chat": "End Chat",
+      "ended": "Ended",
+      "new_chat": "Start New Chat",
+      "unassigned": "Unassigned"
     },
     "messages": {
       "assigned_else": "Another agent has assigned",
+      "chat_ended": "Chat is ended by agent.",
+      "confirm_end": "Are you sure you want to end this chat?",
       "send_to_start": "Send a message to start the chat",
       "starting_new": "Starting new chat..."
     },
@@ -465,11 +473,13 @@
       "money_transfer": "Money Transfer",
       "order_attachments": "Needed File Attachments",
       "order_price": "Order Price",
-      "order_total_price": "Total Payment"
+      "order_total_price": "Total Payment",
+      "orders_unavailable": "Service is unavailable"
     },
     "messages": {
       "order_attachments": "If this order or service requires uploading files, you can attach them here",
       "order_price": "Enter the amount that will be spent for this order",
+      "orders_unavailable": "Submiting new orders is currently unavailable.",
       "user_pricing": "Allow user to set order price",
       "user_pricing_forced": "This field is required for services with percent commission"
     }

@@ -1,8 +1,7 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-
 from apps.chat_app.models import ChatRoom, Message
 from rest_framework import serializers
+
+from apps.chat_app.utils import ws
 
 
 class MessageSerializer(serializers.Serializer):
@@ -11,7 +10,7 @@ class MessageSerializer(serializers.Serializer):
 
     def validate_room_id(self, value):
         try:
-            room = ChatRoom.objects.get(id=value)
+            room = ChatRoom.objects.get(id=value, is_active=True)
         except ChatRoom.DoesNotExist:
             raise serializers.ValidationError("Chat room does not exist")
         return room
@@ -38,21 +37,8 @@ class MessageSerializer(serializers.Serializer):
             sender=self.context['request'].user
         )
         room.save()  # Update last_message_at
-        self.__broadcast(message)
+        ws.broadcast(message.room_id, MessageModelSerializer(message).data)
         return message
-
-    def __broadcast(self, message: Message):
-        serializer = MessageModelSerializer(message)
-        data = serializer.data
-        data['read'] = False
-
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"chat_room_{message.room.id}", {
-                'type': 'new_message',
-                'message': data
-            }
-        )
 
 
 class MessageModelSerializer(serializers.ModelSerializer):

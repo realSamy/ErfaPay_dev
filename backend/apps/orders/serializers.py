@@ -22,6 +22,10 @@ class OrderCreateSerializer(serializers.Serializer):
     custom_data = serializers.JSONField(default=dict)
 
     def validate(self, data):
+        from apps.core.models import GlobalSettings
+        if not GlobalSettings.get_global_settings().is_service_available():
+            raise serializers.ValidationError("Services are currently unavailable")
+
         from apps.services.models import Service
         try:
             service = Service.objects.get(pk=data['service_id'], is_active=True)
