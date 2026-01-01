@@ -15,6 +15,29 @@ services:
       - redis
     expose:
       - "8000"
+    command: gunicorn yourproject.wsgi:application --bind 0.0.0.0:8000  # or whatever you use
+
+  celery_worker:
+    build: ./backend
+    command: celery -A yourproject worker --loglevel=info
+    volumes:
+      - ./backend:/app
+    env_file: .env
+    depends_on:
+      - redis
+      - db
+    restart: always
+
+  celery_beat:
+    build: ./backend
+    command: celery -A yourproject beat --loglevel=info
+    volumes:
+      - ./backend:/app
+    env_file: .env
+    depends_on:
+      - redis
+      - db
+    restart: always
 
   db:
     image: postgres:16-alpine
