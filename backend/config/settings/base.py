@@ -12,6 +12,28 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('SMTP_HOST')
+EMAIL_PORT = int(os.environ.get('SMTP_PORT', 587))
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('SMTP_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('SMTP_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('SMTP_FROM')
+
+print('=======================')
+print('=======================')
+print('=======================')
+print('EMAIL_BACKEND:', EMAIL_BACKEND)
+print('EMAIL_HOST:', EMAIL_HOST)
+print('EMAIL_PORT:', EMAIL_PORT)
+print('EMAIL_USE_TLS:', EMAIL_USE_TLS)
+print('EMAIL_HOST_USER:', EMAIL_HOST_USER)
+print('DEFAULT_FROM_EMAIL:', DEFAULT_FROM_EMAIL)
+print('=======================')
+print('=======================')
+print('=======================')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 STATICFILES_DIRS = [BASE_DIR / "static"]
