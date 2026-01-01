@@ -90,16 +90,14 @@ class LoginView(APIView):
             # Generate and save OTP
             otp_code = OTPCode.objects.create(user=user)
 
-            # todo: Send email (use notifications app if it has a service; for now, direct)
-            # noinspection PyUnreachableCode
-            if False:
-                send_mail(
-                    subject='ErfaPay OTP Code',
-                    message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False,
-                )
+            send_mail(
+                subject='ErfaPay OTP Code',
+                message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+
             # todo: remove the debug otp
             return Response({'ok': True, 'message': 'OTP sent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -153,16 +151,13 @@ class SignupEmailView(APIView):
             # Create and send OTP
             otp_code = OTPCode.objects.create(email=email)
 
-            # todo: Send email (use notifications app if it has a service; for now, direct)
-            # noinspection PyUnreachableCode
-            if False:
-                send_mail(
-                    subject='Your ErfaPay Signup OTP',
-                    message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
-                )
+            send_mail(
+                subject='Your ErfaPay Signup OTP',
+                message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
 
             # todo: remove the debug otp
             return Response({'ok': True, 'message': 'OTP sent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
@@ -214,17 +209,14 @@ class ResendOTPView(APIView):
             else:
                 otp_code = OTPCode.objects.create(email=email)
 
-            # todo: Send email (use notifications app if it has a service; for now, direct)
-            # noinspection PyUnreachableCode
-            if False:
-                subject = 'Your ErfaPay OTP Code' if not is_signup else 'Your ErfaPay Signup OTP'
-                send_mail(
-                    subject=subject,
-                    message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
-                )
+            subject = 'Your ErfaPay OTP Code' if not is_signup else 'Your ErfaPay Signup OTP'
+            send_mail(
+                subject=subject,
+                message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
 
             # todo: remove the debug otp
             return Response({'ok': True, 'message': 'OTP resent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)

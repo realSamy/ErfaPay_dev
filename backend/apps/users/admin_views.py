@@ -120,31 +120,27 @@ class AdminUserDetailView(APIView):
                 password=make_password(password)
             )
 
-            # todo: will be implemented in production
-            # noinspection PyUnreachableCode
-            if False:
-                # Send welcome email
-                send_mail(
-                    subject="حساب پشتیبانی شما در ErfaPay ایجاد شد",
-                    message=f"""
-                    سلام {user.first_name} عزیز،
-    
-                    حساب پشتیبانی شما با موفقیت ایجاد شد.
-    
-                    اطلاعات ورود:
-                    لینک: {settings.FRONTEND_URL}
-                    نام کاربری: {user.username}
-                    رمز عبور: {password}
-    
-                    لطفاً پس از اولین ورود، رمز عبور خود را تغییر دهید.
-    
-                    با احترام،
-                    تیم ErfaPay
-                    """,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False,
-                )
+            send_mail(
+                subject="حساب پشتیبانی شما در ErfaPay ایجاد شد",
+                message=f"""
+                سلام {user.first_name} عزیز،
+
+                حساب پشتیبانی شما با موفقیت ایجاد شد.
+
+                اطلاعات ورود:
+                لینک: {settings.FRONTEND_URL}
+                نام کاربری: {user.username}
+                رمز عبور: {password}
+
+                لطفاً پس از اولین ورود، رمز عبور خود را تغییر دهید.
+
+                با احترام،
+                تیم ErfaPay
+                """,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
 
             return Response({
                 'ok': True,
