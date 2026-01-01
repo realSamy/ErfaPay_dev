@@ -7,25 +7,12 @@
 
     <template #body>
       <div class="flex flex-col">
-        <h2 class="font-bold text-xl">{{ $t('modals.signin.title_login') }}</h2>
+        <h2 class="font-bold text-xl">{{ $t('modals.forgetPassword.title') }}</h2>
         <form class="p-6 space-y-4" @submit.prevent="submit">
           <UFormField :label="$t('modals.signin.label_email')" size="xl">
             <UInput v-model="loginInfo.email" :placeholder="$t('modals.signin.placeholder_email')" class="w-full"
                     dir="auto"
                     required type="email"/>
-          </UFormField>
-
-          <UFormField :label="$t('modals.signin.label_password')" size="xl">
-            <UInput v-model="loginInfo.password" :placeholder="$t('modals.signin.placeholder_password')" class="w-full"
-                    dir="auto"
-                    required type="password"/>
-            <template #help>
-              <UButton :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}" class="px-0"
-                       @click="switchToForgetPassword"
-                       variant="link">
-                {{ $t('modals.signin.label_restore_password') }}
-              </UButton>
-            </template>
           </UFormField>
 
           <div class="w-full text-center">
@@ -61,7 +48,7 @@ const loginInfo: Ref<LoginInfo> = ref({
 const loading = ref<boolean>(false)
 
 const isOpen = computed({
-  get: () => currentModal.value === 'signin',
+  get: () => currentModal.value === 'forgetPassword',
   set: (val) => !val && close()
 })
 
@@ -70,17 +57,13 @@ function switchToSignup() {
 }
 
 function switchTo2fa() {
-  open('2fa')
-}
-
-function switchToForgetPassword() {
-  open('forgetPassword')
+  open('2fa', {nextStep: 'forgetPassword'})
 }
 
 async function submit() {
   loading.value = true
   try {
-    const response = await $fetch<HTTPLoginResponse>('/api/auth/signin/', {
+    const response = await $fetch<HTTPLoginResponse>('/api/auth/reset/request/', {
       method: 'POST',
       body: loginInfo.value,
     })
@@ -101,8 +84,7 @@ async function submit() {
     }
 
   } catch (error) {
-    console.log({error})
-    const err_msg = (error as FetchError<FailureOnly<GenericHTTPMultiResponse>>)?.data?.errors['non_field_errors']?.[0]
+    const err_msg = (error as FetchError<FailureOnly<GenericHTTPMultiResponse>>)?.data?.errors['email']?.[0]
     if (err_msg) {
       useToast().add({
         color: 'error',

@@ -172,3 +172,9 @@ export interface CompleteSignupPayload {
   confirm_password: string
   tos_agreed: boolean
 }
+
+export interface ResetPasswordPayload {
+  email: string
+  password: string
+  confirm_password: string
+}

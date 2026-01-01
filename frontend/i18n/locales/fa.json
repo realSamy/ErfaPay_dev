@@ -269,6 +269,10 @@
         "title": "حذف دسته بندی تیکت"
       }
     },
+    "forgetPassword": {
+      "title": "فراموشی رمز حساب",
+      "title_new_password": "ایجاد گذرواژه جدید"
+    },
     "profile_setup": {
       "label_create_account": "ایجاد حساب کاربری",
       "label_email": "آدرس ایمیل",

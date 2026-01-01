@@ -4,7 +4,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from .admin_views import AdminUserListView, AdminUserDetailView, AdminGrowthStatsView
 from .views import (LoginView, OTPVerifyView, MeView, SignupEmailView, SignupOTPVerifyView, SignupCompleteView,
-                    ResendOTPView, UserProfileView)
+                    ResendOTPView, UserProfileView, PasswordResetRequestView, PasswordResetVerifyOTPView,
+                    PasswordResetCompleteView)
 
 urlpatterns = [
     # OTP Resend
@@ -20,6 +21,10 @@ urlpatterns = [
     path('signin/', csrf_exempt(LoginView.as_view()), name='login_request_otp'),
 
     path('refresh/', csrf_exempt(TokenRefreshView.as_view()), name='token_refresh'),
+
+    path('reset/request/', csrf_exempt(PasswordResetRequestView.as_view()), name='password-reset-request'),
+    path('reset/otp/', csrf_exempt(PasswordResetVerifyOTPView.as_view()), name='password-reset-verify'),
+    path('reset/complete/', csrf_exempt(PasswordResetCompleteView.as_view()), name='password-reset-complete'),
 
     # Profile
     path('users/me/', MeView.as_view()),

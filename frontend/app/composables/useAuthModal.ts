@@ -1,4 +1,4 @@
-type AuthModalType = 'signin' | 'signup' | '2fa' | 'profileSetup' | null
+type AuthModalType = 'signin' | 'signup' | '2fa' | 'profileSetup' | 'forgetPassword' | 'resetPassword' | null
 type ModalProps = Record<string, any>
 
 const currentModal = ref<AuthModalType>(null)

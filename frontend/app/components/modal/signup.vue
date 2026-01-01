@@ -15,7 +15,7 @@
           </UFormField>
 
           <div class="w-full text-center">
-            <UButton :label="$t('modals.2fa.label_code_get')" :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')" size="xl"
+            <UButton :label="$t('modals.2fa.label_code_get')" :loading="loading" :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')" size="xl"
                      type="submit"/>
           </div>
 
@@ -54,7 +54,7 @@ function switchToSignin() {
 }
 
 function switchTo2fa() {
-  open('2fa', {isSignup: true})
+  open('2fa', {nextStep: 'signup'})
 }
 
 async function submit() {

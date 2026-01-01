@@ -10,6 +10,8 @@
     <ModalSignin />
     <Modal2faCode />
     <ModalProfileSetup />
+    <ModalForgetPassword />
+    <ModalResetPassword />
   </UApp>
 </template>
 

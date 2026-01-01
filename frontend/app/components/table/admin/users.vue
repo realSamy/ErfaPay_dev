@@ -196,7 +196,6 @@ const handleAdjustWallet = async (id: number) => {
       user_id: id
     })
 
-    console.log(response)
   }
 
 }

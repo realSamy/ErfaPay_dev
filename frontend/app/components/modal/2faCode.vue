@@ -1,27 +1,31 @@
 <template>
-  <UModal v-model:open="isOpen" :close="currentModalProps?.keepOpen !== true" :dismissible="currentModalProps?.keepOpen !== true">
+  <UModal v-model:open="isOpen" :close="currentModalProps?.keepOpen !== true"
+          :dismissible="currentModalProps?.keepOpen !== true">
     <template #title>
       <span class="font-extrabold text-xl">{{ $t('common.site_title') }}</span>
     </template>
 
     <template #body>
       <div class="flex flex-col">
-        <h2 class="font-bold text-xl">{{
-            $t(isSignup ? 'modals.2fa.title_verify_email' : 'modals.2fa.title_login')
-          }}</h2>
+        <h2 class="font-bold text-xl">
+          {{ $t(title) }}
+        </h2>
         <span>{{ $t('modals.2fa.text_code_sent_email', [loginState.loginInfo.email]) }}</span>
-        <UButton :label="$t('modals.2fa.label_change_email')" :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}"
+        <UButton :label="$t('modals.2fa.label_change_email')"
+                 :ui="{label: 'dark:text-primary-300', base: 'dark:text-primary-300'}"
                  class="px-0" variant="link"
                  @click="changeEmail"/>
 
-        <form class="p-6 space-y-8" @submit.prevent="handleSubmit">
+        <UForm class="p-6 space-y-8" @submit.prevent="handleSubmit">
           <div class="w-full text-center">
             <UPinInput v-model="otpCode" autofocus dir="ltr" otp required size="xl" type="number"
                        variant="subtle"/>
           </div>
 
           <div class="w-full text-center">
-            <UButton :label="$t('modals.2fa.label_code_check')" :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')"
+            <UButton :label="$t('modals.2fa.label_code_check')"
+                     :loading="loading"
+                     :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')"
                      size="xl"
                      type="submit"/>
           </div>
@@ -35,15 +39,16 @@
               <span v-else>{{ $t('modals.2fa.label_code_resend') }}</span>
             </UButton>
           </div>
-        </form>
+        </UForm>
       </div>
     </template>
   </UModal>
 </template>
 
 <script lang="ts" setup>
-import type {AuthState, OTPInfo, User} from "~/types/auth";
+import type {AuthState, OTPInfo} from "~/types/auth";
 import type {HTTPOTPLoginResponse, HTTPOTPSignupResponse} from "~/types/http";
+import type {User} from "~/types/users";
 
 import {useStorage} from "@vueuse/core";
 import {watch} from "vue";
@@ -65,10 +70,10 @@ const otpInfo = computed<OTPInfo>(() => ({
   ...loginState.value?.loginInfo,
 }))
 
-const {isSignup} = defineProps({
-  isSignup: {
-    type: Boolean,
-    default: false
+const {nextStep} = defineProps({
+  nextStep: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -115,14 +120,20 @@ onBeforeUnmount(() => {
 })
 
 async function codeResend() {
-  const response = await $fetch('/api/auth/otp-resend/', {
-    method: 'POST',
-    body: {
-      ...loginState.value?.loginInfo
-    }
-  })
-  console.log({response})
-  timer.value.start();
+  loading.value = true
+  try {
+    const response = await $fetch('/api/auth/otp-resend/', {
+      method: 'POST',
+      body: {
+        ...loginState.value?.loginInfo
+      }
+    })
+    timer.value.start();
+  } catch (e) {
+  } finally {
+    loading.value = false
+  }
+
 }
 
 function switchToSignin() {
@@ -140,13 +151,43 @@ function switchToCompleteSignup() {
   open('profileSetup')
 }
 
+function switchToForgetPassword() {
+  otpCode.value = []
+  open('forgetPassword')
+}
+
+function switchToResetPassword() {
+  otpCode.value = []
+  open('resetPassword')
+}
+
 
 function changeEmail() {
-  if (currentModalProps.value?.isSignup || isSignup) {
-    return switchToSignup()
+  switch (currentModalProps.value?.nextStep || nextStep) {
+    case 'signin':
+      return switchToSignin
+    case 'signup':
+      return switchToSignup
+    case 'forgetPassword':
+      return switchToForgetPassword
+    default:
+      return () => {}
   }
-  return switchToSignin()
 }
+
+const title = computed(() => {
+  switch (currentModalProps.value?.nextStep || nextStep) {
+    case 'signin':
+      return 'modals.2fa.title_login'
+    case 'signup':
+      return 'modals.2fa.title_verify_email'
+    case 'forgetPassword':
+      return 'modals.forgetPassword.title'
+    default:
+      return ''
+  }
+
+})
 
 async function submitLogin() {
   loading.value = true
@@ -196,5 +237,40 @@ async function submitSignup() {
   }
 }
 
-const handleSubmit = computed(() => currentModalProps.value?.isSignup || isSignup ? submitSignup : submitLogin)
+async function submitResetPassword() {
+  loading.value = true
+  try {
+    const response = await $fetch<HTTPOTPLoginResponse>('/api/auth/reset/otp/', {
+      method: 'POST',
+      body: otpInfo.value,
+    })
+
+    if (response.ok) {
+      useState<AuthState>('login-state', () => ({
+        state: 'otp',
+        loginInfo: otpInfo.value,
+      } satisfies AuthState))
+      return switchToResetPassword()
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmit = computed(() => {
+  switch (currentModalProps.value?.nextStep) {
+    case 'signin':
+      return submitLogin
+    case 'signup':
+      return submitSignup
+    case 'forgetPassword':
+      return submitResetPassword
+    default:
+      return () => {
+      }
+  }
+})
+
 </script>

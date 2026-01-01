@@ -6,24 +6,9 @@
 
     <template #body>
       <div class="flex flex-col">
-        <h2 class="font-bold text-xl">{{ $t('modals.signup.title_new_account') }}</h2>
+        <h2 class="font-bold text-xl">{{ $t('modals.forgetPassword.title_new_password') }}</h2>
 
         <form @submit.prevent="submit" class="p-6 space-y-6" autocomplete="off">
-          <UFormField size="xl" :label="$t('modals.profile_setup.label_firstname')">
-            <UInput dir="auto" v-model="authInfo.first_name" :placeholder="$t('modals.profile_setup.placeholder_firstname')"
-                    autocomplete="given-name" autofocus class="w-full" required
-                    type="text"/>
-          </UFormField>
-          <UFormField size="xl" :label="$t('modals.profile_setup.label_lastname')">
-            <UInput dir="auto" v-model="authInfo.last_name" :placeholder="$t('modals.profile_setup.placeholder_lastname')"
-                    autocomplete="family-name" autofocus class="w-full"
-                    required type="text"/>
-          </UFormField>
-
-          <UFormField size="xl" :label="$t('modals.profile_setup.residence_country')">
-            <SelectCountryCode v-model="authInfo.country_code" class="w-full" />
-          </UFormField>
-
           <UFormField size="xl" :label="$t('modals.profile_setup.label_email')">
             <UInput dir="auto" disabled v-model="authInfo.email" :placeholder="$t('modals.profile_setup.placeholder_email')"
                     autocomplete="email"
@@ -42,14 +27,6 @@
                     type="password"/>
           </UFormField>
 
-          <UCheckbox v-model="authInfo.tos_agreed" required>
-            <template #label>
-              <I18nT keypath="modals.profile_setup.text_tos_agreement">
-                <ULink to="/">{{ $t('modals.profile_setup.label_tos') }}</ULink>
-              </I18nT>
-            </template>
-          </UCheckbox>
-
           <div class="w-full text-center">
             <UButton type="submit" :loading="loading" :label="$t('modals.profile_setup.label_create_account')" :trailing-icon="directionalIcon('mdi:arrow-back', 'mdi:arrow-forward')"
                      size="xl"/>
@@ -63,7 +40,7 @@
 
 <script lang="ts" setup>
 import type {AuthState} from "~/types/auth";
-import type {CompleteSignupPayload} from "~/types/payload";
+import type {ResetPasswordPayload} from "~/types/payload";
 import type {HTTPLoginResponse} from "~/types/http";
 import type {User} from "~/types/users";
 import {useStorage} from "@vueuse/core";
@@ -71,31 +48,27 @@ import {useStorage} from "@vueuse/core";
 const {currentModal, close, currentModalProps} = useAuthModal()
 
 const isOpen = computed({
-  get: () => currentModal.value === 'profileSetup',
+  get: () => currentModal.value === 'resetPassword',
   set: (val) => !val && close()
 })
 const loading = ref(false);
 const authState = useState<AuthState>('login-state')
 
-const authInfo = ref(<CompleteSignupPayload>{})
+const authInfo = ref(<ResetPasswordPayload>{})
 watch(isOpen, () => {
   if (isOpen.value) {
     // Reset form when modal opens
     authInfo.value = {
-      first_name: '',
-      last_name: '',
       email: authState.value?.loginInfo?.email || '',
-      country_code: '',
       password: '',
       confirm_password: '',
-      tos_agreed: false,
-    } satisfies CompleteSignupPayload
+    } satisfies ResetPasswordPayload
   }
 })
 async function submit() {
   loading.value = true
   try {
-    const response = await $fetch<HTTPLoginResponse>('/api/auth/signup/complete/', {
+    const response = await $fetch<HTTPLoginResponse>('/api/auth/reset/complete/', {
       method: 'POST',
       body: authInfo.value,
     })

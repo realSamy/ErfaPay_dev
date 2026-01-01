@@ -255,6 +255,10 @@
         "title": "Delete ticket category"
       }
     },
+    "forgetPassword": {
+      "title": "Reset Password",
+      "title_new_password": "Create New Password"
+    },
     "profileSetup": {
       "labelEmail2": ""
     },

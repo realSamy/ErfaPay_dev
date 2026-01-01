@@ -205,3 +205,69 @@ class UserAdminUpdateSerializer(serializers.ModelSerializer):
         if self.instance and self.context['request'].user == self.instance and value != self.instance.role:
             raise serializers.ValidationError("Cannot change your own role")
         return value
+
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value, is_active=True).exists():
+            raise serializers.ValidationError('error.user_not_found')
+        return value
+
+
+class PasswordResetOTPVerifySerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField(max_length=5, min_length=5)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        otp = attrs.get('otp')
+        try:
+            otp_code = OTPCode.objects.filter(
+                email=email,
+                code=otp,
+                otp_type='login'  # Reuse login type since it's the same flow
+            ).first()
+            if not otp_code or not otp_code.is_valid():
+                raise serializers.ValidationError('Invalid or expired OTP.')
+            # Check if this OTP was sent for password reset context (recent + not used)
+            attrs['otp_code'] = otp_code
+            return attrs
+        except OTPCode.DoesNotExist:
+            raise serializers.ValidationError('Invalid or expired OTP.')
+
+
+class PasswordResetCompleteSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True, min_length=8)
+    confirm_password = serializers.CharField(write_only=True, min_length=8)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        confirm_password = attrs.get('confirm_password')
+
+        if password != confirm_password:
+            raise serializers.ValidationError('Passwords do not match.')
+
+        validate_password(password)
+
+        # Verify recent used OTP for password reset (within last 5 minutes)
+        recent_cutoff = timezone.now() - timedelta(minutes=5)
+        if not OTPCode.objects.filter(
+            email=email,
+            is_used=True,
+            created_at__gte=recent_cutoff
+        ).exists():
+            raise serializers.ValidationError('OTP verification required. Please verify first.')
+
+        return attrs
+
+    def save(self):
+        email = self.validated_data['email']
+        password = self.validated_data['password']
+        user = User.objects.get(email=email)
+        user.set_password(password)
+        user.save()
+        return user

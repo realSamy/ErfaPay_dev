@@ -8,7 +8,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer, OTPVerifySerializer, SignupCompleteSerializer, SignupOTPVerifySerializer, \
-    SignupEmailSerializer, ResendOTPSerializer, UserDetailSerializer, UserOwnUpdateSerializer
+    SignupEmailSerializer, ResendOTPSerializer, UserDetailSerializer, UserOwnUpdateSerializer, \
+    PasswordResetCompleteSerializer, PasswordResetOTPVerifySerializer, PasswordResetRequestSerializer
 from .models import OTPCode
 from apps.users.serializers import UserSerializer, EmailTokenObtainPairSerializer
 from django.utils import timezone
@@ -240,3 +241,81 @@ class SignupCompleteView(APIView):
             })
             return response
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetRequestView(APIView):
+    """Step 1: User submits email → OTP sent"""
+
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = User.objects.get(email=email)
+
+            # Rate limit: 75 seconds cooldown
+            recent_cutoff = timezone.now() - timedelta(seconds=75)
+            if OTPCode.objects.filter(
+                user=user,
+                created_at__gte=recent_cutoff
+            ).exists():
+                return Response(
+                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
+                    status=status.HTTP_429_TOO_MANY_REQUESTS
+                )
+
+            # Create and send OTP
+            otp_code = OTPCode.objects.create(user=user, email=email)
+
+            send_mail(
+                subject='ErfaPay Password Reset OTP',
+                message=f'Your 5-digit OTP for password reset is: {otp_code.code}\nValid for 5 minutes.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+
+            # TODO: Remove in production
+            return Response({
+                'ok': True,
+                'message': 'Password reset OTP sent to your email.',
+                'otp': otp_code.code  # Debug only
+            })
+        return Response({'ok': False, 'errors': serializer.errors}, status=400)
+
+
+class PasswordResetVerifyOTPView(APIView):
+    """Step 2: Verify OTP"""
+
+    def post(self, request):
+        serializer = PasswordResetOTPVerifySerializer(data=request.data)
+        if serializer.is_valid():
+            otp_code = serializer.validated_data['otp_code']
+            if otp_code.is_valid():
+                otp_code.mark_used()
+                return Response({'ok': True, 'message': 'OTP verified successfully.'})
+            return Response({'ok': False, 'error': 'Invalid or expired OTP.'}, status=400)
+        return Response({'ok': False, 'errors': serializer.errors}, status=400)
+
+
+class PasswordResetCompleteView(APIView):
+    """Step 3: Set new password after OTP verification"""
+
+    def post(self, request):
+        serializer = PasswordResetCompleteSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+
+            # Optional: Generate tokens after reset
+            refresh = RefreshToken.for_user(user)
+            access = refresh.access_token
+
+            return Response({
+                'ok': True,
+                'message': 'Password reset successfully.',
+                'data': {
+                    'user': UserSerializer(user).data,
+                    'access': str(access),
+                    'refresh': str(refresh),
+                }
+            })
+        return Response({'ok': False, 'errors': serializer.errors}, status=400)
