@@ -268,8 +268,7 @@ const handleSubmit = computed(() => {
     case 'forgetPassword':
       return submitResetPassword
     default:
-      return () => {
-      }
+      return submitLogin
   }
 })
 
