@@ -171,7 +171,7 @@ const connectWebSocket = () => {
   if (!currentRoom.value) return
   if (ws) ws.close()
 
-  const token = useCookie('token').value || ''
+  const {accessToken: token} = useAuth()
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
   ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${currentRoom.value.id}/?token=${token}`)
 

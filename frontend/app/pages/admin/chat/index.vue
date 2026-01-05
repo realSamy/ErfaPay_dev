@@ -153,8 +153,9 @@ const selectRoom = async (room: ChatRoom) => {
 const connectWebSocket = (roomId: number | string) => {
   if (ws) ws.close()
 
-  const token = useCookie('token').value
-  ws = new WebSocket(`ws://${window.location.host.replace(':3000', ':8000')}/ws/chat/${roomId}/?token=${token}`)
+  const {accessToken: token} = useAuth()
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${roomId}/?token=${token}`)
 
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data)
