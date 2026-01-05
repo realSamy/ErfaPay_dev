@@ -173,7 +173,7 @@ const connectWebSocket = () => {
 
   const {accessToken: token} = useAuth()
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${currentRoom.value.id}/?token=${token}`)
+  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${currentRoom.value.id}/?token=${token.value}`)
 
   ws.onopen = () => console.log('Chat WS connected')
   ws.onmessage = (event) => {
