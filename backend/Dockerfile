@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12-alpine
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -17,9 +17,7 @@ RUN apk add --no-cache \
     libffi \
     shared-mime-info \
     fontconfig \
-    ttf-dejavu \
-    font-noto \
-    font-noto-arabic
+    ttf-dejavu
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
