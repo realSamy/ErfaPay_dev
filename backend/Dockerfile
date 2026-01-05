@@ -15,7 +15,11 @@ RUN apk add --no-cache \
     pango \
     gdk-pixbuf \
     libffi \
-    shared-mime-info
+    shared-mime-info \
+    fontconfig \
+    ttf-dejavu \
+    font-noto \
+    font-noto-arabic
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

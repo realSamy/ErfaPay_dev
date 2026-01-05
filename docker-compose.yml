@@ -15,12 +15,15 @@ services:
       - redis
     expose:
       - "8000"
+    volumes:
+      - media_data:/app/media
 
   celery_worker:
     build: ./backend
     command: celery -A config worker --loglevel=info
     volumes:
       - ./backend:/app
+      - media_data:/app/media
     env_file: .env
     depends_on:
       - redis
@@ -32,6 +35,7 @@ services:
     command: celery -A config beat --loglevel=info
     volumes:
       - ./backend:/app
+      - media_data:/app/media
     env_file: .env
     depends_on:
       - redis
@@ -70,3 +74,4 @@ services:
 volumes:
   postgres_data:
   nginx_config:
+  media_data:
