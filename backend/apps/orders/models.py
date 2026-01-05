@@ -84,7 +84,6 @@ class Order(models.Model):
         )
 
         self.wallet_transaction = wt
-        self.status = 'processing' #  if self.service.requires_manual_review else 'done'
         self.save(update_fields=['usd_irt_rate', 'wallet_transaction', 'status'])
 
         return wt
