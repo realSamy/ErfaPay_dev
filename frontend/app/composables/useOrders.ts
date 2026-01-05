@@ -13,8 +13,7 @@ export const useFetchUserOrders = () => {
     loading.value = true;
     error.value = null;
     try {
-      const { data } = await useAuthApi('/api/orders/', {
-      });
+      const {data} = await useAuthApi('/api/orders/', {});
       orders.value = data.value?.data || [];
     } catch (err) {
       error.value = (err as Error).message;
@@ -23,7 +22,7 @@ export const useFetchUserOrders = () => {
     }
   };
 
-  return { orders, loading, error, fetchOrders };
+  return {orders, loading, error, fetchOrders};
 };
 
 interface PaginatedResponse {
@@ -34,11 +33,11 @@ interface PaginatedResponse {
 }
 
 export const useFetchAdminOrders = (
-  status?: Ref<string | string[] | undefined>,
-  search?: Ref<string>,
-  sorting?: Ref<any[] | undefined>,
-  pageSize: number|Ref<number> = 20,
-  user_id?: number | string,
+    status?: Ref<string | string[] | undefined>,
+    search?: Ref<string>,
+    sorting?: Ref<any[] | undefined>,
+    pageSize: number | Ref<number> = 20,
+    user_id?: number | string,
 ) => {
   const orders = ref<Order[]>([])
   const loading = ref(false)
@@ -67,7 +66,7 @@ export const useFetchAdminOrders = (
       if (search?.value) params.search = search.value
       if (sorting?.value) params.sorting = sorting.value
 
-      const { data } = await useAuthApi<PaginatedResponse>('/api/orders/admin/', {
+      const {data} = await useAuthApi<PaginatedResponse>('/api/orders/admin/', {
         method: 'GET',
         params,
       })
@@ -127,7 +126,7 @@ export const useCreateOrder = () => {
     error.value = null;
     try {
       const fd = buildOrderFormData(payload)
-      const { data } = await useAuthApi('/api/orders/create/', {
+      const {data} = await useAuthApi('/api/orders/create/', {
         method: 'POST',
         body: fd,
       });
@@ -144,10 +143,10 @@ export const useCreateOrder = () => {
     }
   };
 
-  return { loading, error, orderId, createOrder };
+  return {loading, error, orderId, createOrder};
 };
 
-export const useAdminFetchOrder = async (order_id: string|number) => {
+export const useAdminFetchOrder = async (order_id: string | number) => {
   const {data: response} = await useAuthApi<GenericHTTPResponse<Order>>(`/api/orders/admin/${order_id}/`,);
 
   if (response.value?.ok) {
@@ -165,18 +164,33 @@ export const useUpdateAdminOrder = () => {
   const error = ref<string | null>(null);
   const updatedOrder = ref<Order | null>(null);
 
-  const updateOrder = async (pk: number|string, payload: UpdateOrderPayload) => {
+  const updateOrder = async (pk: number | string, payload: UpdateOrderPayload) => {
     if (!useAuth().isAdmin.value) return;
 
     loading.value = true;
     error.value = null;
+    const toast = useToast();
+    const {t} = useNuxtApp().$i18n
+
+    const fd = new FormData()
+    fd.append("status", payload.status)
+    if (payload.admin_notes)
+      fd.append("admin_notes", payload.admin_notes)
+    if (payload.admin_attachment)
+      fd.append("admin_attachment", payload.admin_attachment)
     try {
-      const { data } = await useAuthApi(`/api/orders/admin/${pk}/`, {
+      const {data} = await useAuthApi(`/api/orders/admin/${pk}/`, {
         method: 'PATCH',
-        body: payload,
+        body: fd,
       });
       if (data.value?.ok) {
         updatedOrder.value = data.value.data;
+        toast.add({
+          title: t('common.titles.orders_update'),
+          description: t('orders.messages.order_updated'),
+          color: 'success',
+        })
+
         return data.value;
       } else {
         error.value = data.value?.error || 'Failed to update order';
@@ -188,7 +202,7 @@ export const useUpdateAdminOrder = () => {
     }
   };
 
-  return { loading, error, updatedOrder, updateOrder };
+  return {loading, error, updatedOrder, updateOrder};
 };
 
 export const useFetchOrderReceipt = () => {
@@ -201,7 +215,7 @@ export const useFetchOrderReceipt = () => {
     try {
       const response: Blob = await $fetch(`/api/orders/${pk}/receipt/`, {
         method: 'GET',
-        headers: { Authorization: `Bearer ${useAuth().accessToken}` },
+        headers: {Authorization: `Bearer ${useAuth().accessToken}`},
         responseType: 'blob',
       });
       return URL.createObjectURL(response); // Return blob URL for download/display
@@ -212,5 +226,5 @@ export const useFetchOrderReceipt = () => {
     }
   };
 
-  return { loading, error, fetchReceipt };
+  return {loading, error, fetchReceipt};
 };

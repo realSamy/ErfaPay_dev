@@ -76,6 +76,7 @@ import type {UpdateGlobalSettingsPayload} from "~/types/payload";
 
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'admin'],
   title: 'pages.admin.title.orders'
 
 })

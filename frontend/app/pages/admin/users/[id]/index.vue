@@ -30,6 +30,7 @@ import {useBreadcrumbStore} from "~/composables/useBreadcrumbStore";
 
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'support'],
   title: 'pages.admin.title.users_id',
 })
 

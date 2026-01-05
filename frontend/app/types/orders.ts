@@ -18,6 +18,7 @@ export interface Order {
   user_amount_irt: string;
   commission_irt: string;
   admin_notes: string;
+  admin_attachment?: string;
   tax_amount: string;
   total_irt: string;
   status: OrderStatus;

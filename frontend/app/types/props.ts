@@ -13,7 +13,7 @@ interface ModalProps <T = undefined> {
 
 export interface PromptField {
   label?: string
-  type?: 'text' | 'number' | 'boolean' | 'select' | 'textarea'
+  type?: 'text' | 'number' | 'boolean' | 'select' | 'textarea' | 'file'
   options?: Array<{ label: string; value: any }>
 }
 

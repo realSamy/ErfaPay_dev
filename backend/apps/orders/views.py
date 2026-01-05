@@ -15,6 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from apps.users.permissions import IsSeniorSupportOrAbove
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+
+from config import exceptions
 from .models import Order, OrderAttachment
 from .serializers import OrderListSerializer, OrderCreateSerializer, OrderAdminListSerializer
 from .pdf import generate_order_receipt
@@ -178,9 +180,10 @@ class AdminOrderUpdateView(APIView):
         order = get_object_or_404(Order, pk=pk)
         new_status = request.data.get('status')
         admin_notes = request.data.get('admin_notes', '')
+        admin_attachment = request.data.get('admin_attachment')
 
         if new_status not in dict(Order.STATUS_CHOICES):
-            return Response({'ok': False, 'error': 'Invalid status'}, status=400)
+            raise exceptions.InvalidStatusException
 
         # Assign admin when status changes from pending
         if order.status == 'pending' and new_status != 'pending':
@@ -189,6 +192,10 @@ class AdminOrderUpdateView(APIView):
         order.status = new_status
         if admin_notes:
             order.admin_notes = admin_notes
+
+        if admin_attachment:
+            order.admin_attachment = admin_attachment
+
         order.save()
 
         # Notify user

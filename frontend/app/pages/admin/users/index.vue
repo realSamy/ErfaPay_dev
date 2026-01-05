@@ -25,6 +25,7 @@ import type {UsersStats} from "~/types/users";
 
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'support'],
   title: 'pages.admin.title.users',
 })
 

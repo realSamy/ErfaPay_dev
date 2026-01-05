@@ -74,6 +74,15 @@ const submit = () => props.onConfirm?.({...state})
                 required
             />
 
+            <UFileUpload
+                v-else-if="props.fields?.[key]?.type === 'file'"
+                v-model="state[key]"
+                :placeholder="props.fields?.[key]?.label || key.toString()"
+                class="w-full"
+                :ui="{base: 'border-accented'}"
+            />
+
+
             <UInput
                 v-else
                 v-model="state[key]"

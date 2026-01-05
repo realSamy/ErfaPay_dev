@@ -56,6 +56,7 @@ import type {AdminCreateUserPayload, UserRole} from "~/types/users";
 
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'admin'],
   title: 'pages.admin.title.agents_new'
 })
 

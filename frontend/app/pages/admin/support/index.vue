@@ -21,6 +21,7 @@
 <script lang="ts" setup>
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'support'],
   title: 'pages.admin.title.support'
 
 })

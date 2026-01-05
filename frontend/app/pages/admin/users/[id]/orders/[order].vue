@@ -7,7 +7,7 @@
           <h2 class="title">کاربر سفارش دهنده:</h2>
           <div class="tr-value">
             <span class="font-bold">{{ order.user.full_name }}</span>
-            <UIcon :name="`cif:${order.user.country_code.toLowerCase()}`" class="rounded-md" size="20"/>
+            <UIcon :name="userFlag" class="rounded-md" size="20"/>
           </div>
         </div>
 
@@ -74,6 +74,7 @@
             <div class="tr-value">
               <UBadge :color="statusBadge.color" :label="statusBadge.label" class="capitalize"/>
               <UButton
+                  v-if="user && order.processed_by?.id === user.id"
                   class="mr-2"
                   icon="material-symbols:edit-square-outline"
                   size="xs"
@@ -84,18 +85,30 @@
           </div>
           <div v-if="order.admin_notes" class="tr has-hr">
             <span class="tr-title">توضیحات پشتیبان:</span>
-            <UPopover mode="hover">
-              <span class="text-info tr-value max-h-6 overflow-hidden truncate ">
-                {{ order.admin_notes }}
-              </span>
+            <div class="tr-value">
 
-              <template #content>
-                <div class="w-100 p-2">
-                  <span class="max-w-10 wrap-normal">{{ order.admin_notes }}</span>
-                </div>
-              </template>
-            </UPopover>
+              <UPopover mode="hover">
+                <span class="text-info tr-value max-h-6 overflow-hidden truncate ">
+                  {{ order.admin_notes }}
+                </span>
+
+                <template #content>
+                  <div class="w-100 p-2">
+                    <span class="max-w-10 wrap-normal">{{ order.admin_notes }}</span>
+                  </div>
+                </template>
+              </UPopover>
+
+              <UButton
+                  v-if="order.admin_attachment"
+                  :href="order.admin_attachment"
+                  :title="$t('common.labels.attachment')"
+                  download
+                  icon="material-symbols:attach-file"
+                  target="_blank"/>
+            </div>
           </div>
+
           <div class="tr has-hr">
             <span class="tr-title">تاریخ بروزرسانی:</span>
             <span class="tr-value">
@@ -131,26 +144,42 @@
       </div>
     </section>
 
+    <section>
+      <UButton
+          v-if="!order.processed_by"
+          :label="$t('services.labels.button_assign_order')"
+          size="xl"
+          trailing-icon="material-symbols:deployed-code-history-outline"
+          @click="handleAssignOrder"
+      />
+    </section>
+
   </div>
 </template>
 
 <script lang="ts" setup>
-import type {User} from "~/types/users";
 import type {Order} from "~/types/orders";
 import type {UpdateOrderPayload} from "~/types/payload";
 
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'support'],
   title: 'pages.admin.title.orders_id',
 })
 
-const {locale, t} = useI18n()
 const route = useRoute()
 const order_id = route.params.order as string
 
 const breadcrumbStore = useBreadcrumbStore()
-
+const {locale, t} = useI18n()
 const {order} = await useAdminFetchOrder(order_id)
+const {updateOrder, updatedOrder} = useUpdateAdminOrder()
+const {user} = useAuth()
+
+const userFlag = computed(() => {
+  const code = order.value.user.country_code.toLowerCase()
+  return code ? `cif:${code}` : 'material-symbols:globe'
+})
 
 breadcrumbStore.value = {
   name: order.value.user.full_name,
@@ -182,27 +211,42 @@ const statusItems = ref<{ label: string, value: Order['status'] }[]>([
   {label: t('common.states.orders.rejected'), value: 'rejected'},
 ])
 
+const handleAssignOrder = async () => {
+  const confirmed = await useConfirm({
+    title: t('services.labels.button_assign_order'),
+    message: t('services.messages.assign_order_confirm', {name: order.value.user.full_name}),
+    confirmLabel: t('services.labels.button_assign_order'),
+    confirmColor: 'success',
+  })
+
+  if (!confirmed) return
+
+  const payload = <UpdateOrderPayload>{
+    status: 'processing',
+  }
+  await updateOrder(order_id, payload)
+  order.value = updatedOrder.value || order.value
+}
+
 const handleUpdateStatus = async () => {
   const payload = await usePrompt<UpdateOrderPayload>()({
         status: order.value.status as Exclude<Order['status'], 'pending'>,
         admin_notes: order.value.admin_notes,
+        admin_attachment: undefined,
       }, {
         status: {label: t('common.labels.order_status'), type: 'select', options: statusItems},
-        admin_notes: {label: t('common.labels.admin_notes'), type: 'textarea'}
+        admin_notes: {label: t('common.labels.admin_notes'), type: 'textarea'},
+        admin_attachment: {label: t('common.labels.attachment'), type: 'file'},
       },
       {
-        title: t('common.titles.orders_update'),
+        title: 'common.titles.orders_update',
       })
 
   if (payload) {
-    const {updateOrder, updatedOrder} = useUpdateAdminOrder()
+    console.log(payload)
+
     await updateOrder(order_id, payload)
-    order.value = updatedOrder.value
-    useToast().add({
-      title: t('common.titles.orders_update'),
-      description: t('orders.messages.order_updated'),
-      color: 'success',
-    })
+    order.value = updatedOrder.value || order.value
   }
 }
 </script>

@@ -13,6 +13,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'admin'],
   title: 'pages.admin.title.agents'
 
 })

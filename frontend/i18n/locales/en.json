@@ -45,6 +45,7 @@
       "add": "Add",
       "admin_notes": "Admin Notes",
       "admin_panel": "Admin Panel",
+      "attachment": "Attachment",
       "cancel": "Cancel",
       "choose_country": "Choose Country",
       "clear_filters": "Clear Filters",
@@ -193,44 +194,46 @@
     "auth": {
       "invalid_creds": "Incorrect email or password"
     },
-    "otp": {
-      "too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code."
-    },
-    "voucher_required": "Please enter both voucher number and code",
-    "required": "This field is required.",
-    "invalid": "Invalid value.",
     "blank": "This field may not be blank.",
+    "cannot_change_own_role": "Cannot change your own role.",
+    "cannot_delete_category": "Cannot delete category with active services.",
+    "charge_not_pending": "Charge is not pending.",
+    "chat_already_assigned": "Chat not found or already assigned.",
+    "chat_not_found": "Chat not found.",
+    "date_range_too_large": "Date range too large.",
+    "email": {
+      "invalid": "Enter a valid email address.",
+      "required": "Email is required."
+    },
+    "email_already_registered": "Email already registered.",
+    "gateway_not_supported": "Gateway not supported.",
+    "insufficient_balance": "Insufficient balance.",
+    "invalid": "Invalid value.",
+    "invalid_credentials": "Invalid credentials.",
+    "invalid_mode": "Invalid mode.",
+    "invalid_status": "Invalid status.",
     "max_length": "This field is too long.",
     "min_length": "This field is too short.",
-    "unique": "This value already exists.",
-
-    "email": {
-      "required": "Email is required.",
-      "invalid": "Enter a valid email address."
+    "no_active_chat": "No active chat found.",
+    "no_settings_found": "No settings found.",
+    "order_already_processed": "Order already processed.",
+    "otp": {
+      "too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code."
     },
     "password": {
       "min_length": "Password must be at least 8 characters."
     },
-    "resource_not_found": "The requested resource was not found.",
-    "no_active_chat": "No active chat found.",
-    "chat_not_found": "Chat not found.",
-    "chat_already_assigned": "Chat not found or already assigned.",
-    "no_settings_found": "No settings found.",
-    "insufficient_balance": "Insufficient balance.",
-    "order_already_processed": "Order already processed.",
-    "invalid_mode": "Invalid mode.",
-    "date_range_too_large": "Date range too large.",
-    "invalid_status": "Invalid status.",
-    "gateway_not_supported": "Gateway not supported.",
     "payment_api_error": "Payment API error.",
-    "charge_not_pending": "Charge is not pending.",
-    "cannot_delete_category": "Cannot delete category with active services.",
-    "ticket_closed": "Ticket is closed.",
+    "required": "This field is required.",
+    "resource_not_found": "The requested resource was not found.",
+    "room_id": {
+      "invalid": "This chat does not exist or it's deactivated."
+    },
     "ticket_already_closed": "Ticket already closed.",
-    "cannot_change_own_role": "Cannot change your own role.",
-    "email_already_registered": "Email already registered.",
-    "invalid_credentials": "Invalid credentials.",
-    "user_blocked": "User is blocked."
+    "ticket_closed": "Ticket is closed.",
+    "unique": "This value already exists.",
+    "user_blocked": "User is blocked.",
+    "voucher_required": "Please enter both voucher number and code"
   },
   "footer": {
     "about_us": "Questions and Answers",
@@ -272,7 +275,7 @@
     },
     "messages": {
       "assigned_else": "Another agent has assigned",
-      "chat_ended": "Chat is ended by agent.",
+      "chat_ended": "This chat is ended",
       "confirm_end": "Are you sure you want to end this chat?",
       "send_to_start": "Send a message to start the chat",
       "starting_new": "Starting new chat..."
@@ -505,6 +508,7 @@
   },
   "services": {
     "labels": {
+      "button_assign_order": "Assign Order",
       "button_new_order": "New Order",
       "charge_account": "Charge Account",
       "internal_payment": "Internal Payment",
@@ -515,6 +519,7 @@
       "orders_unavailable": "Service is unavailable"
     },
     "messages": {
+      "assign_order_confirm": "Are you going to take this order?",
       "order_attachments": "If this order or service requires uploading files, you can attach them here",
       "order_price": "Enter the amount that will be spent for this order",
       "orders_unavailable": "Submiting new orders is currently unavailable.",

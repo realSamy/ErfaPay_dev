@@ -36,6 +36,7 @@ class Order(models.Model):
         related_name='processed_orders', help_text="Admin who is handling this order"
     )
     admin_notes = models.TextField(blank=True, help_text="Internal admin notes")
+    admin_attachment = models.FileField(blank=True, help_text="Internal admin attachment")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,12 +1,12 @@
 <template>
-  <div v-if="user" class="flex flex-row-reverse max-h-full h-full contain-size bg-gray-50 dark:bg-gray-900">
+  <div v-if="user" class="flex flex-row-reverse max-h-full grow relative bg-gray-50 dark:bg-gray-900">
     <!-- Left Sidebar: Active Chats List -->
     <aside :class="{'hidden': selectedRoom}"
-           class="w-full flex flex-col md:w-80 border-l border-accented md:block bg-ui-highlight">
-      <div class="p-4 border-b">
+           class="w-full flex flex-col max-h-full md:w-80 border-l relative contain-strict border-accented md:block bg-ui-highlight">
+      <div class="p-4 h-20 flex items-center border-b border-accented">
         <h2 class="text-lg font-semibold">Active Chats</h2>
       </div>
-      <div class="overflow-hidden overflow-y-auto">
+      <div class="overflow-hidden overflow-y-auto h-full">
         <div
             v-for="room in chatRooms"
             :key="room.id"
@@ -24,12 +24,17 @@
               </p>
             </div>
             <UBadge v-if="!room.is_active" color="neutral" size="sm">{{ $t('live_chat.labels.ended') }}</UBadge>
-            <UBadge v-else-if="!room.agent_name" color="secondary" size="sm">{{ $t('live_chat.labels.unassigned') }}</UBadge>
-            <UBadge v-else-if="room.agent_name === user.full_name" color="success" size="sm">{{ $t('live_chat.labels.assigned_you') }}</UBadge>
+            <UBadge v-else-if="!room.agent_name" color="secondary" size="sm">{{
+                $t('live_chat.labels.unassigned')
+              }}
+            </UBadge>
+            <UBadge v-else-if="room.agent_name === user.full_name" color="success" size="sm">
+              {{ $t('live_chat.labels.assigned_you') }}
+            </UBadge>
             <UBadge v-else color="success" size="sm">{{ $t('live_chat.labels.assigned_busy') }}</UBadge>
           </div>
           <p class="text-xs text-gray-400 mt-1">
-            {{ $d(new Date(room.last_message_at), {hour: '2-digit', minute: '2-digit'}) }}
+            {{ formatDate(room.last_message_at) }}
           </p>
         </div>
       </div>
@@ -42,11 +47,13 @@
       </div>
 
       <div v-else class="flex flex-col h-full grow contain-size">
-        <div class="p-4 border-b bg-white dark:bg-gray-800 flex justify-between">
+        <div class="p-4 h-20 border-b border-accented bg-white dark:bg-gray-800 flex justify-between">
           <div>
             <h2 class="font-bold text-xl">{{ selectedRoom.customer_name || selectedRoom.customer_username }}</h2>
             <p class="text-sm text-gray-500">
-              {{ selectedRoom.agent_name ? $t('live_chat.labels.assigned_to', [selectedRoom.agent_name]) : $t('live_chat.labels.unassigned') }}
+              {{
+                selectedRoom.agent_name ? $t('live_chat.labels.assigned_to', [selectedRoom.agent_name]) : $t('live_chat.labels.unassigned')
+              }}
             </p>
           </div>
           <div>
@@ -74,7 +81,12 @@
               auto-scroll
           >
             <template #content="{ message }">
-              <p>{{ message.text }}</p>
+              <div class="space-y-2">
+                <p>{{ message.text }}</p>
+                <p class="text-xs text-muted">
+                  {{ formatDate(message.date_time) }}
+                </p>
+              </div>
             </template>
           </UChatMessages>
 
@@ -95,8 +107,10 @@
                 @click="assignSelectedRoom"
             />
 
+            <UButton v-if="!selectedRoom.is_active" :label="$t('live_chat.messages.chat_ended')" block color="neutral"
+                     disabled size="xl"/>
             <UChatPrompt
-                v-if="selectedRoom?.agent_name === user.full_name"
+                v-else-if="selectedRoom?.agent_name === user.full_name"
                 v-model="newMessage"
                 :disabled="!selectedRoom.agent_name || selectedRoom.agent_name !== user.full_name"
                 placeholder="Type your message..."
@@ -115,12 +129,12 @@
 import type {ChatMessage, ChatRoom} from "~/types/chat";
 
 definePageMeta({
-  middleware: ['auth'],
+  middleware: ['auth', 'admin'],
   layout: 'admin'
 })
 
 const {user} = useAuth()
-const {t} = useI18n()
+const {t, d} = useI18n()
 const chatRooms = ref<ChatRoom[]>([])
 const selectedRoom = ref<ChatRoom | null>(null)
 const messages = ref<ChatMessage[]>([])
@@ -155,7 +169,7 @@ const connectWebSocket = (roomId: number | string) => {
 
   const {accessToken: token} = useAuth()
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${roomId}/?token=${token.value}`)
+  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${roomId}/`)
 
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data)
@@ -214,6 +228,32 @@ const handleCloseChat = () => {
   if (ws) {
     ws.close()
   }
+}
+
+const formatDate = (date: Date | string) => {
+  if (typeof date === 'string') date = new Date(date)
+  const now = new Date()
+
+  const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+
+  if (isToday) {
+    return d(date, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+  }
+
+  return d(date, {
+    hour: '2-digit',
+    minute: '2-digit',
+    day: 'numeric',
+    month: 'short',
+    hour12: false,
+  })
 }
 
 onMounted(() => {

@@ -45,6 +45,7 @@
       "add": "اضافه کردن",
       "admin_notes": "توضیحات ادمین",
       "admin_panel": "پنل مدیریت",
+      "attachment": "فایل ضمیمه",
       "cancel": "لغو",
       "choose_country": "انتخاب کشور",
       "clear_filters": "پاک کردن همه",
@@ -193,44 +194,46 @@
     "auth": {
       "invalid_creds": "ایمیل یا رمز وارد شده اشتباه است"
     },
-    "otp": {
-      "too_many_requests": "به تازگی کد برات ساخته شده، برای ساخت کد جدید لطفا ۷۵ ثانیه صبر کن."
-    },
-    "voucher_required": "لطفاً شماره ووچر و کد فعال‌سازی را وارد کنید",
-    "required": "این فیلد اجباری است.",
-    "invalid": "مقدار وارد شده نامعتبر است.",
     "blank": "این فیلد نمی‌تواند خالی باشد.",
+    "cannot_change_own_role": "نمی‌توانید نقش خود را تغییر دهید.",
+    "cannot_delete_category": "نمی‌توان دسته‌بندی دارای خدمات فعال را حذف کرد.",
+    "charge_not_pending": "شارژ در وضعیت در انتظار نیست.",
+    "chat_already_assigned": "گفتگو یافت نشد یا قبلاً تخصیص داده شده است.",
+    "chat_not_found": "گفتگو یافت نشد.",
+    "date_range_too_large": "بازه زمانی بیش از حد بزرگ است.",
+    "email": {
+      "invalid": "ایمیل معتبر وارد کنید.",
+      "required": "ایمیل اجباری است."
+    },
+    "email_already_registered": "این ایمیل قبلاً ثبت شده است.",
+    "gateway_not_supported": "درگاه پرداخت پشتیبانی نمی‌شود.",
+    "insufficient_balance": "موجودی کیف پول کافی نیست.",
+    "invalid": "مقدار وارد شده نامعتبر است.",
+    "invalid_credentials": "اطلاعات ورود نامعتبر است.",
+    "invalid_mode": "حالت نامعتبر است.",
+    "invalid_status": "وضعیت نامعتبر است.",
     "max_length": "این فیلد بیش از حد طولانی است.",
     "min_length": "این فیلد بیش از حد کوتاه است.",
-    "unique": "این مقدار قبلاً وجود دارد.",
-
-    "email": {
-      "required": "ایمیل اجباری است.",
-      "invalid": "ایمیل معتبر وارد کنید."
+    "no_active_chat": "گفتگوی فعالی یافت نشد.",
+    "no_settings_found": "تنظیماتی یافت نشد.",
+    "order_already_processed": "سفارش قبلاً پردازش شده است.",
+    "otp": {
+      "too_many_requests": "به تازگی کد برات ساخته شده، برای ساخت کد جدید لطفا ۷۵ ثانیه صبر کن."
     },
     "password": {
       "min_length": "رمز عبور باید حداقل ۸ کاراکتر باشد."
     },
-    "resource_not_found": "منبع درخواستی یافت نشد.",
-    "no_active_chat": "گفتگوی فعالی یافت نشد.",
-    "chat_not_found": "گفتگو یافت نشد.",
-    "chat_already_assigned": "گفتگو یافت نشد یا قبلاً تخصیص داده شده است.",
-    "no_settings_found": "تنظیماتی یافت نشد.",
-    "insufficient_balance": "موجودی کیف پول کافی نیست.",
-    "order_already_processed": "سفارش قبلاً پردازش شده است.",
-    "invalid_mode": "حالت نامعتبر است.",
-    "date_range_too_large": "بازه زمانی بیش از حد بزرگ است.",
-    "invalid_status": "وضعیت نامعتبر است.",
-    "gateway_not_supported": "درگاه پرداخت پشتیبانی نمی‌شود.",
     "payment_api_error": "خطا در ارتباط با درگاه پرداخت.",
-    "charge_not_pending": "شارژ در وضعیت در انتظار نیست.",
-    "cannot_delete_category": "نمی‌توان دسته‌بندی دارای خدمات فعال را حذف کرد.",
-    "ticket_closed": "تیکت بسته شده است.",
+    "required": "این فیلد اجباری است.",
+    "resource_not_found": "منبع درخواستی یافت نشد.",
+    "room_id": {
+      "invalid": "این چت وجود ندارد یا غیرفعال شده است."
+    },
     "ticket_already_closed": "تیکت قبلاً بسته شده است.",
-    "cannot_change_own_role": "نمی‌توانید نقش خود را تغییر دهید.",
-    "email_already_registered": "این ایمیل قبلاً ثبت شده است.",
-    "invalid_credentials": "اطلاعات ورود نامعتبر است.",
-    "user_blocked": "حساب کاربری شما مسدود شده است."
+    "ticket_closed": "تیکت بسته شده است.",
+    "unique": "این مقدار قبلاً وجود دارد.",
+    "user_blocked": "حساب کاربری شما مسدود شده است.",
+    "voucher_required": "لطفاً شماره ووچر و کد فعال‌سازی را وارد کنید"
   },
   "footer": {
     "about_us": "پرسش و پاسخ",
@@ -272,7 +275,7 @@
     },
     "messages": {
       "assigned_else": "پشتیبان دیگری در این چت است",
-      "chat_ended": "چت توسط پشتیبان خاتمه یافت",
+      "chat_ended": "این چت به پایان رسیده است",
       "confirm_end": "برای خاتمه چت مطمئنید؟",
       "send_to_start": "برای شروع چت پیامی بفرستید",
       "starting_new": "در حال شروع چت جدید..."
@@ -498,6 +501,7 @@
   },
   "services": {
     "labels": {
+      "button_assign_order": "انجام سفارش",
       "button_new_order": "ثبت سفارش",
       "charge_account": "افزایش شارژ",
       "internal_payment": "پرداخت داخلی",
@@ -508,6 +512,7 @@
       "orders_unavailable": "سرویس در دسترس نیست"
     },
     "messages": {
+      "assign_order_confirm": "آیا میخواهید این سفارش را انجام دهید؟",
       "order_attachments": "در صورتی که این سرویس یا سفارش شما نیاز به ضمیمه کردن فایل دارد، فایل هارا وارد کنید",
       "order_price": "مبلغی که جهت انجام این سفارش هزینه میشود وارد کنید",
       "orders_unavailable": "ثبت سفارش جدید در حال حاضر در دسترس نیست.",

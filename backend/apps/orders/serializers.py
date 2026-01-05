@@ -61,7 +61,7 @@ class OrderAdminListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'service', 'user_amount_irt', 'commission_irt', 'tax_amount',
             'total_irt', 'status', 'created_at', 'custom_data', 'user', 'admin_notes', 'processed_by',
-            'updated_at', 'attachments'
+            'updated_at', 'attachments', 'admin_attachment'
         ]
 
     def get_user(self, obj):

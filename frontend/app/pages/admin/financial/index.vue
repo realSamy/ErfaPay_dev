@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'admin'],
   title: 'pages.admin.title.financial'
 })
 

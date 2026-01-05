@@ -147,6 +147,7 @@ export interface CreateOrderPayload {
 export interface UpdateOrderPayload {
   status: 'processing' | 'done' | 'rejected';
   admin_notes?: string;
+  admin_attachment?: File;
 }
 
 export interface CreateChargePayload {
