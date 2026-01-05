@@ -7,6 +7,7 @@ from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncDay, TruncWeek, TruncMonth
 from django.http import StreamingHttpResponse
 from rest_framework import status
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,7 +19,9 @@ from .models import Order, OrderAttachment
 from .serializers import OrderListSerializer, OrderCreateSerializer, OrderAdminListSerializer
 from .pdf import generate_order_receipt
 from apps.notifications.utils import send_notification
+import logging
 
+logger = logging.getLogger(__name__)
 
 # === User Endpoints ===
 class OrderListView(APIView):
@@ -35,7 +38,7 @@ class OrderCreateView(APIView):
 
     def post(self, request):
         serializer = OrderCreateSerializer(data=request.data, context={'request': request})
-        if not serializer.is_valid():
+        if not serializer.is_valid(raise_exception=True):
             return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
         with transaction.atomic():
@@ -59,8 +62,11 @@ class OrderCreateView(APIView):
                     'message': 'Order created and paid successfully',
                     'order_id': order.id
                 }, status=201)
+            except (APIException, ValidationError):
+                raise
             except Exception as e:
-                return Response({'ok': False, 'error': str(e)}, status=400)
+                logger.error(f"Unexpected error in {self.__class__.__name__}: {e}", exc_info=True)
+                return Response({'ok': False, 'error': str(e)}, status=500)
 
 
 class OrderReceiptView(APIView):

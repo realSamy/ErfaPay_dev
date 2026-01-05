@@ -2,6 +2,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+
+from config import exceptions
 from .models import Notification
 from .serializers import NotificationSerializer
 
@@ -28,7 +30,7 @@ class NotificationMarkReadView(APIView):
                 notif.mark_as_read()
                 return Response({'ok': True})
             except Notification.DoesNotExist:
-                return Response({'ok': False, 'error': 'Not found'}, status=404)
+                raise exceptions.NotificationNotFoundException
         else:
             request.user.notifications.filter(is_read=False).update(is_read=True)
             return Response({'ok': True, 'message': 'All marked as read'})

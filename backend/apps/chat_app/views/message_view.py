@@ -77,7 +77,7 @@ class SendMessageView(APIView):
 
     def post(self, request):
         serializer = MessageSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({"status": "sent"})
         return Response(serializer.errors, status=400)

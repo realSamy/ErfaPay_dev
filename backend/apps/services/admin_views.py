@@ -18,7 +18,7 @@ class AdminCategoryListCreateView(APIView):
 
     def post(self, request):
         serializer = CategoryAdminSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'ok': True, 'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -35,7 +35,7 @@ class AdminCategoryDetailView(APIView):
     def patch(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         serializer = CategoryAdminSerializer(category, data=request.data, partial=True)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'ok': True, 'data': serializer.data})
         return Response({'ok': False, 'errors': serializer.errors}, status=400)
@@ -59,7 +59,7 @@ class AdminServiceListCreateView(APIView):
 
     def post(self, request):
         serializer = ServiceAdminSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'ok': True, 'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -75,7 +75,7 @@ class AdminServiceDetailView(APIView):
     def patch(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
         serializer = ServiceAdminSerializer(service, data=request.data, partial=True)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({
                 'ok': True,

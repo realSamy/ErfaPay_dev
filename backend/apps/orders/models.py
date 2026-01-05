@@ -1,6 +1,8 @@
 from django.db import models, transaction
 from django.db.models import F
 
+from config import exceptions
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -48,11 +50,11 @@ class Order(models.Model):
     @transaction.atomic
     def pay_from_wallet(self):
         if self.status != 'pending':
-            raise ValueError("Order already processed")
+            raise exceptions.OrderAlreadyProcessedException
 
         wallet = self.user.wallet
         if wallet.balance < self.total_irt:
-            raise ValueError("Insufficient balance")
+            raise exceptions.InsufficientBalanceException
 
         from apps.currencies.models import CurrencyRate
         self.usd_irt_rate = CurrencyRate.get_current_rate('USD')
@@ -64,7 +66,7 @@ class Order(models.Model):
         ).update(balance=F('balance') - self.total_irt)
 
         if updated_rows == 0:
-            raise ValueError("Insufficient balance or concurrent modification")
+            raise exceptions.InsufficientBalanceException
 
         # Refresh wallet balance from DB
         wallet.refresh_from_db(fields=['balance'])

@@ -2,6 +2,8 @@
 import json
 
 from rest_framework import serializers
+
+from config import exceptions
 from .models import Category, Service
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -69,38 +71,47 @@ class ServiceAdminSerializer(serializers.ModelSerializer):
 
         if commission_type == 'fixed':
             if commission_fixed is not None and commission_fixed <= 0:
+                # todo: add custom exception
                 raise serializers.ValidationError("commission_fixed must be positive when type is fixed")
         elif commission_type == 'percent':
             if commission_percent is not None and not (0 <= commission_percent <= 100):
+                # todo: add custom exception
                 raise serializers.ValidationError("commission_percent must be between 0 and 100")
 
             if not user_pricing:
+                # todo: add custom exception
                 raise serializers.ValidationError("User pricing is required for percent commission type")
 
         if min_amount is not None and max_amount is not None and min_amount >= max_amount:
+            # todo: add custom exception
             raise serializers.ValidationError("min_amount must be less than max_amount")
 
         return attrs
 
     def validate_required_fields(self, value):
         if not isinstance(value, list):
+            # todo: add custom exception
             raise serializers.ValidationError("required_fields must be a list")
 
         allowed_types = {'text', 'number', 'file', 'photo', 'textarea', 'select'}
         for i, field in enumerate(value):
             if not isinstance(field, dict):
+                # todo: add custom exception
                 raise serializers.ValidationError(f"Item {i}: must be a dictionary")
 
             required_keys = ['type', 'label_fa', 'label_en']
             for key in required_keys:
                 if key not in field:
+                    # todo: add custom exception
                     raise serializers.ValidationError(f"Item {i}: '{key}' is required")
 
             if field['type'] not in allowed_types:
+                # todo: add custom exception
                 raise serializers.ValidationError(f"Item {i}: invalid type '{field['type']}'")
 
             if field['type'] == 'select':
                 if 'options' not in field or not isinstance(field['options'], list):
+                    # todo: add custom exception
                     raise serializers.ValidationError(f"Item {i}: 'options' must be a list for select type")
 
             # Optional: handle is_required

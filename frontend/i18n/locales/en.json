@@ -196,7 +196,41 @@
     "otp": {
       "too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code."
     },
-    "voucher_required": "Please enter both voucher number and code"
+    "voucher_required": "Please enter both voucher number and code",
+    "required": "This field is required.",
+    "invalid": "Invalid value.",
+    "blank": "This field may not be blank.",
+    "max_length": "This field is too long.",
+    "min_length": "This field is too short.",
+    "unique": "This value already exists.",
+
+    "email": {
+      "required": "Email is required.",
+      "invalid": "Enter a valid email address."
+    },
+    "password": {
+      "min_length": "Password must be at least 8 characters."
+    },
+    "resource_not_found": "The requested resource was not found.",
+    "no_active_chat": "No active chat found.",
+    "chat_not_found": "Chat not found.",
+    "chat_already_assigned": "Chat not found or already assigned.",
+    "no_settings_found": "No settings found.",
+    "insufficient_balance": "Insufficient balance.",
+    "order_already_processed": "Order already processed.",
+    "invalid_mode": "Invalid mode.",
+    "date_range_too_large": "Date range too large.",
+    "invalid_status": "Invalid status.",
+    "gateway_not_supported": "Gateway not supported.",
+    "payment_api_error": "Payment API error.",
+    "charge_not_pending": "Charge is not pending.",
+    "cannot_delete_category": "Cannot delete category with active services.",
+    "ticket_closed": "Ticket is closed.",
+    "ticket_already_closed": "Ticket already closed.",
+    "cannot_change_own_role": "Cannot change your own role.",
+    "email_already_registered": "Email already registered.",
+    "invalid_credentials": "Invalid credentials.",
+    "user_blocked": "User is blocked."
   },
   "footer": {
     "about_us": "Questions and Answers",

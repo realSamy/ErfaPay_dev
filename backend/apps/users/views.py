@@ -7,6 +7,8 @@ from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from config import exceptions
 from .serializers import LoginSerializer, OTPVerifySerializer, SignupCompleteSerializer, SignupOTPVerifySerializer, \
     SignupEmailSerializer, ResendOTPSerializer, UserDetailSerializer, UserOwnUpdateSerializer, \
     PasswordResetCompleteSerializer, PasswordResetOTPVerifySerializer, PasswordResetRequestSerializer
@@ -65,7 +67,7 @@ class UserProfileView(APIView):
 
     def patch(self, request):
         serializer = UserOwnUpdateSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'ok': True, 'data': UserDetailSerializer(request.user).data})
         return Response({'ok': False, 'errors': serializer.errors}, status=400)
@@ -74,7 +76,7 @@ class UserProfileView(APIView):
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data['user']
 
             # Rate limit: Check for recent OTP creation (75 seconds cooldown)
@@ -96,18 +98,21 @@ class LoginView(APIView):
                 message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=False,
+                fail_silently=True,
             )
 
-            # todo: remove the debug otp
-            return Response({'ok': True, 'message': 'OTP sent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
+            if settings.DEBUG:
+                return Response({'ok': True, 'message': 'OTP sent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
+            else:
+                return Response({'ok': True}, status=status.HTTP_200_OK)
+
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OTPVerifyView(APIView):
     def post(self, request):
         serializer = OTPVerifySerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data['user']
             otp_code = serializer.validated_data['otp_code']
             if otp_code.is_valid():
@@ -128,14 +133,14 @@ class OTPVerifyView(APIView):
                 }, status=status.HTTP_200_OK)
 
                 return response
-            return Response({'ok': False, 'error': 'Invalid or expired OTP.'}, status=status.HTTP_400_BAD_REQUEST)
+            raise exceptions.InvalidOTPException
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SignupEmailView(APIView):
     def post(self, request):
         serializer = SignupEmailSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data['email']
 
             # Rate limit: 75 seconds cooldown (standardized)
@@ -160,27 +165,29 @@ class SignupEmailView(APIView):
                 fail_silently=False,
             )
 
-            # todo: remove the debug otp
-            return Response({'ok': True, 'message': 'OTP sent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
+            if settings.DEBUG:
+                return Response({'ok': True, 'message': 'OTP sent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
+            else:
+                return Response({'ok': True}, status=status.HTTP_200_OK)
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SignupOTPVerifyView(APIView):
     def post(self, request):
         serializer = SignupOTPVerifySerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             otp_code = serializer.validated_data['otp_code']
             if otp_code.is_valid():
                 otp_code.mark_used()
                 return Response({'ok': True, 'message': 'Email verified successfully.'}, status=status.HTTP_200_OK)
-            return Response({'ok': False, 'error': 'Invalid or expired OTP.'}, status=status.HTTP_400_BAD_REQUEST)
+            raise exceptions.InvalidOTPException
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResendOTPView(APIView):
     def post(self, request):
         serializer = ResendOTPSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data['email']
 
             # Rate limit: 75 seconds cooldown
@@ -219,14 +226,16 @@ class ResendOTPView(APIView):
                 fail_silently=False,
             )
 
-            # todo: remove the debug otp
-            return Response({'ok': True, 'message': 'OTP resent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
+            if settings.DEBUG:
+                return Response({'ok': True, 'message': 'OTP resent to your email.', 'otp': otp_code.code}, status=status.HTTP_200_OK)
+            else:
+                return Response({'ok': True}, status=status.HTTP_200_OK)
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class SignupCompleteView(APIView):
     def post(self, request):
         serializer = SignupCompleteSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             # Generate tokens
             refresh = RefreshToken.for_user(user)
@@ -248,7 +257,7 @@ class PasswordResetRequestView(APIView):
 
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data['email']
             user = User.objects.get(email=email)
 
@@ -274,12 +283,14 @@ class PasswordResetRequestView(APIView):
                 fail_silently=False,
             )
 
-            # TODO: Remove in production
-            return Response({
-                'ok': True,
-                'message': 'Password reset OTP sent to your email.',
-                'otp': otp_code.code  # Debug only
-            })
+            if settings.DEBUG:
+                return Response({
+                    'ok': True,
+                    'message': 'Password reset OTP sent to your email.',
+                    'otp': otp_code.code
+                })
+            else:
+                return Response({'ok': True}, status=status.HTTP_200_OK)
         return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
@@ -288,12 +299,12 @@ class PasswordResetVerifyOTPView(APIView):
 
     def post(self, request):
         serializer = PasswordResetOTPVerifySerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             otp_code = serializer.validated_data['otp_code']
             if otp_code.is_valid():
                 otp_code.mark_used()
                 return Response({'ok': True, 'message': 'OTP verified successfully.'})
-            return Response({'ok': False, 'error': 'Invalid or expired OTP.'}, status=400)
+            raise exceptions.InvalidOTPException
         return Response({'ok': False, 'errors': serializer.errors}, status=400)
 
 
@@ -302,7 +313,7 @@ class PasswordResetCompleteView(APIView):
 
     def post(self, request):
         serializer = PasswordResetCompleteSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.save()
 
             # Optional: Generate tokens after reset

@@ -1,11 +1,11 @@
 export const useAuthApi = async <T = any>(
-  url: string,
-  opts: any = {}
+    url: string,
+    opts: any = {}
 ): Promise<{ data: Ref<T | null>; error: Ref<any | null> }> => {
   const data = ref<T | null>(null)
   const error = ref<any | null>(null)
 
-  const { accessToken, refreshToken, logout } = useAuth()
+  const {accessToken, refreshToken, logout} = useAuth()
 
   const makeRequest = async (token: string) => {
     return await $fetch<T>(url, {
@@ -24,7 +24,7 @@ export const useAuthApi = async <T = any>(
       try {
         const res = await $fetch<{ access: string }>('/api/auth/refresh/', {
           method: 'POST',
-          body: { refresh: refreshToken.value },
+          body: {refresh: refreshToken.value},
         })
         accessToken.value = res.access
         data.value = await makeRequest(res.access)
@@ -35,9 +35,9 @@ export const useAuthApi = async <T = any>(
         }
       }
     } else {
-      error.value = err
+      error.value = err.data || err
     }
   }
 
-  return { data, error } as { data: Ref<T | null>; error: Ref<any | null> }
+  return {data, error} as { data: Ref<T | null>; error: Ref<any | null> }
 }

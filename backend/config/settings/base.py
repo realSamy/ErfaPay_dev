@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.orders',
     'apps.payments',
-    'apps.support',
     'apps.notifications',
     'apps.dashboard',
     'apps.tickets',
@@ -94,6 +93,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50,
+    'EXCEPTION_HANDLER': 'config.exceptions.custom_exception_handler',
 }
 
 MIDDLEWARE = [

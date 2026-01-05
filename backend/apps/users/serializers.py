@@ -5,10 +5,10 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
-from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 
 from apps.users.models import OTPCode
+from config import exceptions
 
 User = get_user_model()
 
@@ -35,12 +35,12 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Map email or username to 'username' for super().validate
         identifier = attrs.pop('email', None) or attrs.get('username')
         if not identifier:
-            raise ValidationError('Must include email or username and password.')
+            raise exceptions.InvalidCredentialsException
 
         attrs['username'] = identifier
         password = attrs.get('password')
         if not password:
-            raise ValidationError('Must include password.')
+            raise exceptions.InvalidCredentialsException
 
         # Authenticate using the backend (treats username as email)
         user = authenticate(
@@ -49,9 +49,9 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
             password=password,
         )
         if not user:
-            raise ValidationError('No active account found with the given credentials')
+            raise exceptions.UserNotFoundException
         if not user.is_active:
-            raise ValidationError('User account is disabled.')
+            raise exceptions.UserBlockedException
 
         validated_attrs = super().validate(attrs)
         validated_attrs['user'] = UserSerializer(user).data
@@ -69,7 +69,7 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             attrs['user'] = user
             return attrs
-        raise serializers.ValidationError('errors.auth.invalid_creds')
+        raise exceptions.InvalidCredentialsException
 
 
 class OTPVerifySerializer(serializers.Serializer):
@@ -83,12 +83,12 @@ class OTPVerifySerializer(serializers.Serializer):
             user = User.objects.get(email=email)
             otp_code = OTPCode.objects.filter(user=user, code=otp).first()
             if not otp_code or not otp_code.is_valid():
-                raise serializers.ValidationError('Invalid or expired OTP.')
+                raise exceptions.InvalidOTPException
             attrs['user'] = user
             attrs['otp_code'] = otp_code
             return attrs
         except User.DoesNotExist:
-            raise serializers.ValidationError('User not found.')
+            raise exceptions.UserNotFoundException
 
 
 class SignupEmailSerializer(serializers.Serializer):
@@ -96,7 +96,7 @@ class SignupEmailSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError('An account with this email already exists.')
+            raise exceptions.EmailAlreadyRegisteredException
         return value
 
 
@@ -110,11 +110,11 @@ class SignupOTPVerifySerializer(serializers.Serializer):
         try:
             otp_code = OTPCode.objects.filter(email=email, code=otp).first()
             if not otp_code or not otp_code.is_valid():
-                raise serializers.ValidationError('Invalid or expired OTP.')
+                raise exceptions.InvalidOTPException
             attrs['otp_code'] = otp_code
             return attrs
         except OTPCode.DoesNotExist:
-            raise serializers.ValidationError('Invalid or expired OTP.')
+            raise exceptions.InvalidOTPException
 
 
 class SignupCompleteSerializer(serializers.Serializer):
@@ -135,15 +135,15 @@ class SignupCompleteSerializer(serializers.Serializer):
                 is_used=True,
                 created_at__gte=recent_cutoff
         ).exists():
-            raise serializers.ValidationError('Email verification required. Please verify OTP first.')
+            raise exceptions.OTPVerificationRequiredException
 
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
         if password != confirm_password:
-            raise serializers.ValidationError('Passwords do not match.')
+            raise exceptions.PasswordMismatchException
         validate_password(password)  # Django's password validators
         if not attrs.get('tos_agreed'):
-            raise serializers.ValidationError('You must agree to the Terms of Service.')
+            raise exceptions.TOSRequiredException
 
         # Set username to email for simplicity
         attrs['username'] = email
@@ -203,7 +203,7 @@ class UserAdminUpdateSerializer(serializers.ModelSerializer):
     def validate_role(self, value):
         # Optional: Prevent downgrading self
         if self.instance and self.context['request'].user == self.instance and value != self.instance.role:
-            raise serializers.ValidationError("Cannot change your own role")
+            raise exceptions.CannotChangeOwnRoleException
         return value
 
 
@@ -212,7 +212,7 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not User.objects.filter(email=value, is_active=True).exists():
-            raise serializers.ValidationError('error.user_not_found')
+            raise exceptions.UserNotFoundException
         return value
 
 
@@ -230,12 +230,12 @@ class PasswordResetOTPVerifySerializer(serializers.Serializer):
                 otp_type='login'  # Reuse login type since it's the same flow
             ).first()
             if not otp_code or not otp_code.is_valid():
-                raise serializers.ValidationError('Invalid or expired OTP.')
+                raise exceptions.InvalidOTPException
             # Check if this OTP was sent for password reset context (recent + not used)
             attrs['otp_code'] = otp_code
             return attrs
         except OTPCode.DoesNotExist:
-            raise serializers.ValidationError('Invalid or expired OTP.')
+            raise exceptions.InvalidOTPException
 
 
 class PasswordResetCompleteSerializer(serializers.Serializer):
@@ -249,7 +249,7 @@ class PasswordResetCompleteSerializer(serializers.Serializer):
         confirm_password = attrs.get('confirm_password')
 
         if password != confirm_password:
-            raise serializers.ValidationError('Passwords do not match.')
+            raise exceptions.PasswordMismatchException
 
         validate_password(password)
 
@@ -260,7 +260,7 @@ class PasswordResetCompleteSerializer(serializers.Serializer):
             is_used=True,
             created_at__gte=recent_cutoff
         ).exists():
-            raise serializers.ValidationError('OTP verification required. Please verify first.')
+            raise exceptions.OTPVerificationRequiredException
 
         return attrs
 

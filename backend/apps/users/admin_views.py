@@ -154,7 +154,7 @@ class AdminUserDetailView(APIView):
     def patch(self, request, pk):
         user = get_object_or_404(UserProfile, pk=pk)
         serializer = UserAdminUpdateSerializer(user, data=request.data, partial=True, context={'request': request})
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'ok': True, 'data': UserDetailSerializer(user).data})
         return Response({'ok': False, 'errors': serializer.errors}, status=400)

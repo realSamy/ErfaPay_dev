@@ -24,7 +24,7 @@ class StartCall(APIView):
 
     def post(self, request, format=None):
         serializer = StartCallSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             sender_user = User.objects.get(username=serializer.validated_data['sender'])
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
@@ -51,7 +51,7 @@ class EndCall(APIView):
 
     def post(self, request, format=None):
         serializer = StartCallSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 'chat_%s' % serializer.validated_data['peer_id'], {

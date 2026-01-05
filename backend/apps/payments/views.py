@@ -2,7 +2,6 @@ import csv
 import hashlib
 import hmac
 import json
-import random
 from datetime import datetime
 from io import StringIO
 
@@ -22,6 +21,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+
+from config import exceptions
 from .models import Charge, WalletTransaction
 from .serializers import (
     WalletSerializer, WalletTransactionSerializer,
@@ -126,7 +127,7 @@ class ChargeCreateView(APIView):
 
     def post(self, request):
         serializer = ChargeCreateSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             data = serializer.validated_data
             if data['gateway'] == 'paypal':
                 return self.create_paypal_order(request, data['foreign_amount'])
@@ -134,8 +135,8 @@ class ChargeCreateView(APIView):
                 return self.create_crypto_charge(request, data['foreign_amount'], data['currency'])
             elif data['gateway'] == 'voucher':
                 return self.redeem_perfect_money_voucher(request, data['voucher_num'], data['voucher_code'])
-            return Response({'error': 'Gateway not supported'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            raise exceptions.GatewayNotSupportedException
+        return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def create_paypal_order(self, request, amount):
@@ -257,7 +258,7 @@ class PayPalCallbackView(APIView):
         response = requests.post(f"{settings.PAYPAL_API_URL}/v2/checkout/orders/{token}/capture", headers=headers)
         if response.status_code in [200, 201]:
             charge.complete()  # As in model
-            return Response({'success': True})
+            return Response({'ok': True})
         return Response({'error': response.json()}, status=response.status_code)
 
 
@@ -351,7 +352,7 @@ class AdminChartView(APIView):
 
         # Validate dates
         if start_date and end_date and (end_date - start_date).days > 365:
-            return Response({'error': 'Date range too large'}, status=400)
+            raise exceptions.DateRangeTooLargeException
 
         # Truncation
         if mode == 'daily':
@@ -361,7 +362,7 @@ class AdminChartView(APIView):
         elif mode == 'monthly':
             trunc = TruncMonth('created_at')
         else:
-            return Response({'error': 'Invalid mode'}, status=400)
+            raise exceptions.InvalidModeException
 
         # Example: Charting total charges (irt_amount sum) - replace with your metric
         qs = Charge.objects.filter(status='success').annotate(date=trunc).values('date').annotate(

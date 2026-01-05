@@ -59,7 +59,7 @@ const df = new DateFormatter(locale.value, {dateStyle: 'medium'})
 
 const mode = ref<'daily' | 'weekly' | 'monthly'>('daily')
 const modeOptions = [
-  {value: 'daily', label: t('admin.charts.modes.daily')},
+  {value: 'dailys', label: t('admin.charts.modes.daily')},
   {value: 'weekly', label: t('admin.charts.modes.weekly')},
   {value: 'monthly', label: t('admin.charts.modes.monthly')},
 ]
@@ -162,8 +162,6 @@ const option = computed<ECOption>(() => ({
     },
   }],
 }))
-
-watch(mode, () => refresh())
 
 // CSV Download
 const csvLoading = ref(false)

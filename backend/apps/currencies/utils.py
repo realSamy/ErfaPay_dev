@@ -50,5 +50,4 @@ def fetch_and_update_rates():
     return updated_count
 
 def get_usd_to_irt_rate() -> Decimal:
-    """همه جا از این استفاده کن (شارژ PayPal, Crypto, نمایش قیمت)"""
     return CurrencyRate.get_current_rate('USD')

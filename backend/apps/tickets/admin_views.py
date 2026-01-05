@@ -52,7 +52,7 @@ class AdminTicketReplyView(APIView):
     def post(self, request: Request, ticket_id):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
         serializer = TicketReplySerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             message = TicketMessage.objects.create(
                 ticket=ticket,
                 sender=None,

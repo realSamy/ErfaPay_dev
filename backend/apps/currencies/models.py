@@ -4,10 +4,6 @@ from decimal import Decimal
 
 
 class CurrencyRate(models.Model):
-    """
-    نرخ تبدیل ارزهای خارجی به تومان (IRT)
-    فقط یک ردیف برای هر ارز وجود دارد (unique code)
-    """
     CODE_CHOICES = [
         ('USD', 'US Dollar'),
         ('EUR', 'Euro'),
@@ -15,7 +11,6 @@ class CurrencyRate(models.Model):
         ('BTC', 'Bitcoin'),
         ('USDT', 'Tether USDT'),
         ('TRX', 'TRON'),
-        # می‌تونی بعدا اضافه کنی
     ]
 
     code = models.CharField(max_length=10, unique=True, choices=CODE_CHOICES)
@@ -23,7 +18,7 @@ class CurrencyRate(models.Model):
     icon = models.CharField(max_length=50)
     rate_to_irt = models.DecimalField(
         max_digits=24, decimal_places=2,
-        help_text="نرخ تبدیل ۱ واحد این ارز به تومان (IRT)"
+        help_text="Exchange rate to Iranian Rial (IRT)"
     )
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -37,14 +32,12 @@ class CurrencyRate(models.Model):
 
     @classmethod
     def get_current_rate(cls, code: str) -> Decimal:
-        """استفاده در همه جای پروژه (شارژ، سفارش و ...)"""
         try:
             rate_obj = cls.objects.get(code=code)
             return rate_obj.rate_to_irt
         except cls.DoesNotExist:
-            # fallback منطقی (مثلاً نرخ ثابت در صورت خطا)
             fallback_rates = {
-                'USD': Decimal('620000'),   # 62,000 تومان
+                'USD': Decimal('620000'),
                 'USDT': Decimal('620000'),
             }
             return fallback_rates.get(code, Decimal('620000'))

@@ -2,6 +2,7 @@ from apps.chat_app.models import ChatRoom, Message
 from rest_framework import serializers
 
 from apps.chat_app.utils import ws
+from config import exceptions
 
 
 class MessageSerializer(serializers.Serializer):
@@ -27,7 +28,7 @@ class MessageSerializer(serializers.Serializer):
         if room.agent == user:
             return data
 
-        raise serializers.ValidationError("You are not authorized to send messages in this chat")
+        raise exceptions.ChatNotAuthorized
 
     def create(self, validated_data):
         room = validated_data['room_id']

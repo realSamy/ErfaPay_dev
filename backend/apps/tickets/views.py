@@ -9,6 +9,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from apps.notifications.utils import send_notification
+from config import exceptions
 from .models import Ticket, TicketMessage, TicketMessageAttachment
 from .pdf import generate_ticket_pdf
 from .serializers import (
@@ -27,7 +28,7 @@ class TicketListCreateView(APIView):
 
     def post(self, request):
         serializer = TicketCreateSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             ticket = serializer.save()
             # Auto first message
             message = TicketMessage.objects.create(
@@ -75,10 +76,10 @@ class TicketReplyView(APIView):
     def post(self, request, ticket_id):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id, user=request.user)
         if ticket.status == 'closed':
-            return Response({'ok': False, 'error': 'تیکت بسته شده است'}, status=400)
+            raise exceptions.TicketClosedException
 
         serializer = TicketReplySerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             with transaction.atomic():
                 message = serializer.save(
                     ticket=ticket,
@@ -114,7 +115,7 @@ class TicketCloseView(APIView):
     def post(self, request, ticket_id):
         ticket = get_object_or_404(Ticket, ticket_id=ticket_id, user=request.user)
         if ticket.status == 'closed':
-            return Response({'ok': False, 'error': 'تیکت قبلاً بسته شده'}, status=400)
+            raise exceptions.TicketClosedException
 
         ticket.status = 'closed'
         ticket.closed_at = timezone.now()

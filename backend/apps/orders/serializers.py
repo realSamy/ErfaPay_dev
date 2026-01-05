@@ -1,10 +1,9 @@
 # apps/orders/serializers.py
 from rest_framework import serializers
 from apps.services.serializers import ServiceDetailSerializer
-from .models import Order
-from apps.users.models import UserProfile
-from ..users.serializers import UserSerializer
-
+from apps.orders.models import Order
+from apps.users.serializers import UserSerializer
+from config import exceptions
 
 class OrderListSerializer(serializers.ModelSerializer):
     service = ServiceDetailSerializer(read_only=True)
@@ -24,13 +23,13 @@ class OrderCreateSerializer(serializers.Serializer):
     def validate(self, data):
         from apps.core.models import GlobalSettings
         if not GlobalSettings.get_global_settings().is_service_available():
-            raise serializers.ValidationError("Services are currently unavailable")
+            raise exceptions.ServicesUnavailableException
 
         from apps.services.models import Service
         try:
             service = Service.objects.get(pk=data['service_id'], is_active=True)
         except Service.DoesNotExist:
-            raise serializers.ValidationError("Service not found or inactive")
+            raise exceptions.ServiceNotFoundException
 
         cost = service.calculate_total_cost(int(data['user_amount_irt']))
         data['service'] = service
