@@ -1,4 +1,5 @@
 # apps/services/admin_views.py
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from apps.users.permissions import IsSeniorSupportOrAbove
@@ -58,9 +59,18 @@ class AdminServiceListCreateView(APIView):
         return Response({'ok': True, 'data': serializer.data})
 
     def post(self, request):
+        if settings.DEBUG:
+            print('DEBUG MODE')
+            print('received create service')
         serializer = ServiceAdminSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            if settings.DEBUG:
+                print('DEBUG MODE')
+                print('before saving')
             serializer.save()
+            if settings.DEBUG:
+                print('DEBUG MODE')
+                print('before response')
             return Response({'ok': True, 'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'ok': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 

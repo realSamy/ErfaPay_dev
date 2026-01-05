@@ -21,7 +21,7 @@
       <div>
         <h4 class="font-black text-2xl">{{ item.title }}</h4>
         <p class="text-muted mt-1">{{ item.message }}</p>
-        <UButton :label="item.cta_label" :trailing-icon="ctaIcon" class="mt-3" size="xl"/>
+        <UButton @click="handleOrder(item)" :label="item.cta_label" :trailing-icon="ctaIcon" class="mt-3" size="xl"/>
       </div>
       <div class="grow flex justify-center">
         <img :src="item.image" :alt="item.title" class="w-100">
@@ -44,15 +44,25 @@ const dir = computed(() => isRTL.value ? "rtl" : "ltr");
 const ctaIcon = directionalIcon('mdi:chevron-left', 'mdi:chevron-right')
 
 const services = ref<Service[]>([])
+const {isLoggedIn, login} = useAuth()
 
 const serviceSlides = computed<ServiceSlide[]>(() => services.value.map(service => {
   return {
+    id: service.id,
     title: locale.value === 'en' ? service.title_en : service.title_fa,
     message: locale.value === 'en' ? service.description_en : service.description_fa,
     cta_label: $t('pages.home.hero_section_cta'),
     image: service.banner,
   } as ServiceSlide
 }))
+
+const handleOrder = (item: ServiceSlide) => {
+  if (!isLoggedIn.value) {
+    login()
+    return
+  }
+  navigateTo(useLocalePath()({ name: 'dashboard-orders-new-id', params: { id: item.id } }))
+}
 
 onMounted(() => {
   useLoadServicesStore().then(result => {

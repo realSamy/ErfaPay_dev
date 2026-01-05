@@ -7,6 +7,7 @@ export interface Country {
 }
 
 export interface ServiceSlide {
+  id: string|number
   title: string
   message: string
   cta_label: string

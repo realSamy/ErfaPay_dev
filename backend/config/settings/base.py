@@ -36,6 +36,14 @@ NOWPAYMENTS_API_URL = os.environ.get('NOWPAYMENTS_API_URL')
 
 AUTH_USER_MODEL = 'users.UserProfile'
 
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
