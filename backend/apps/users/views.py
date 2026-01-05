@@ -98,7 +98,7 @@ class LoginView(APIView):
                 message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=True,
+                fail_silently=False,
             )
 
             if settings.DEBUG:
