@@ -306,6 +306,20 @@
     }
   },
   "modals": {
+    "2fa": {
+      "label_change_email": "Change Email",
+      "label_change_phone": "Change Phone Number",
+      "label_code_check": "Check OTP Code",
+      "label_code_get": "Get OTP Code",
+      "label_code_resend": "Resend OTP",
+      "text_code_not_received": "I haven't received the code.",
+      "text_code_sent_email": "OTP code sent to the email {0}.",
+      "text_code_sent_phone": "OTP code sent to the number {0}.",
+      "text_code_timer": "Send again {0}",
+      "title_login": "Login",
+      "title_verify_email": "Verify Email",
+      "title_verify_phone": "Verify Phone"
+    },
     "confirms": {
       "delete_ticket_category": {
         "description": "This action cannot be undone.",
@@ -315,9 +329,6 @@
     "forgetPassword": {
       "title": "Reset Password",
       "title_new_password": "Create New Password"
-    },
-    "profileSetup": {
-      "labelEmail2": ""
     },
     "profile_setup": {
       "label_create_account": "Create Account",
