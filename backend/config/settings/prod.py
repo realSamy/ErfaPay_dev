@@ -22,7 +22,7 @@ DOMAIN = os.environ.get('DOMAIN')
 
 if DOMAIN:
     CORS_ALLOWED_ORIGINS = [f'https://{DOMAIN}']
-    ALLOWED_HOSTS = [DOMAIN, 'backend']
+    ALLOWED_HOSTS = [DOMAIN, 'backend', '143.198.35.11', 'frontend']
 
 
 DATABASES = {
