@@ -1,3 +1,5 @@
+import type {AuthState} from "~/types/auth";
+
 type AuthModalType = 'signin' | 'signup' | '2fa' | 'profileSetup' | 'forgetPassword' | 'resetPassword' | null
 type ModalProps = Record<string, any>
 

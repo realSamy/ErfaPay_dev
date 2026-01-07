@@ -162,7 +162,7 @@ function switchToResetPassword() {
 }
 
 
-function changeEmail() {
+const changeEmail = computed(() => {
   switch (currentModalProps.value?.nextStep || nextStep) {
     case 'signin':
       return switchToSignin
@@ -171,9 +171,9 @@ function changeEmail() {
     case 'forgetPassword':
       return switchToForgetPassword
     default:
-      return () => {}
+      return switchToSignin
   }
-}
+})
 
 const title = computed(() => {
   switch (currentModalProps.value?.nextStep || nextStep) {

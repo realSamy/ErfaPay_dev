@@ -1,6 +1,6 @@
 <!-- components/admin/LineChart.vue -->
 <template>
-  <div class="space-y-4 h-[300px]">
+  <div class="space-y-4 h-75">
     <div class="flex flex-wrap justify-between items-center gap-4">
       <h3 class="font-bold text-xl">{{ $t('admin.charts.title_charges') }}</h3>
       <div class="flex flex-wrap gap-4 items-center">

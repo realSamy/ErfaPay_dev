@@ -69,7 +69,7 @@ function switchToSignup() {
 }
 
 function switchTo2fa() {
-  open('2fa')
+  open('2fa', {nextStep: 'signin'})
 }
 
 function switchToForgetPassword() {

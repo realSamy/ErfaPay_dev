@@ -173,6 +173,12 @@ class OTPVerificationRequiredException(ValidationError):
     default_code = 'otp_verification_required'
 
 
+class OTPTooManyRequestsException(APIException):
+    status_code = 429
+    default_detail = 'You\'ve got a code recently, please wait 75 seconds before requesting a new code.'
+    default_code = 'otp_too_many_requests'
+
+
 class PasswordMismatchException(ValidationError):
     default_detail = 'Passwords do not match.'
     default_code = 'password_mismatch'
@@ -199,15 +205,18 @@ class ServiceNotFoundException(APIException):
     default_detail = 'Service not found or inactive'
     default_code = 'service_not_found'
 
+
 class NotificationNotFoundException(APIException):
     status_code = 404
     default_detail = 'Notification not found.'
     default_code = 'notification_not_found'
 
+
 class ChatNotAuthorized(APIException):
     status_code = 401
     default_detail = 'You are not authorized to send messages in this chat'
     default_code = 'chat_not_authorized'
+
 
 class BulkMailPayloadIncompleteException(ValidationError):
     default_detail = 'Subject and message required'

@@ -85,10 +85,7 @@ class LoginView(APIView):
                     user=user,
                     created_at__gte=recent_cutoff
             ).exists():
-                return Response(
-                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
-                    status=status.HTTP_429_TOO_MANY_REQUESTS
-                )
+                raise exceptions.OTPTooManyRequestsException
 
             # Generate and save OTP
             otp_code = OTPCode.objects.create(user=user)
@@ -149,10 +146,7 @@ class SignupEmailView(APIView):
                     email=email,
                     created_at__gte=recent_cutoff
             ).exists():
-                return Response(
-                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
-                    status=status.HTTP_429_TOO_MANY_REQUESTS
-                )
+                raise exceptions.OTPTooManyRequestsException
 
             # Create and send OTP
             otp_code = OTPCode.objects.create(email=email)
@@ -196,10 +190,7 @@ class ResendOTPView(APIView):
                     email=email,
                     created_at__gte=recent_cutoff
             ).exists():
-                return Response(
-                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
-                    status=status.HTTP_429_TOO_MANY_REQUESTS
-                )
+                raise exceptions.OTPTooManyRequestsException
 
             # Determine flow: login (user exists) or signup (user doesn't)
             try:
@@ -267,10 +258,7 @@ class PasswordResetRequestView(APIView):
                 user=user,
                 created_at__gte=recent_cutoff
             ).exists():
-                return Response(
-                    {'ok': False, 'error': 'errors.otp.too_many_requests'},
-                    status=status.HTTP_429_TOO_MANY_REQUESTS
-                )
+                raise exceptions.OTPTooManyRequestsException
 
             # Create and send OTP
             otp_code = OTPCode.objects.create(user=user, email=email)

@@ -231,9 +231,7 @@
     "no_active_chat": "No active chat found.",
     "no_settings_found": "No settings found.",
     "order_already_processed": "Order already processed.",
-    "otp": {
-      "too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code."
-    },
+    "otp_too_many_requests": "You've got a code recently, please wait 75 seconds before requesting a new code.",
     "password": {
       "min_length": "Password must be at least 8 characters."
     },
