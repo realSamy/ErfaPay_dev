@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from apps.users.permissions import IsSupportStaff
+from apps.users.permissions import IsSupportStaff, IsMainAdmin
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from apps.notifications.utils import send_notification
+from config import exceptions
 from .models import Ticket, TicketMessage, TicketMessageAttachment
 from .serializers import TicketDetailSerializer, TicketReplySerializer
+from apps.tickets.tasks import send_bulk_email_task
 
 User = get_user_model()
 
@@ -113,3 +116,29 @@ class AdminTicketUpdateView(APIView):
         ticket.save()
 
         return Response({'ok': True, 'data': TicketDetailSerializer(ticket).data})
+
+
+class AdminBulkEmailView(APIView):
+    permission_classes = [IsAuthenticated, IsMainAdmin]
+
+    def post(self, request):
+        subject = request.data.get('subject')
+        message = request.data.get('message')
+
+        if not all([subject, message]):
+            raise exceptions.BulkMailPayloadIncompleteException
+
+        # Optional filters later (e.g., role='regular')
+        user_filter = None
+
+        # Fire and forget — returns immediately
+        send_bulk_email_task.delay(
+            subject=subject,
+            message=message,
+            user_filter=user_filter
+        )
+
+        return Response({
+            'ok': True,
+            'message': 'Bulk email task started. It will run in background.'
+        })

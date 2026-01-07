@@ -34,6 +34,12 @@
         "usdt": "Tether (USDT)"
       }
     },
+    "erfapay": {
+      "address": "Erfapay Address",
+      "email": "Erfapay Email",
+      "phone": "Erfapay Phone",
+      "social": "Erfapay Social"
+    },
     "field_types": {
       "file": "File",
       "number": "Number",
@@ -46,6 +52,7 @@
       "admin_notes": "Admin Notes",
       "admin_panel": "Admin Panel",
       "attachment": "Attachment",
+      "bulk_email": "Bulk Email",
       "cancel": "Cancel",
       "choose_country": "Choose Country",
       "clear_filters": "Clear Filters",
@@ -54,6 +61,7 @@
       "dashboard": "Dashboard",
       "delete": "Delete",
       "edit": "Edit",
+      "email_subject": "Subject",
       "login": "Login",
       "logout": "Logout",
       "more": "More",
@@ -88,11 +96,16 @@
       }
     },
     "messages": {
+      "bulk_email_started": "Bulk email started in background.",
       "confirm_logout": "Are you sure you want to logout?",
       "global_settings_applied": "Applied new settings",
+      "not_implemented": "Sorry! Not implemented yet!",
       "support_24_7": "We are available 24/7.",
       "warn_add_users_to_show": "Add users to show here",
       "warn_no_user": "No user found"
+    },
+    "placeholders": {
+      "subject": "Enter your subject"
     },
     "priorities": {
       "high": "High",
@@ -195,6 +208,7 @@
       "invalid_creds": "Incorrect email or password"
     },
     "blank": "This field may not be blank.",
+    "bulk_mail_payload_incomplete": "Subject and message required",
     "cannot_change_own_role": "Cannot change your own role.",
     "cannot_delete_category": "Cannot delete category with active services.",
     "charge_not_pending": "Charge is not pending.",
@@ -284,6 +298,12 @@
       "write_message": "Write your message"
     },
     "title": "Live Support"
+  },
+  "misc": {
+    "charge_account": {
+      "card_to_card": "Card To Card",
+      "crypto": "Cryptocurrency"
+    }
   },
   "modals": {
     "confirms": {
@@ -387,6 +407,13 @@
       "title_new_account": "Create a new account",
       "title_verify_email": "Verify email address",
       "title_verify_phone": "Verify phone number"
+    },
+    "social_link": {
+      "labels": {
+        "icon": "Icon",
+        "link": "Link",
+        "title": "Social Title"
+      }
     }
   },
   "navigation": {
@@ -448,7 +475,6 @@
         "transparent_reports_title": "Transparent Reports"
       },
       "charge_wallet": "Charge Wallet",
-      "crypto": "Cryptocurrency",
       "cta_section_title": "Register in less than a minute and make your first transaction.",
       "current_prices": "Current Currency Prices",
       "deposit_amount": "Deposit Amount",

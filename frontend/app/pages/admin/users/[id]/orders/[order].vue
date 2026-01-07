@@ -1,5 +1,5 @@
 <template>
-  <div v-if="order" class="space-y-12">
+  <div v-if="order" class="space-y-12 max-h-full p-2 overflow-y-auto">
     <section class="flex flex-col xl:flex-row justify-between gap-12">
       <!-- User Information Column -->
       <div class="column">

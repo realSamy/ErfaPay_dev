@@ -1,5 +1,5 @@
 <template>
-  <section class="page-section">
+  <section class="page-section max-h-full p-2 overflow-y-auto">
     <h2 class="font-bold text-2xl">ایجاد کاربر جدید</h2>
   </section>
 </template>

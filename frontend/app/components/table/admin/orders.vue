@@ -32,7 +32,6 @@
           @update:page="onPageChange"
       />
     </div>
-    <pre>{{ totalItems }}</pre>
   </div>
 </template>
 

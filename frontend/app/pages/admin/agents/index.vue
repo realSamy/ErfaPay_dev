@@ -1,5 +1,5 @@
 <template>
-<div class="space-y-8">
+<div class="space-y-8 max-h-full p-2 overflow-y-auto">
   <section>
     <UButton label="پشتیبان جدید" :to="$localePath('admin-agents-new')" size="lg" trailing-icon="material-symbols:add"/>
   </section>

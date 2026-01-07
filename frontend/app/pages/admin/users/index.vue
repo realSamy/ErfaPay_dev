@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-12">
+  <div class="space-y-12 max-h-full p-2 overflow-y-auto">
     <div class="flex gap-2">
       <UButton label="دانلود CSV" size="lg" trailing-icon="material-symbols:download-rounded"/>
       <UButton label="کاربر جدید" :to="$localePath('admin-users-new')" size="lg" trailing-icon="material-symbols:add"/>
@@ -29,6 +29,11 @@ definePageMeta({
   title: 'pages.admin.title.users',
 })
 
+const {hasPermission} = usePermissions()
+
+if (!hasPermission('view_users')) {
+  await navigateTo(useLocalePath()('admin-services'))
+}
 
 const userStats = ref<UsersStats>()
 const {data: response} = await useAuthApi<GenericHTTPResponse<UsersStats>>('/api/auth/admin/users/stats/')

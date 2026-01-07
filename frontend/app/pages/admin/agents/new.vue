@@ -1,5 +1,5 @@
 <template>
-  <section class="page-section">
+  <section class="page-section max-h-full p-2 overflow-y-auto">
     <h2 class="font-bold text-2xl">ایجاد پشتیبان جدید</h2>
 
     <UForm class="w-full md:w-lg space-y-4" @submit.prevent="submit">

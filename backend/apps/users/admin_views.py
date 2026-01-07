@@ -139,7 +139,7 @@ class AdminUserDetailView(APIView):
                 """,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=False,
+                fail_silently=settings.ENV == 'development',
             )
 
             return Response({

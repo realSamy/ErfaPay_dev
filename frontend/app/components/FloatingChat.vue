@@ -6,7 +6,7 @@
         v-if="user"
         :class="{'animate-shake': hasNotifs}"
         :icon="isOpen ? 'material-symbols:close-rounded' : 'material-symbols:chat-rounded'"
-        class="rounded-full justify-center items-center shadow-lg p-4 hover:scale-110 transition-transform"
+        class="rounded-full justify-center items-center shadow-lg shadow-gray-700 p-4 hover:scale-110 transition-transform"
         size="xl"
         @click="isOpen = !isOpen"
     />
@@ -93,7 +93,7 @@
               @submit="sendMessage"
           >
             <UChatPromptSubmit
-                :disabled="isSending || !currentRoom || !newMessage.trim()"
+                :disabled="!isAvailable || isSending || !currentRoom || !newMessage.trim()"
                 class="rtl:rotate-180"
                 icon="material-symbols:send-rounded"
             />
@@ -128,6 +128,8 @@ interface ChatMessage {
 
 const currentRoom = ref<ChatRoom | null>(null)
 const messages = ref<ChatMessage[]>([])
+const isAvailable = ref(false)
+
 let ws: WebSocket | null = null
 
 const newChat = async () => {
@@ -171,11 +173,13 @@ const connectWebSocket = () => {
   if (!currentRoom.value) return
   if (ws) ws.close()
 
-  const {accessToken: token} = useAuth()
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${currentRoom.value.id}/?token=${token.value}`)
+  ws = new WebSocket(`${protocol}://${window.location.host.replace(':3000', ':8000')}/ws/chat/${currentRoom.value.id}/`)
 
-  ws.onopen = () => console.log('Chat WS connected')
+  ws.onopen = () => {
+    console.log('Chat WS connected')
+    isAvailable.value = true
+  }
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data)
     console.log({data})
@@ -196,7 +200,10 @@ const connectWebSocket = () => {
       }
     }
   }
-  ws.onclose = () => console.log('Chat WS closed')
+  ws.onclose = () => {
+    console.log('Chat WS closed')
+    isAvailable.value = false
+  }
 }
 
 // Send message
@@ -222,8 +229,3 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
-.h-128 {
-  height: 32rem;
-}
-</style>

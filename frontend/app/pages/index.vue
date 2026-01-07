@@ -58,7 +58,7 @@
         <h2>{{ $t('common.messages.support_24_7') }}</h2>
         <p>
           {{ $t('pages.home.support_phone') }}
-          <span dir="ltr">{{ useConvertNumericToLocale('(+98) 912 999 9999 - (+98) 912 999 9999', locale) }}</span>
+          <span dir="ltr">{{ useConvertNumericToLocale(settings.erfapay_phones, locale) }}</span>
         </p>
       </div>
     </UContainer>
@@ -74,5 +74,7 @@ const {locale} = useI18n();
 const benefits = useState('benefits')
 
 const {user, login} = useAuth()
+
+const settings = await useLoadGlobalSettingsStore()
 
 </script>

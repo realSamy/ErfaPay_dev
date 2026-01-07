@@ -1,9 +1,11 @@
 <template>
-  <FormAdminService
-      :payload="servicePayload"
-      :pending="pending"
-      @submit="submit"
-  />
+  <div class="max-h-full p-2 overflow-y-auto">
+    <FormAdminService
+        :payload="servicePayload"
+        :pending="pending"
+        @submit="submit"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>

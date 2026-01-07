@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-10">
+  <div class="space-y-10 max-h-full p-2 overflow-y-auto">
     <section>
       <h2 class="font-bold text-2xl">{{ $t('common.titles.ticket_categories') }}</h2>
       <ClientOnly>

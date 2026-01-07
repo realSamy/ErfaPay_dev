@@ -179,3 +179,8 @@ export interface ResetPasswordPayload {
   password: string
   confirm_password: string
 }
+
+export interface BulkEmailPayload {
+  subject: string
+  message: string
+}

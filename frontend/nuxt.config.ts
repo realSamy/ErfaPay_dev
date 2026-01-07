@@ -1,8 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   routeRules: {
+    '/admin/**': {ssr: false},
     '/fa/admin/**': {ssr: false},
     '/en/admin/**': {ssr: false},
+    '/dashboard/**': {ssr: false},
     '/fa/dashboard/**': {ssr: false},
     '/en/dashboard/**': {ssr: false},
   },
@@ -24,11 +26,13 @@ export default defineNuxtConfig({
     '~/assets/css/main.css',
   ],
   i18n: {
+    defaultLocale: 'fa',
+    strategy: 'prefix_except_default',
     locales: [
       {
         code: 'en',
         name: 'English',
-        file: 'en.json'
+        file: 'en.json',
       },
       {
         code: 'fa',

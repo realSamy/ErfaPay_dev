@@ -98,7 +98,7 @@ class LoginView(APIView):
                 message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=False,
+                fail_silently=settings.ENV == 'development',
             )
 
             if settings.DEBUG:
@@ -162,7 +162,7 @@ class SignupEmailView(APIView):
                 message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=False,
+                fail_silently=settings.ENV == 'development',
             )
 
             if settings.DEBUG:
@@ -223,7 +223,7 @@ class ResendOTPView(APIView):
                 message=f'Your 5-digit OTP is: {otp_code.code}\nValid for 5 minutes.',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=False,
+                fail_silently=settings.ENV == 'development',
             )
 
             if settings.DEBUG:
@@ -280,7 +280,7 @@ class PasswordResetRequestView(APIView):
                 message=f'Your 5-digit OTP for password reset is: {otp_code.code}\nValid for 5 minutes.',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=False,
+                fail_silently=settings.ENV == 'development',
             )
 
             if settings.DEBUG:

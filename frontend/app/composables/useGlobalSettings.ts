@@ -39,7 +39,7 @@ export const useUpdateGlobalSettings = () => {
       // Use FormData for future-proofing (even if no files now)
       const fd = new FormData()
       Object.entries(payload).forEach(([key, value]) => {
-        fd.append(key, value instanceof File ? value : String(value))
+        fd.append(key, value instanceof File ? value : ['string', 'number'].includes(typeof value) ? String(value) : JSON.stringify(value))
       })
 
       const { data } = await useAuthApi('/api/global-settings/', {

@@ -16,8 +16,11 @@ definePageMeta({
   title: 'pages.admin.title.financial'
 })
 
+const {hasPermission} = usePermissions()
+
+if (!hasPermission('view_financial_reports')) {
+  await navigateTo(useLocalePath()('admin-services'))
+}
+
 
 </script>
-
-<style scoped>
-</style>

@@ -34,6 +34,12 @@
         "usdt": "تتر (USDT)"
       }
     },
+    "erfapay": {
+      "address": "آدرس ارفاپی",
+      "email": "ایمیل ارفاپی",
+      "phone": "شماره تلفن ارفاپی",
+      "social": "شبکه های اجتماعی ارفاپی"
+    },
     "field_types": {
       "file": "فایل",
       "number": "عدد",
@@ -46,6 +52,7 @@
       "admin_notes": "توضیحات ادمین",
       "admin_panel": "پنل مدیریت",
       "attachment": "فایل ضمیمه",
+      "bulk_email": "ایمیل همگانی",
       "cancel": "لغو",
       "choose_country": "انتخاب کشور",
       "clear_filters": "پاک کردن همه",
@@ -54,6 +61,7 @@
       "dashboard": "داشبورد",
       "delete": "حذف",
       "edit": "ویرایش",
+      "email_subject": "موضوع",
       "login": "ورود",
       "logout": "خروج از حساب",
       "more": "بیشتر",
@@ -88,11 +96,16 @@
       }
     },
     "messages": {
+      "bulk_email_started": "ارسال ایمیل همگانی در پس زمینه شروع شد.",
       "confirm_logout": "میخوای از حسابت خارج بشی؟",
       "global_settings_applied": "تنظیمات جدید اعمال شد",
+      "not_implemented": "با عرض پوزش، این بخش هنوز راه اندازی نشده است!",
       "support_24_7": "۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم.",
       "warn_add_users_to_show": "کاربران را اضافه کنید تا اینجا نمایش داده شوند",
       "warn_no_user": "هیچ کاربری یافت نشد"
+    },
+    "placeholders": {
+      "subject": "موضوع پیام را وارد کنید"
     },
     "priorities": {
       "high": "زیاد",
@@ -195,6 +208,7 @@
       "invalid_creds": "ایمیل یا رمز وارد شده اشتباه است"
     },
     "blank": "این فیلد نمی‌تواند خالی باشد.",
+    "bulk_mail_payload_incomplete": "موضوع و متن ایمیل الزامی هستند",
     "cannot_change_own_role": "نمی‌توانید نقش خود را تغییر دهید.",
     "cannot_delete_category": "نمی‌توان دسته‌بندی دارای خدمات فعال را حذف کرد.",
     "charge_not_pending": "شارژ در وضعیت در انتظار نیست.",
@@ -284,6 +298,12 @@
       "write_message": "پیام خود را بنویسید"
     },
     "title": "پشتیبانی آنلاین"
+  },
+  "misc": {
+    "charge_account": {
+      "card_to_card": "کارت به کارت",
+      "crypto": "رمزارز"
+    }
   },
   "modals": {
     "2fa": {
@@ -380,6 +400,13 @@
       "placeholder_phone": "شماره خود را وارد نمایید",
       "text_already_has_account": "حساب کاربری در ارفاپی دارم.",
       "title_new_account": "ایجاد حساب کاربری جدید"
+    },
+    "social_link": {
+      "labels": {
+        "icon": "نماد",
+        "link": "لینک",
+        "title": "عنوان شبکه اجتماعی"
+      }
     }
   },
   "navigation": {
@@ -441,7 +468,6 @@
         "transparent_reports_title": "گزارشات شفاف"
       },
       "charge_wallet": "شارژ حساب",
-      "crypto": "رمزارز",
       "cta_section_title": "در کمتر از یک دقیقه ثبت نام کنید و اولین تراکنش خود را انجام دهید.",
       "current_prices": "قیمت لحظه‌ای ارزها",
       "deposit_amount": "مبلغ واریزی",

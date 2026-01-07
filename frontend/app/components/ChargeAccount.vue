@@ -4,11 +4,11 @@
            @submit.prevent="handleSubmit">
 
       <!-- Gateway Selection Tabs -->
-      <UTabs v-model="selectedGateway" :items="gatewayTabs" :orientation="tabsOrientation" class="h-full"/>
+      <UTabs v-model="selectedGateway" :items="gatewayTabs" orientation="vertical" class="h-full" :ui="{content: 'hidden', list: 'w-full'}"/>
 
       <div class="w-full space-y-6">
         <!-- PayPal / Crypto Section -->
-        <div v-if="selectedGateway !== 'voucher'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div v-if="['paypal', 'crypto'].includes(selectedGateway)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <UFormField :label="$t('pages.home.select_currency')" :ui="fieldUI" class="bg-ui-input rounded-lg p-3">
             <USelect
                 v-model="selectedCurrency"
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Perfect Money Voucher Section -->
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div v-else-if="selectedGateway == 'voucher'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <UFormField :label="$t('pages.home.voucher_number')" :ui="fieldUI" class="bg-ui-input rounded-lg p-3"
                       required>
             <UInput
@@ -80,8 +80,14 @@
             />
           </UFormField>
         </div>
+
+        <div v-else>
+          <span>{{ $t('common.messages.not_implemented') }}</span>
+        </div>
+
         <!-- Submit Button -->
         <UButton
+            :disabled="selectedGateway!=='crypto'"
             :label="submitButtonLabel"
             :loading="loading"
             :trailing-icon="directionalIcon('mdi:chevron-left', 'mdi:chevron-right')"
@@ -101,25 +107,21 @@
 
 <script lang="ts" setup>
 import {ref, computed, watch} from 'vue'
-import {useI18n} from 'vue-i18n'
 import {useAuth} from '~/composables/useAuth'
-import {useWindowSize} from "@vueuse/core";
 
 const {t, locale} = useI18n()
 const {user, login} = useAuth()
 const currenciesStore = await useLoadCurrenciesStore()
 
 const loading = ref(false)
-const {width} = useWindowSize()
-const tabsOrientation = computed(() => {
-  return width.value < 768 ? 'horizontal' : 'vertical'  // < md = horizontal
-})
+
 // Gateway selection
-const selectedGateway = ref<'paypal' | 'crypto' | 'voucher'>('paypal')
+const selectedGateway = ref<'paypal' | 'crypto' | 'voucher' | 'card'>('paypal')
 const gatewayTabs = [
   {value: 'paypal', label: 'PayPal'},
-  {value: 'crypto', label: t('pages.home.crypto')},
+  {value: 'crypto', label: t('misc.charge_account.crypto')},
   {value: 'voucher', label: 'Perfect Money Voucher'},
+  {value: 'card', label: t('misc.charge_account.card_to_card')},
 ]
 
 // Available currencies (hardcoded – only supported ones)

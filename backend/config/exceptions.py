@@ -3,7 +3,6 @@ from rest_framework.views import exception_handler
 
 
 def custom_exception_handler(exc, context):
-    print('test')
     response = exception_handler(exc, context)
 
     if response is not None:
@@ -12,7 +11,6 @@ def custom_exception_handler(exc, context):
         # Handle ValidationError (serializer.is_valid() failures)
         if isinstance(exc, ValidationError):
             data = exc.detail
-            print('data', data)
             if isinstance(data, dict):
                 for field, messages in data.items():
                     field_name = field if field != 'non_field_errors' else None
@@ -210,3 +208,7 @@ class ChatNotAuthorized(APIException):
     status_code = 401
     default_detail = 'You are not authorized to send messages in this chat'
     default_code = 'chat_not_authorized'
+
+class BulkMailPayloadIncompleteException(ValidationError):
+    default_detail = 'Subject and message required'
+    default_code = 'bulk_mail_payload_incomplete'

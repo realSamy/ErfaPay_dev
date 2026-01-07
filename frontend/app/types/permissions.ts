@@ -38,6 +38,7 @@ export const PERMISSIONS = [
   'update_ticket_status',
   'update_ticket_priority',
   'close_ticket',
+  'send_bulk_emails',
 
   // Profile & Settings
   'view_profile',
@@ -50,6 +51,9 @@ export const PERMISSIONS = [
 
   // Site Settings (tax, hours, etc.)
   'manage_site_settings',
+
+
+  'view_financial_reports',
 ] as const
 
 export type Permission = typeof PERMISSIONS[number]

@@ -1,6 +1,6 @@
 <template>
-  <div class="space-y-12">
-    <section v-if="settings" class="page-section">
+  <div class="space-y-12 max-h-full p-2 overflow-y-auto">
+    <section v-if="settings && hasPermission('manage_site_settings')" class="page-section">
       <h2 class="font-bold text-2xl">تنظیم ساعات قبول سفارشات</h2>
       <ClientOnly>
         <UForm @submit.prevent="handleSubmit">
@@ -9,7 +9,7 @@
               <span>ثبت سفارش در حال حاضر</span>
               <USelect
                   v-model="payload.global_availability"
-                  :items="a"
+                  :items="availabilityItems"
                   value-key="value"/>
               <span>میباشد</span>
             </div>
@@ -20,7 +20,7 @@
                     <span>زمان بندی سفارش در حال حاضر</span>
                     <USelect
                         v-model="payload.enable_schedule"
-                        :items="a"
+                        :items="availabilityItems"
                         value-key="value"/>
                     <span>میباشد</span>
                   </div>
@@ -50,7 +50,7 @@
           settings.is_available_now ? 'فعال' : 'غیرفعال'
         }} میباشد.</span>
     </section>
-    <section class="page-section">
+    <section v-if="hasPermission('view_services_admin')" class="page-section">
       <div class="flex justify-between pe-6 py-2">
         <h2 class="font-bold text-2xl">لیست خدمات</h2>
         <UButton :label="$t('pages.admin.labels.services.button_new_service')"
@@ -85,13 +85,14 @@ const {t} = useI18n()
 const {settings, fetchSettings} = useGlobalSettings()
 await fetchSettings()
 const {loading, updateSettings, updatedSettings} = useUpdateGlobalSettings()
+const {hasPermission} = usePermissions()
 
 const payload = ref(<UpdateGlobalSettingsPayload>{
   ...settings.value,
   is_available_now: undefined,
 })
 
-const a = ref([
+const availabilityItems = ref([
   {label: t('common.states.enabled'), value: true},
   {label: t('common.states.disabled'), value: false},
 ])

@@ -15,7 +15,7 @@
       </template>
 
       <template #create-item-label="{ item }">
-        <UIcon :name="item" size="40" />
+        <UIcon :name="item" size="40"/>
       </template>
     </USelectMenu>
   </UFieldGroup>
@@ -66,6 +66,7 @@ const items = ref<string[]>([
   'material-symbols:local-bar-rounded',
   'material-symbols:local-car-wash-rounded',
 ])
+
 function onCreate(item: string) {
   items.value.push(item)
 

@@ -28,10 +28,12 @@ export const useAuthApi = async <T = any>(
         })
         accessToken.value = res.access
         data.value = await makeRequest(res.access)
-      } catch {
-        await logout()
-        if (opts.forceLogin) {
-          useAuthModal().open('signin')
+      } catch (err: any) {
+        if (err.status === 401) {
+          await logout()
+          if (opts.forceLogin) {
+            useAuthModal().open('signin')
+          }
         }
       }
     } else {

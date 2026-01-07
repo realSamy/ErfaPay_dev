@@ -29,6 +29,13 @@ class GlobalSettings(models.Model):
     global_availability = models.BooleanField(default=True)
     enable_schedule = models.BooleanField(default=False)
 
+    erfapay_address = models.TextField(blank=True, null=True)
+    erfapay_email = models.EmailField(blank=True, null=True)
+    erfapay_phone = models.TextField(blank=True, null=True)
+    erfapay_phone2 = models.TextField(blank=True, null=True)
+    erfapay_social = models.JSONField(blank=True, null=True, default=list)
+
+
     def is_service_available(self) -> bool:
         if not self.global_availability:
             return False

@@ -6,14 +6,9 @@
         <div class="flex flex-col sm:flex-row justify-between">
           <span class="text-lg font-semibold mb-4 sm:mb-0">{{ $t('pages.home.social_media_title') }}</span>
           <div class="flex space-x-4">
-            <UButton aria-label="Instagram" class="text-white" color="primary" icon="i-mdi-instagram" target="_blank"
-                     to="#" variant="link"/>
-            <UButton aria-label="Telegram" class="text-white" color="primary" icon="i-mdi-telegram" target="_blank"
-                     to="#" variant="link"/>
-            <UButton aria-label="Twitter" class="text-white" color="primary" icon="i-mdi-twitter" target="_blank"
-                     to="#" variant="link"/>
-            <UButton aria-label="WhatsApp" class="text-white" color="primary" icon="i-mdi-whatsapp" target="_blank"
-                     to="#" variant="link"/>
+            <UButton v-for="link in settings.erfapay_social" :aria-label="link.title" class="text-white" color="primary"
+                     :icon="link.icon" target="_blank"
+                     :to="link.link" variant="link"/>
           </div>
         </div>
       </div>
@@ -39,14 +34,14 @@
 
         <div class="text-start">
           <h3 class="text-xl font-bold mb-4">{{ $t('footer.contact_info_title') }}</h3>
-          <div class="text-gray-400 mb-2">{{ $t('footer.address') }}</div>
+          <div class="text-gray-400 mb-2">{{ settings.erfapay_address }}</div>
           <div class="text-gray-400 mb-2 flex items-center justify-start">
             <UIcon class="ltr:mr-2 rtl:ml-2" name="i-mdi-email"/>
-            <a :href="`mailto:${$t('footer.email')}`" class="hover:text-primary-400">{{ $t('footer.email') }}</a>
+            <a :href="`mailto:${settings.erfapay_email}`" class="hover:text-primary-400">{{ settings.erfapay_email }}</a>
           </div>
           <div class="text-gray-400 flex items-center justify-start">
             <UIcon class="ltr:mr-2 rtl:ml-2" name="i-mdi-phone"/>
-            <p dir="ltr"> {{ useConvertNumericToLocale(' (+98) 912 999 9999 - (+98) 912 999 9999', locale) }}</p>
+            <p dir="ltr"> {{ useConvertNumericToLocale(settings.erfapay_phones, locale) }}</p>
           </div>
         </div>
       </div>
@@ -64,14 +59,12 @@
     </UContainer>
   </UContainer>
 </template>
+
 <script lang="ts" setup>
 import type {FooterLogo} from "~/types/data";
 
 const footerLogos = useState<FooterLogo[]>('footer_logos');
 const {locale} = useI18n();
 
+const settings = await useLoadGlobalSettingsStore()
 </script>
-
-<style scoped>
-
-</style>

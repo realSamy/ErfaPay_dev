@@ -23,8 +23,8 @@ export const usePermissions = () => {
         'view_all_orders', 'process_order', 'reject_order', 'approve_order',
         'view_all_wallets', 'approve_charge',
         'view_all_tickets', 'reply_ticket', 'assign_ticket', 'update_ticket_status', 'update_ticket_priority', 'close_ticket',
-        'view_dashboard', 'view_reports', 'export_reports',
-        'manage_site_settings',
+        'view_dashboard', 'view_reports', 'export_reports', 'send_bulk_emails',
+        'manage_site_settings', 'view_financial_reports',
       ],
       senior_support: [
         'view_users', 'update_user', 'block_user', 'unblock_user',

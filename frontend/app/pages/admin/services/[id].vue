@@ -1,12 +1,14 @@
 <template>
-  <FormAdminService
-    v-if="service"
-    :payload="servicePayload"
-    :existing-service="service"
-    :pending="pending"
-    :is-edit="true"
-    @submit="submit"
-  />
+  <div class="max-h-full p-2 overflow-y-auto">
+    <FormAdminService
+        v-if="service"
+        :payload="servicePayload"
+        :existing-service="service"
+        :pending="pending"
+        :is-edit="true"
+        @submit="submit"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
