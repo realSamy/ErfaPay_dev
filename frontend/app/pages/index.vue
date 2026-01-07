@@ -58,7 +58,7 @@
         <h2>{{ $t('common.messages.support_24_7') }}</h2>
         <p>
           {{ $t('pages.home.support_phone') }}
-          <span dir="ltr">{{ useConvertNumericToLocale(settings.erfapay_phones, locale) }}</span>
+          <span dir="ltr">{{ useConvertNumericToLocale(settings?.erfapay_phones, locale) }}</span>
         </p>
       </div>
     </UContainer>

@@ -1,6 +1,6 @@
 <template>
   <UContainer class="max-w-screen bg-black/90 mt-10 text-white py-8">
-    <UContainer class="p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12">
+    <UContainer v-if="settings" class="p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 lg:gap-24 mb-6 pb-6 border-b border-gray-700">
         <div></div>
         <div class="flex flex-col sm:flex-row justify-between">
